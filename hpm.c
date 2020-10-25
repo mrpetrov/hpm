@@ -1033,32 +1033,6 @@ write_log_start() {
     log_message(LOG_FILE,"PID written to "LOCK_FILE", writing CSV data to "DATA_FILE );
     log_message(LOG_FILE,"Writing table data for collectd to "TABLE_FILE );
     log_message(LOG_FILE,"Power used persistence file "POWER_FILE );
-    sprintf( start_log_text, "Powers: heater=%3.1f W, pump1=%3.1f W, pump2=%3.1f W",
-    HEATERPPC*(6*60), PUMP1PPC*(6*60), PUMP2PPC*(6*60) );
-    log_message(LOG_FILE, start_log_text );
-    sprintf( start_log_text, "Powers: valve=%3.1f W, self=%3.1f W",
-    VALVEPPC*(6*60), SELFPPC*(6*60) );
-    log_message(LOG_FILE, start_log_text );
-}
-
-/* Function to log currently used config in TABLE_FILE format. The idea is that this file will be made
-available to a web app, which will fetch it once in a while to get current working config for hpm
-without the need for root access (necessary to read /etc/hpm.cfg), so relevant data could be shown.
-This function should be called less often, e.g. once every 5 minutes or something... */
-void
-ReWrite_CFG_TABLE_FILE() {
-    static char data[280];
-    /* Log data like so:
-    Time(by log function),mode,wanted_T,use_electric_heater_night,use_electric_heater_day,
-	pump1_always_on,use_pump1,use_pump2,day_to_reset_Pcounters,night_boost,abs_max;
-	on seperate lines */
-    sprintf( data, ",mode,%d\n_,Tboiler_wanted,%d\n_,elh_nt,%d\n_,elh_dt,%d\n"\
-    "_,p1_always_on,%d\n_,use_p1,%d\n_,use_p2,%d\n_,Pcounters_rst_day,%d\n"\
-	"_,use_night_boost,%d\n_,Tboiler_absMax,%d",
-    cfg.mode, cfg.wanted_T, cfg.use_electric_heater_night, cfg.use_electric_heater_day,
-	cfg.pump1_always_on, cfg.use_pump1, cfg.use_pump2, cfg.day_to_reset_Pcounters,
-	cfg.night_boost, cfg.abs_max);
-    log_msg_ovr(CFG_TABLE_FILE, data);
 }
 
 /* Function to get current time and put the hour in current_timer_hour */
@@ -1071,16 +1045,12 @@ GetCurrentTime() {
     short must_check = 0;
     unsigned short current_day_of_month = 0;
 	
-	ReWrite_CFG_TABLE_FILE();
-
     t = time(NULL);
     t_struct = localtime( &t );
     strftime( buff, sizeof buff, "%H", t_struct );
 
     current_timer_hour = atoi( buff );
     
-    /* do furnace water target temp adjusment based on the environment temp */
-    furnace_water_target = currentHTTB - Tenv;
 
     if ((current_timer_hour == 8) && ((ProgramRunCycles % (6*60)) == 0)) must_check = 1;
 
@@ -1135,28 +1105,34 @@ void
 LogData(short HM) {
     static char data[280];
     /* Log data like so:
-        Time(by log function) HOUR, TKOTEL,TSOLAR,TBOILERL,TBOILERH, BOILERTEMPWANTED,BOILERABSMAX,NIGHTBOOST,HM,
-    PUMP1,PUMP2,VALVE,EL_HEATER,POWERBYBATTERY, WATTSUSED,WATTSUSEDNIGHTTARIFF */
-    sprintf( data, "%2d, %6.3f,%6.3f,%6.3f,%6.3f, %2d,%2d,%d,%2d, %d,%d,%d,%d,%d, %5.3f,%5.3f",\
-    current_timer_hour, Tkotel, Tkolektor, TboilerLow, TboilerHigh, cfg.wanted_T, cfg.abs_max, \
-    cfg.night_boost, HM, CPump1, CPump2, CValve, CHeater, CPowerByBattery, \
-    TotalPowerUsed, NightlyPowerUsed );
+    Time(by log function) AC1: Tcomp1,Tcnd1,The1i,The1o; AC2: Tcomp2,Tcnd2,The2i,The2o;
+        WaterIn, WaterOut, Tenv
+    */
+    sprintf( data, "AC1: %6.3f,%6.3f,%6.3f,%6.3f; AC2:%6.3f,%6.3f,%6.3f,%6.3f; %6.3f,%6.3f,%6.3f",
+    Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv );
+    sprintf( data + strlen(data), "; CONTROLS:");
+    if (Cac1cmp) sprintf( data + strlen(data), " 1COMP");
+    if (Cac1fan) sprintf( data + strlen(data), " 1FAN");
+    if (Cac1fv) sprintf( data + strlen(data), " 1V");
+    if (Cac2cmp) sprintf( data + strlen(data), " 2COMP");
+    if (Cac2fan) sprintf( data + strlen(data), " 2FAN");
+    if (Cac2fv) sprintf( data + strlen(data), " 2V");
     log_message(DATA_FILE, data);
 
-    sprintf( data, ",Temp1,%5.3f\n_,Temp2,%5.3f\n_,Temp3,%5.3f\n_,Temp4,%5.3f\n"\
-    "_,Pump1,%d\n_,Pump2,%d\n_,Valve,%d\n_,Heater,%d\n_,PoweredByBattery,%d\n"\
-    "_,TempWanted,%d\n_,BoilerTabsMax,%d\n_,ElectricityUsed,%5.3f\n_,ElectricityUsedNT,%5.3f",\
-    Tkotel, Tkolektor, TboilerHigh, TboilerLow, CPump1, CPump2,\
-    CValve, CHeater, CPowerByBattery, cfg.wanted_T, cfg.abs_max,\
-    TotalPowerUsed, NightlyPowerUsed );
+    sprintf( data, ",AC1COMP,%5.3f\n_,AC1CND,%5.3f\n_,HE1I,%5.3f\n_,HE1O,%5.3f\n"\
+    "_,AC2COMP,%5.3f\n_,AC2CND,%5.3f\n_,HE2I,%5.3f\n_,HE2O,%5.3f\n"\
+    "_,WaterIN,%5.3f\n_,WaterOUT,%5.3f\n_,Tenv,%5.3f\n"\
+    "_,Comp1,%d\n_,Fan1,%d\n_,Valve1,%d\n_,Comp2,%d\n_,Fan2,%d\n_,Valve2,%d",\
+    Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv\
+    Cac1cmp,Cac1fan,Cac1fv,Cac2cmp,Cac2fan,Cac2fv);
     log_msg_ovr(TABLE_FILE, data);
 
-    sprintf( data, "{Tkotel:%5.3f,Tkolektor:%5.3f,TboilerH:%5.3f,TboilerL:%5.3f,"\
-    "PumpFurnace:%d,PumpSolar:%d,Valve:%d,Heater:%d,PoweredByBattery:%d,"\
-    "TempWanted:%d,BoilerTabsMax:%d,ElectricityUsed:%5.3f,ElectricityUsedNT:%5.3f}",\
-    Tkotel, Tkolektor, TboilerHigh, TboilerLow, CPump1, CPump2,\
-    CValve, CHeater, CPowerByBattery, cfg.wanted_T, cfg.abs_max,\
-    TotalPowerUsed, NightlyPowerUsed );
+    sprintf( data, "{AC1COMP:%5.3f,AC1CND:%5.3f,HE1I:%5.3f,HE1O:%5.3f,"\
+    ",AC2COMP:%5.3f,AC2CND:%5.3f,HE2I:%5.3f,HE2O:%5.3f,"\
+    "WaterIN:%5.3f,WaterOUT:%5.3f,Tenv:%5.3f\n,"\
+    "Comp1:%d,Fan1:%d,Valve1:%d,Comp2:%d,Fan2:%d,Valve2:%d}",\
+    Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv\
+    Cac1cmp,Cac1fan,Cac1fv,Cac2cmp,Cac2fan,Cac2fv);
     log_msg_cln(JSON_FILE, data);
 }
 
