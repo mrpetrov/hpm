@@ -1035,72 +1035,6 @@ write_log_start() {
     log_message(LOG_FILE,"Power used persistence file "POWER_FILE );
 }
 
-/* Function to get current time and put the hour in current_timer_hour */
-void
-GetCurrentTime() {
-    static char buff[80];
-    time_t t;
-    struct tm *t_struct;
-    short adjusted = 0;
-    short must_check = 0;
-    unsigned short current_day_of_month = 0;
-	
-    t = time(NULL);
-    t_struct = localtime( &t );
-    strftime( buff, sizeof buff, "%H", t_struct );
-
-    current_timer_hour = atoi( buff );
-    
-
-    if ((current_timer_hour == 8) && ((ProgramRunCycles % (6*60)) == 0)) must_check = 1;
-
-    /* adjust night tariff start and stop hours at program start and
-    every day sometime between 8:00 and 9:00 */
-    if (( just_started ) || ( must_check )) {
-        strftime( buff, sizeof buff, "%m", t_struct );
-        current_month = atoi( buff );
-        if ((current_month >= 4)&&(current_month <= 10)) {
-            /* April through October - use NE from 23:00 till 6:59 */
-            if (NEstart != 23) {
-                adjusted = 1;
-                NEstart = 23;
-                NEstop  = 6;
-            }
-            now_is_winter = 0;
-        }
-        else {
-            /* November through March - use NE from 22:00 till 5:59 */
-            if (NEstart != 22) {
-                adjusted = 1;
-                NEstart = 22;
-                NEstop  = 5;
-            }
-            now_is_winter = 1;
-        }
-        if (adjusted) {
-            sprintf( buff, "INFO: Adjusted night energy hours, start %.2hu:00,"\
-            " stop %.2hu:59.", NEstart, NEstop );
-            log_message(LOG_FILE, buff);
-        }
-        /* among other things - manage power used counters; only check one
-        time during the day: at 8'something...*/
-        if (must_check) {
-            strftime( buff, sizeof buff, "%e", t_struct );
-            current_day_of_month = atoi( buff );
-            if (current_day_of_month == cfg.day_to_reset_Pcounters) {
-                /*...if it is the correct day of month - log gathered data and reset counters */
-                sprintf( buff, "INFO: Power used last month: nightly: %3.1f Wh, daily: %3.1f Wh;",
-                NightlyPowerUsed, (TotalPowerUsed-NightlyPowerUsed) );
-                log_message(LOG_FILE, buff);
-                sprintf( buff, "INFO: Total: %3.1f Wh. Power counters reset.", TotalPowerUsed );
-                log_message(LOG_FILE, buff);
-                TotalPowerUsed = 0;
-                NightlyPowerUsed = 0;
-            }
-        }
-    }
-}
-
 void
 LogData(short HM) {
     static char data[280];
@@ -1377,33 +1311,9 @@ ActivateHeatingMode(const short HeatMode) {
     }
 }
 
-void
-AdjustHeatingModeForBatteryPower(unsigned short HM) {
-    /* Check for power source switch */
-    if ( CPowerByBattery != CPowerByBatteryPrev ) {
-        /* If we just switched to battery.. */
-        if ( CPowerByBattery ) {
-            log_message(LOG_FILE,"WARNING: Switch to BATTERY POWER detected.");
-        }
-        else {
-            log_message(LOG_FILE,"INFO: Powered by GRID now.");
-        }
-    }
-    if ( CPowerByBattery ) {
-        /* When battery powered - electric heater does not work; do not try it */
-        HM &= ~(1 << 4);
-        HM &= ~(1 << 5);
-        /* enable quick heater turn off */
-        if (CHeater && (SCHeater < 12)) { SCHeater = 12; }
-    }
-}
-
 int
 main(int argc, char *argv[])
 {
-    /* set iter to its max value - makes sure we get a clock reading upon start */
-    unsigned short iter = 30;
-    unsigned short iter_P = 0;
     unsigned short AlarmRaised = 0;
     unsigned short HeatingMode = 0;
     struct timeval tvalBefore, tvalAfter;
@@ -1438,12 +1348,8 @@ main(int argc, char *argv[])
     write_log_start();
 
     just_started = 3;
-    TotalPowerUsed = 0;
-    NightlyPowerUsed = 0;
 
     parse_config();
-
-    ReadPersistentPower();
 
     /* Enable GPIO pins */
     if ( ! EnableGPIOpins() ) {
@@ -1462,79 +1368,12 @@ main(int argc, char *argv[])
         if ( gettimeofday( &tvalBefore, NULL ) ) {
             log_message(LOG_FILE,"WARNING: error getting tvalBefore...");
         }
-        /* get the current hour every 5 minutes for electric heater schedule */
-        if ( iter == 30 ) {
-            iter = 0;
-            GetCurrentTime();
-            /* and increase counter controlling writing out persistent power use data */
-            iter_P++;
-            if ( iter_P == 2) {
-                iter_P = 0;
-                WritePersistentPower();
-            }
-        }
-        iter++;
         ReadSensors();
         ReadCommsPins();
-        /* do what "mode" from CFG files says - watch the LOG file to see used values */
-        switch (cfg.mode) {
-            default:
-            case 0: /* 0=ALL OFF */
-            HeatingMode = 0;
-            break;
-            case 1: /* 1=AUTO - tries to reach desired water temp efficiently */
-            case 2: /* 2=AUTO+HEAT HOUSE BY SOLAR - mode taken into account by SelectIdle() */
-            if ( CriticalTempsFound() ) {
-                /* ActivateEmergencyHeatTransfer(); */
-                /* Set HeatingMode bits for both pumps and valve */
-                HeatingMode = 7;
-                if ( !AlarmRaised ) {
-                    log_message(LOG_FILE,"ALARM: Activating emergency cooling!");
-                    AlarmRaised = 1;
-                }
-            }
-            else {
-                if ( AlarmRaised ) {
-                    log_message(LOG_FILE,"INFO: Critical condition resolved. Running normally.");
-                    AlarmRaised = 0;
-                }
-                if (BoilerHeatingNeeded()) {
-                    HeatingMode = SelectHeatingMode();
-                    } else {
-                    /* No heating needed - decide how to idle */
-                    HeatingMode = SelectIdleMode();
-                    HeatingMode |= 32;
-                }
-            }
-            break;
-            case 3: /* 3=MANUAL PUMP1 ONLY - only furnace pump ON */
-            HeatingMode = 1;
-            break;
-            case 4: /* 4=MANUAL PUMP2 ONLY - only solar pump ON */
-            HeatingMode = 2;
-            break;
-            case 5: /* 5=MANUAL HEATER ONLY - set THERMOSTAT CORRECTLY!!! */
-            HeatingMode = 16;
-            break;
-            case 6: /* 6=MANAUL PUMP1+HEATER - furnace pump and heater power ON */
-            HeatingMode = 17;
-            break;
-            case 7: /* 7=AUTO ELECTICAL HEATER ONLY - this one obeys start/stop hours */
-            if (BoilerHeatingNeeded()) {
-                HeatingMode = 8;
-                } else {
-                HeatingMode = 32;
-            }
-            break;
-            case 8: /* 8=AUTO ELECTICAL HEATER ONLY, DOES NOT CARE ABOUT SCHEDULE !!! */
-            if (BoilerHeatingNeeded()) {
-                HeatingMode = 16;
-                } else {
-                HeatingMode = 32;
-            }
-            break;
+        /* if MODE is not 0==OFF, work away */
+        if (cfg.mode) {
+            /* process sensors data here, and decide what devices should do */
         }
-        AdjustHeatingModeForBatteryPower(HeatingMode);
         ActivateHeatingMode(HeatingMode);
         LogData(HeatingMode);
         ProgramRunCycles++;
