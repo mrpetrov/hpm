@@ -946,8 +946,6 @@ ControlStateToGPIO() {
 
 void
 write_log_start() {
-    char start_log_text[80];
-
     log_message(LOG_FILE,"INFO: hpm "PGMVER" now starting up...");
     log_message(LOG_FILE,"Running in "RUNNING_DIR", config file "CONFIG_FILE );
     log_message(LOG_FILE,"PID written to "LOCK_FILE", writing CSV data to "DATA_FILE );
@@ -977,7 +975,7 @@ LogData(short HM) {
     "_,AC2COMP,%5.3f\n_,AC2CND,%5.3f\n_,HE2I,%5.3f\n_,HE2O,%5.3f\n"\
     "_,WaterIN,%5.3f\n_,WaterOUT,%5.3f\n_,Tenv,%5.3f\n"\
     "_,Comp1,%d\n_,Fan1,%d\n_,Valve1,%d\n_,Comp2,%d\n_,Fan2,%d\n_,Valve2,%d",\
-    Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv\
+    Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv,\
     Cac1cmp,Cac1fan,Cac1fv,Cac2cmp,Cac2fan,Cac2fv);
     log_msg_ovr(TABLE_FILE, data);
 
@@ -985,7 +983,7 @@ LogData(short HM) {
     ",AC2COMP:%5.3f,AC2CND:%5.3f,HE2I:%5.3f,HE2O:%5.3f,"\
     "WaterIN:%5.3f,WaterOUT:%5.3f,Tenv:%5.3f\n,"\
     "Comp1:%d,Fan1:%d,Valve1:%d,Comp2:%d,Fan2:%d,Valve2:%d}",\
-    Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv\
+    Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv,\
     Cac1cmp,Cac1fan,Cac1fv,Cac2cmp,Cac2fan,Cac2fv);
     log_msg_cln(JSON_FILE, data);
 }
