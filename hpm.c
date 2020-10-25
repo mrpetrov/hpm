@@ -155,7 +155,7 @@ struct cfg_struct
     char    ac2cmp_pin_str[MAXLEN];
     int     ac2cmp_pin;
     char    ac2fan_pin_str[MAXLEN];
-    int     ac2an_pin;
+    int     ac2fan_pin;
     char    ac2v_pin_str[MAXLEN];
     int     ac2v_pin;
     char    commspin1_pin_str[MAXLEN];
@@ -165,7 +165,7 @@ struct cfg_struct
     char    commspin3_pin_str[MAXLEN];
     int     commspin3_pin;
     char    commspin4_pin_str[MAXLEN];
-    int     commspin5_pin;
+    int     commspin4_pin;
     char    mode_str[MAXLEN];
     int     mode;
     char    use_ac1_str[MAXLEN];
@@ -1070,25 +1070,8 @@ LogData(short HM) {
     log_msg_cln(JSON_FILE, data);
 }
 
-/* Return non-zero value on critical condition found based on current data in sensors[] */
 short
-CriticalTempsFound() {
-    if (Tkotel > 68) return 1;
-    if (TboilerHigh > 71) return 2;
-    return 0;
-}
-
-short
-BoilerHeatingNeeded() {
-    if ( TboilerLow < ((float)cfg.wanted_T - (now_is_winter==1 ? 8:15)) ) return 1;
-    if ( TboilerLow > ((float)cfg.wanted_T) ) return 0;
-    if ( TboilerHigh < ((float)cfg.wanted_T - 1) ) return 1;
-    if ( (TboilerHigh < TboilerHighPrev) && (TboilerHighPrev < (float)cfg.wanted_T) ) return 1;
-    return 0;
-}
-
-short
-SelectIdleMode() {
+SelectOpMode() {
     short ModeSelected = 0;
     short wantP1on = 0;
     short wantP2on = 0;
@@ -1315,7 +1298,7 @@ int
 main(int argc, char *argv[])
 {
     unsigned short AlarmRaised = 0;
-    unsigned short HeatingMode = 0;
+    unsigned short OpMode = 0;
     struct timeval tvalBefore, tvalAfter;
 
     SetDefaultCfg();
@@ -1373,9 +1356,9 @@ main(int argc, char *argv[])
         /* if MODE is not 0==OFF, work away */
         if (cfg.mode) {
             /* process sensors data here, and decide what devices should do */
+            OpMode = SelectOpMode();
         }
-        ActivateHeatingMode(HeatingMode);
-        LogData(HeatingMode);
+        LogData(OpMode);
         ProgramRunCycles++;
         if ( just_started ) { just_started--; }
         if ( need_to_read_cfg ) {
