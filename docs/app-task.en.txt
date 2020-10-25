@@ -1,0 +1,25 @@
+Task: to develop software to make decisions on the control of a compressor, four-way valve and a fan of two air conditioners based on the temperature information in several key places
+
+Scheme of heating installation type "Air-water heat pump":
+
+The installation consists of 2 plate heat exchangers (HE), which are connected in parallel to the inlet and outlet of the heating water.
+For each of the heat exchangers - the system must control the outdoor units of air conditioners (two pieces) based on commands from another control system and temperature data of: water inlet, water outlet, agent HE1 inlet, agent HE1 outlet, agent HE2 inlet, agent HE2 outlet, compressor 1, evaporator 1, compressor 2, evaporator 2, external environment.
+
+The software must decide on the control of the compressor, the four-way valve and the fan of the two outdoor units so as to execute the command "need for heat - low power" and "need for heat - high power".
+
+The difference in the above powers is whether it is allowed to activate both outdoor units at the same time - at low power the system must control the end elements so that at any given time the maximum power consumed is from a maximum of one outdoor unit.
+For high power - the system is free to activate both outdoor units simultaneously.
+As part of the control - the system makes decisions independently for the mode of operation of the air conditioners (heating, cooling - for defrosting), the need to activate the fan, which of the outdoor units to use (switching is as infrequent as possible).
+
+The system operation commands are received via a dedicated information channel and must be checked at least once every 10 seconds. The system can be sure that when a heating command is given - the water in the installation circulates.
+
+The controller must read the temperatures from the sensors at least once a minute, and either store this information locally or send it to a remote system.
+
+For better control, temperature readings can be read more often - as long as the sensors allow it.
+
+Controller operating modes:
+• water heating at low power - maximum one body;
+• water heating at high power - maximum two bodies;
+• in "heating" mode - the system assumes as a fact that the heating water circulates through the plate heat exchangers;
+• in "heating" mode - the system controls everything in its control;
+• off / standby - normal mode in the absence of the command "heating"

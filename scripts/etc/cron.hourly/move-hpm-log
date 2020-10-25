@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# append new data from hpm log file in RAM drive to /var/log
+cp /run/shm/hpm_data.log /var/log/hpm_data.log.new
+rm /run/shm/hpm_data.log
+cat /var/log/hpm_data.log.new >> /var/log/hpm_data.log
+rm /var/log/hpm_data.log.new
+
+#EOF
