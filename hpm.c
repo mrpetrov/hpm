@@ -440,10 +440,10 @@ parse_config()
             strncpy (cfg.invert_output_str, value, MAXLEN);
             else if (strcmp(name, "mode")==0)
             strncpy (cfg.mode_str, value, MAXLEN);
-            else if (strcmp(name, "use_pump1")==0)
-            strncpy (cfg.use_pump1_str, value, MAXLEN);
-            else if (strcmp(name, "use_pump2")==0)
-            strncpy (cfg.use_pump2_str, value, MAXLEN);
+            else if (strcmp(name, "use_ac1")==0)
+            strncpy (cfg.use_ac1_str, value, MAXLEN);
+            else if (strcmp(name, "use_ac2")==0)
+            strncpy (cfg.use_ac2_str, value, MAXLEN);
         }
         /* Close file */
         fclose (fp);
