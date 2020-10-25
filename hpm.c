@@ -1007,25 +1007,21 @@ void
 ControlStateToGPIO() {
     /* put state on GPIO pins */
     if (cfg.invert_output) {
-            GPIOWrite( cfg.pump1_pin, !CPump1 );
-            GPIOWrite( cfg.pump2_pin, !CPump2 );
-            GPIOWrite( cfg.valve1_pin, !CValve );
-            GPIOWrite( cfg.el_heater_pin,  !CHeater );
-            GPIOWrite( cfg.commspin1_pin,  !CCommsPin1 );
-            GPIOWrite( cfg.commspin2_pin,  !CCommsPin2 );
-            GPIOWrite( cfg.commspin3_pin,  !CCommsPin3 );
-            GPIOWrite( cfg.commspin4_pin,  !CCommsPin4 );
-        }
+            GPIOWrite( cfg.ac1cmp_pin, !Cac1cmp );
+            GPIOWrite( cfg.ac1fan_pin, !Cac1fan );
+            GPIOWrite( cfg.ac1v_pin, !Cac1fv );
+            GPIOWrite( cfg.ac2cmp_pin, !Cac2cmp );
+            GPIOWrite( cfg.ac2fan_pin, !Cac2fan );
+            GPIOWrite( cfg.ac2v_pin, !Cac2fv );
+    }
     else {
-            GPIOWrite( cfg.pump1_pin, CPump1 );
-            GPIOWrite( cfg.pump2_pin, CPump2 );
-            GPIOWrite( cfg.valve1_pin, CValve );
-            GPIOWrite( cfg.el_heater_pin,  CHeater );
-            GPIOWrite( cfg.commspin1_pin,  CCommsPin1 );
-            GPIOWrite( cfg.commspin2_pin,  CCommsPin2 );
-            GPIOWrite( cfg.commspin3_pin,  CCommsPin3 );
-            GPIOWrite( cfg.commspin4_pin,  CCommsPin4 );
-        }
+            GPIOWrite( cfg.ac1cmp_pin, Cac1cmp );
+            GPIOWrite( cfg.ac1fan_pin, Cac1fan );
+            GPIOWrite( cfg.ac1v_pin, Cac1fv );
+            GPIOWrite( cfg.ac2cmp_pin, Cac2cmp );
+            GPIOWrite( cfg.ac2fan_pin, Cac2fan );
+            GPIOWrite( cfg.ac2v_pin, Cac2fv );
+    }
 }
 
 void
