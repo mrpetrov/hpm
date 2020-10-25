@@ -268,11 +268,17 @@ SetDefaultPINs() {
 
 void
 SetDefaultCfg() {
-    strcpy( cfg.tkotel_sensor, "/dev/zero/1");
-    strcpy( cfg.tkolektor_sensor, "/dev/zero/2");
-    strcpy( cfg.tboilerh_sensor, "/dev/zero/3");
-    strcpy( cfg.tboilerl_sensor, "/dev/zero/4");
-    strcpy( cfg.tenv_sensor, "/dev/zero/5");
+    strcpy( cfg.ac1cmp_sensor, "/dev/zero/1");
+    strcpy( cfg.ac1cnd_sensor, "/dev/zero/2");
+    strcpy( cfg.he1i_sensor, "/dev/zero/3");
+    strcpy( cfg.he1o_sensor, "/dev/zero/4");
+    strcpy( cfg.ac2cmp_sensor, "/dev/zero/5");
+    strcpy( cfg.ac2cnd_sensor, "/dev/zero/6");
+    strcpy( cfg.he2i_sensor, "/dev/zero/7");
+    strcpy( cfg.he2o_sensor, "/dev/zero/8");
+    strcpy( cfg.wi_sensor, "/dev/zero/9");
+    strcpy( cfg.wo_sensor, "/dev/zero/10");
+    strcpy( cfg.tenv_sensor, "/dev/zero/11");
     SetDefaultPINs();
     cfg.invert_output = 1;
     cfg.mode = 1;
