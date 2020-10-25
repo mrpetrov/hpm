@@ -61,7 +61,7 @@
 #define MAX_TEMP_DIFF        7
 
 /* Number of all sensors to be used by the system */
-#define TOTALSENSORS         5
+#define TOTALSENSORS         11
 
 /* Array of char* holding the paths to temperature DS18B20 sensors */
 char* sensor_paths[TOTALSENSORS+1];
@@ -80,106 +80,81 @@ float sensors[TOTALSENSORS+1] = { 0, -200, -200, -200, -200, -200 };
 float sensors_prv[TOTALSENSORS+1] = { 0, -200, -200, -200, -200, -200 };
 
 /* and sensor name mappings */
-#define   Tkotel                sensors[1]
-#define   Tkolektor             sensors[2]
-#define   TboilerHigh           sensors[3]
-#define   TboilerLow            sensors[4]
-#define   Tenv                    sensors[5]
+#define   Tac1cmp            sensors[1]
+#define   Tac1cnd             sensors[2]
+#define   The1i                 sensors[3]
+#define   The1o                sensors[4]
+#define   Tac2cmp            sensors[5]
+#define   Tac2cnd             sensors[6]
+#define   The2i                 sensors[7]
+#define   The2o                sensors[8]
+#define   Twi                    sensors[9]
+#define   Two                   sensors[10]
+#define   Tenv                  sensors[11]
 
-#define   TkotelPrev            sensors_prv[1]
-#define   TkolektorPrev         sensors_prv[2]
-#define   TboilerHighPrev       sensors_prv[3]
-#define   TboilerLowPrev        sensors_prv[4]
-#define   TenvPrev                sensors_prv[5]
-
-/* HTTB == Hourly Target Temp Base for furnace water; NB 24:00 = 0;
- *  hpm will get to the real target by substracting the outside temp
- *  from the values defined in this array */
-/*                                0    1    2    3    4    5    6    7    8    9   10  11  12  13  14   15  16  17  18  19  20  21  22  23*/
-short HTTB[24] = { 38, 36, 36, 36, 36, 38, 40, 40, 40, 40, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 40 };
-
-#define   currentHTTB       HTTB[current_timer_hour]
-
-float furnace_water_target = 20;
+#define   Tac1cmpPrev            sensors_prv[1]
+#define   Tac1cndPrev             sensors_prv[2]
+#define   The1iPrev                 sensors_prv[3]
+#define   The1oPrev                sensors_prv[4]
+#define   Tac2cmpPrev            sensors_prv[5]
+#define   Tac2cndPrev             sensors_prv[6]
+#define   The2iPrev                 sensors_prv[7]
+#define   The2oPrev                sensors_prv[8]
+#define   TwiPrev                    sensors_prv[9]
+#define   TwoPrev                   sensors_prv[10]
+#define   TenvPrev                  sensors_prv[11]
 
 /* current controls state - e.g. set on last decision making */
-short controls[11] = { -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+short controls[7] = { -1, 0, 0, 0, 0, 0, 0 };
 
 /* and control name mappings */
-#define   CPump1                controls[1]
-#define   CPump2                controls[2]
-#define   CValve                controls[3]
-#define   CHeater               controls[4]
-#define   CPowerByBattery       controls[5]
-#define   CPowerByBatteryPrev   controls[6]
-#define   CCommsPin1          controls[7]   // pin/bit to signal need for low heat - one AC can be ON
-#define   CCommsPin2          controls[8]   // pin/bit to request full heat (both ACs)
-#define   CCommsPin3          controls[9]   // pin/bit to ????
-#define   CCommsPin4          controls[10] // pin/bit to signal we on battery power
+#define   Cac1cmp             controls[1]
+#define   Cac1fan               controls[2]
+#define   Cac1fv                 controls[3]
+#define   Cac2cmp              controls[4]
+#define   Cac2fan                controls[5]
+#define   Cac2fv                  controls[6]
 
 /* controls state cycles - zeroed on change to state */
-long ctrlstatecycles[10] = { -1, 150000, 150000, 2200, 2200, 3333, 3333, 3333, 3333, -1 };
+long ctrlstatecycles[7] = { -1, 0, 0, 0, 0, 0, 0 };
 
-#define   SCPump1               ctrlstatecycles[1]
-#define   SCPump2               ctrlstatecycles[2]
-#define   SCValve               ctrlstatecycles[3]
-#define   SCHeater              ctrlstatecycles[4]
-#define   SCCCPin1              ctrlstatecycles[5]
-#define   SCCCPin2              ctrlstatecycles[6]
-#define   SCCCPin3              ctrlstatecycles[7]
-#define   SCCCPin4              ctrlstatecycles[8]
-
-float TotalPowerUsed;
-float NightlyPowerUsed;
-
-float nightEnergyTemp;
-
-/* hpm keeps track of total and night tariff watt-hours electrical power used */
-/* night tariff is between 23:00 and 06:00 */
-/* constants of Watt-hours of electricity used per 10 secs */
-#define   HEATERPPC         8.340
-#define   PUMP1PPC          0.135
-#define   PUMP2PPC          0.021
-#define   VALVEPPC          0.006
-#define   SELFPPC           0.022
-/* my boiler uses 3kW per hour, so this is 0,00834 kWh per 10 seconds */
-/* this in Wh per 10 seconds is 8.34 W */
-/* pump 1 (furnace) runs at 48 W setting, pump 2 (solar) - 7 W */
-
-/* NightEnergy (NE) start and end hours variables - get recalculated every day */
-unsigned short NEstart = 20;
-unsigned short NEstop  = 11;
+#define   SCac1cmp             ctrlstatecycles[1]
+#define   SCac1fan               ctrlstatecycles[2]
+#define   SCac1fv                 ctrlstatecycles[3]
+#define   SCac2cmp             ctrlstatecycles[4]
+#define   SCac2fan               ctrlstatecycles[5]
+#define   SCac2fv                 ctrlstatecycles[6]
 
 /* Nubmer of cycles (circa 10 seconds each) that the program has run */
 unsigned long ProgramRunCycles  = 0;
 
-/* timers - current hour and month vars - used in keeping things up to date */
-unsigned short current_timer_hour = 0;
-unsigned short current_month = 0;
-
-/* a var to be non-zero if it is winter time - so furnace should not be allowed to go too cold */
-unsigned short now_is_winter = 0;
-
-/* array storing the hour at wich to make the solar pump daily run for each month */
-unsigned short pump_start_hour_for[13] = { 11, 14, 13, 12, 11, 10, 9, 9, 10, 11, 12, 13, 14 };
-
 struct cfg_struct
 {
-    char    tkotel_sensor[MAXLEN];
-    char    tkolektor_sensor[MAXLEN];
-    char    tboilerh_sensor[MAXLEN];
-    char    tboilerl_sensor[MAXLEN];
+    char    ac1cmp_sensor[MAXLEN];
+    char    ac1cnd_sensor[MAXLEN];
+    char    he1i_sensor[MAXLEN];
+    char    he1o_sensor[MAXLEN];
+    char    ac2cmp_sensor[MAXLEN];
+    char    ac2cnd_sensor[MAXLEN];
+    char    he2i_sensor[MAXLEN];
+    char    he2o_sensor[MAXLEN];
+    char    wi_sensor[MAXLEN];
+    char    wo_sensor[MAXLEN];
     char    tenv_sensor[MAXLEN];
-    char    bat_powered_pin_str[MAXLEN];
-    int     bat_powered_pin;
-    char    pump1_pin_str[MAXLEN];
-    int     pump1_pin;
-    char    pump2_pin_str[MAXLEN];
-    int     pump2_pin;
-    char    valve1_pin_str[MAXLEN];
-    int     valve1_pin;
-    char    el_heater_pin_str[MAXLEN];
-    int     el_heater_pin;
+    char    invert_output_str[MAXLEN];
+    int      invert_output;
+    char    ac1cmp_pin_str[MAXLEN];
+    int     ac1cmp_pin;
+    char    ac1fan_pin_str[MAXLEN];
+    int     ac1fan_pin;
+    char    ac1v_pin_str[MAXLEN];
+    int     ac1v_pin;
+    char    ac2cmp_pin_str[MAXLEN];
+    int     ac2cmp_pin;
+    char    ac2fan_pin_str[MAXLEN];
+    int     ac2an_pin;
+    char    ac2v_pin_str[MAXLEN];
+    int     ac2v_pin;
     char    commspin1_pin_str[MAXLEN];
     int     commspin1_pin;
     char    commspin2_pin_str[MAXLEN];
@@ -188,28 +163,12 @@ struct cfg_struct
     int     commspin3_pin;
     char    commspin4_pin_str[MAXLEN];
     int     commspin5_pin;
-    char    invert_output_str[MAXLEN];
-    int     invert_output;
     char    mode_str[MAXLEN];
     int     mode;
-    char    wanted_T_str[MAXLEN];
-    int     wanted_T;
-    char    use_electric_heater_night_str[MAXLEN];
-    int     use_electric_heater_night;
-    char    use_electric_heater_day_str[MAXLEN];
-    int     use_electric_heater_day;
-    char    pump1_always_on_str[MAXLEN];
-    int     pump1_always_on;
-    char    use_pump1_str[MAXLEN];
-    int     use_pump1;
-    char    use_pump2_str[MAXLEN];
-    int     use_pump2;
-    char    day_to_reset_Pcounters_str[MAXLEN];
-    int     day_to_reset_Pcounters;
-    char    night_boost_str[MAXLEN];
-    int     night_boost;
-    char    abs_max_str[MAXLEN];
-    int     abs_max;
+    char    use_ac1_str[MAXLEN];
+    int     use_ac1;
+    char    use_ac2_str[MAXLEN];
+    int     use_ac2;
 }
 cfg_struct;
 
@@ -235,32 +194,45 @@ short
 not_every_GPIO_pin_is_UNIQUE()
 {
 	short result=0;
-	if (cfg.bat_powered_pin == cfg.pump1_pin) result++;
-	if (cfg.bat_powered_pin == cfg.pump2_pin) result++;
-	if (cfg.bat_powered_pin == cfg.valve1_pin) result++;
-	if (cfg.bat_powered_pin == cfg.el_heater_pin) result++;
-	if (cfg.bat_powered_pin == cfg.commspin1_pin) result++;
-	if (cfg.bat_powered_pin == cfg.commspin2_pin) result++;
-	if (cfg.bat_powered_pin == cfg.commspin3_pin) result++;
-	if (cfg.bat_powered_pin == cfg.commspin4_pin) result++;
-	if (cfg.pump1_pin == cfg.pump2_pin) result++;
-	if (cfg.pump1_pin == cfg.valve1_pin) result++;
-	if (cfg.pump1_pin == cfg.el_heater_pin) result++;
-	if (cfg.pump1_pin == cfg.commspin1_pin) result++;
-	if (cfg.pump1_pin == cfg.commspin2_pin) result++;
-	if (cfg.pump1_pin == cfg.commspin3_pin) result++;
-	if (cfg.pump1_pin == cfg.commspin4_pin) result++;
-	if (cfg.pump2_pin == cfg.valve1_pin) result++;
-	if (cfg.pump2_pin == cfg.el_heater_pin) result++;
-	if (cfg.pump2_pin == cfg.commspin1_pin) result++;
-	if (cfg.pump2_pin == cfg.commspin2_pin) result++;
-	if (cfg.pump2_pin == cfg.commspin3_pin) result++;
-	if (cfg.pump2_pin == cfg.commspin4_pin) result++;
-	if (cfg.valve1_pin == cfg.el_heater_pin) result++;
-	if (cfg.valve1_pin == cfg.commspin1_pin) result++;
-	if (cfg.valve1_pin == cfg.commspin2_pin) result++;
-	if (cfg.valve1_pin == cfg.commspin3_pin) result++;
-	if (cfg.valve1_pin == cfg.commspin4_pin) result++;
+	if (cfg.ac1cmp_pin == cfg.ac1fan_pin) result++;
+	if (cfg.ac1cmp_pin == cfg.ac1v_pin) result++;
+	if (cfg.ac1cmp_pin == cfg.ac2cmp_pin) result++;
+	if (cfg.ac1cmp_pin == cfg.ac2fan_pin) result++;
+	if (cfg.ac1cmp_pin == cfg.ac2v_pin) result++;
+	if (cfg.ac1cmp_pin == cfg.commspin1_pin) result++;
+	if (cfg.ac1cmp_pin == cfg.commspin2_pin) result++;
+	if (cfg.ac1cmp_pin == cfg.commspin3_pin) result++;
+	if (cfg.ac1cmp_pin == cfg.commspin4_pin) result++;
+	if (cfg.ac1fan_pin == cfg.ac1v_pin) result++;
+	if (cfg.ac1fan_pin == cfg.ac2cmp_pin) result++;
+	if (cfg.ac1fan_pin == cfg.ac2fan_pin) result++;
+	if (cfg.ac1fan_pin == cfg.ac2v_pin) result++;
+	if (cfg.ac1fan_pin == cfg.commspin1_pin) result++;
+	if (cfg.ac1fan_pin == cfg.commspin2_pin) result++;
+	if (cfg.ac1fan_pin == cfg.commspin3_pin) result++;
+	if (cfg.ac1fan_pin == cfg.commspin4_pin) result++;
+	if (cfg.ac1v_pin == cfg.ac2cmp_pin) result++;
+	if (cfg.ac1v_pin == cfg.ac2fan_pin) result++;
+	if (cfg.ac1v_pin == cfg.ac2v_pin) result++;
+	if (cfg.ac1v_pin == cfg.commspin1_pin) result++;
+	if (cfg.ac1v_pin == cfg.commspin2_pin) result++;
+	if (cfg.ac1v_pin == cfg.commspin3_pin) result++;
+	if (cfg.ac1v_pin == cfg.commspin4_pin) result++;
+	if (cfg.ac2cmp_pin == cfg.ac2fan_pin) result++;
+	if (cfg.ac2cmp_pin == cfg.ac2v_pin) result++;
+	if (cfg.ac2cmp_pin == cfg.commspin1_pin) result++;
+	if (cfg.ac2cmp_pin == cfg.commspin2_pin) result++;
+	if (cfg.ac2cmp_pin == cfg.commspin3_pin) result++;
+	if (cfg.ac2cmp_pin == cfg.commspin4_pin) result++;
+	if (cfg.ac2fan_pin == cfg.ac2v_pin) result++;
+	if (cfg.ac2fan_pin == cfg.commspin1_pin) result++;
+	if (cfg.ac2fan_pin == cfg.commspin2_pin) result++;
+	if (cfg.ac2fan_pin == cfg.commspin3_pin) result++;
+	if (cfg.ac2fan_pin == cfg.commspin4_pin) result++;
+	if (cfg.ac2v_pin == cfg.commspin1_pin) result++;
+	if (cfg.ac2v_pin == cfg.commspin2_pin) result++;
+	if (cfg.ac2v_pin == cfg.commspin3_pin) result++;
+	if (cfg.ac2v_pin == cfg.commspin4_pin) result++;
 	if (cfg.commspin1_pin == cfg.commspin2_pin) result++;
 	if (cfg.commspin1_pin == cfg.commspin3_pin) result++;
 	if (cfg.commspin1_pin == cfg.commspin4_pin) result++;
@@ -278,34 +250,13 @@ rangecheck_mode( int m )
 }
 
 void
-rangecheck_wanted_temp( int temp )
-{
-    if (temp < 25) temp = 25;
-    if (temp > 62) temp = 62;
-}
-
-void
-rangecheck_abs_max_temp( int t )
-{
-    if (t < 40) t = 40;
-    if (t > 70) t = 70;
-    if (t < (cfg.wanted_T+3)) { t = cfg.wanted_T+3; }
-}
-
-void
-rangecheck_day_of_month( int d )
-{
-    if (d < 1) d = 1;
-    if (d > 28) d = 28;
-}
-
-void
 SetDefaultPINs() {
-    cfg.bat_powered_pin = 7;
-    cfg.pump1_pin = 5;
-    cfg.pump2_pin = 6;
-    cfg.valve1_pin = 13;
-    cfg.el_heater_pin = 16;
+    cfg.ac1cmp_pin = 5;
+    cfg.ac1fan_pin = 6;
+    cfg.ac1v_pin = 13;
+    cfg.ac1cmp_pin = 16;
+    cfg.ac1fan_pin = 19;
+    cfg.ac1v_pin = 20;
     cfg.commspin1_pin = 17;
     cfg.commspin2_pin = 18;
     cfg.commspin3_pin = 27;
@@ -322,23 +273,21 @@ SetDefaultCfg() {
     SetDefaultPINs();
     cfg.invert_output = 1;
     cfg.mode = 1;
-    cfg.wanted_T = 40;
-    cfg.use_electric_heater_night = 1;
-    cfg.use_electric_heater_day = 1;
-    cfg.pump1_always_on = 0;
-    cfg.use_pump1 = 1;
-    cfg.use_pump2 = 1;
-    cfg.day_to_reset_Pcounters = 4;
-    cfg.night_boost = 0;
-    cfg.abs_max = 47;
+    cfg.use_ac1 = 1;
+    cfg.use_ac2 = 1;
 
-    nightEnergyTemp = 0;
-    sensor_paths[0] = (char *) &cfg.tkotel_sensor;
-    sensor_paths[1] = (char *) &cfg.tkotel_sensor;
-    sensor_paths[2] = (char *) &cfg.tkolektor_sensor;
-    sensor_paths[3] = (char *) &cfg.tboilerh_sensor;
-    sensor_paths[4] = (char *) &cfg.tboilerl_sensor;
-    sensor_paths[5] = (char *) &cfg.tenv_sensor;
+    sensor_paths[0] = (char *) &cfg.ac1cmp_sensor;
+    sensor_paths[1] = (char *) &cfg.ac1cmp_sensor;
+    sensor_paths[2] = (char *) &cfg.ac1cnd_sensor;
+    sensor_paths[3] = (char *) &cfg.he1i_sensor;
+    sensor_paths[4] = (char *) &cfg.he1o_sensor;
+    sensor_paths[5] = (char *) &cfg.ac2cmp_sensor;
+    sensor_paths[6] = (char *) &cfg.ac2cnd_sensor;
+    sensor_paths[7] = (char *) &cfg.he2i_sensor;
+    sensor_paths[8] = (char *) &cfg.he2o_sensor;
+    sensor_paths[8] = (char *) &cfg.wi_sensor;
+    sensor_paths[9] = (char *) &cfg.wo_sensor;
+    sensor_paths[10] = (char *) &cfg.tenv_sensor;
 }
 
 short
@@ -442,26 +391,34 @@ parse_config()
             trim (value);
 
             /* Copy into correct entry in parameters struct */
-            if (strcmp(name, "tkotel_sensor")==0)
-            strncpy (cfg.tkotel_sensor, value, MAXLEN);
-            else if (strcmp(name, "tkolektor_sensor")==0)
-            strncpy (cfg.tkolektor_sensor, value, MAXLEN);
-            else if (strcmp(name, "tboilerh_sensor")==0)
-            strncpy (cfg.tboilerh_sensor, value, MAXLEN);
-            else if (strcmp(name, "tboilerl_sensor")==0)
-            strncpy (cfg.tboilerl_sensor, value, MAXLEN);
-            else if (strcmp(name, "tenv_sensor")==0)
-            strncpy (cfg.tenv_sensor, value, MAXLEN);
-            else if (strcmp(name, "bat_powered_pin")==0)
-            strncpy (cfg.bat_powered_pin_str, value, MAXLEN);
-            else if (strcmp(name, "pump1_pin")==0)
-            strncpy (cfg.pump1_pin_str, value, MAXLEN);
-            else if (strcmp(name, "pump2_pin")==0)
-            strncpy (cfg.pump2_pin_str, value, MAXLEN);
-            else if (strcmp(name, "valve1_pin")==0)
-            strncpy (cfg.valve1_pin_str, value, MAXLEN);
-            else if (strcmp(name, "el_heater_pin")==0)
-            strncpy (cfg.el_heater_pin_str, value, MAXLEN);
+            if (strcmp(name, "ac1cmp_sensor")==0)
+            strncpy (cfg.ac1cmp_sensor, value, MAXLEN);
+            else if (strcmp(name, "ac1cnd_sensor")==0)
+            strncpy (cfg.ac1cnd_sensor, value, MAXLEN);
+            else if (strcmp(name, "he1i_sensor")==0)
+            strncpy (cfg.he1i_sensor, value, MAXLEN);
+            else if (strcmp(name, "he1o_sensor")==0)
+            strncpy (cfg.he1o_sensor, value, MAXLEN);
+            else if (strcmp(name, "ac2cmp_sensor")==0)
+            strncpy (cfg.ac2cmp_sensor, value, MAXLEN);
+            else if (strcmp(name, "ac2cnd_sensor")==0)
+            strncpy (cfg.ac2cnd_sensor, value, MAXLEN);
+            else if (strcmp(name, "he2i_sensor")==0)
+            strncpy (cfg.he2i_sensor, value, MAXLEN);
+            else if (strcmp(name, "he2o_sensor")==0)
+            strncpy (cfg.he2o_sensor, value, MAXLEN);
+            else if (strcmp(name, "ac1cmp_pin")==0)
+            strncpy (cfg.ac1cmp_pin_str, value, MAXLEN);
+            else if (strcmp(name, "ac1fan_pin")==0)
+            strncpy (cfg.ac1fan_pin_str, value, MAXLEN);
+            else if (strcmp(name, "ac1v_pin")==0)
+            strncpy (cfg.ac1v_pin_str, value, MAXLEN);
+            else if (strcmp(name, "ac2cmp_pin")==0)
+            strncpy (cfg.ac2cmp_pin_str, value, MAXLEN);
+            else if (strcmp(name, "ac2fan_pin")==0)
+            strncpy (cfg.ac2fan_pin_str, value, MAXLEN);
+            else if (strcmp(name, "ac2v_pin")==0)
+            strncpy (cfg.ac2v_pin_str, value, MAXLEN);
             else if (strcmp(name, "commspin1_pin")==0)
             strncpy (cfg.commspin1_pin_str, value, MAXLEN);
             else if (strcmp(name, "commspin2_pin")==0)
@@ -474,50 +431,40 @@ parse_config()
             strncpy (cfg.invert_output_str, value, MAXLEN);
             else if (strcmp(name, "mode")==0)
             strncpy (cfg.mode_str, value, MAXLEN);
-            else if (strcmp(name, "wanted_T")==0)
-            strncpy (cfg.wanted_T_str, value, MAXLEN);
-            else if (strcmp(name, "use_electric_heater_night")==0)
-            strncpy (cfg.use_electric_heater_night_str, value, MAXLEN);
-            else if (strcmp(name, "use_electric_heater_day")==0)
-            strncpy (cfg.use_electric_heater_day_str, value, MAXLEN);
-            else if (strcmp(name, "pump1_always_on")==0)
-            strncpy (cfg.pump1_always_on_str, value, MAXLEN);
             else if (strcmp(name, "use_pump1")==0)
             strncpy (cfg.use_pump1_str, value, MAXLEN);
             else if (strcmp(name, "use_pump2")==0)
             strncpy (cfg.use_pump2_str, value, MAXLEN);
-            else if (strcmp(name, "day_to_reset_Pcounters")==0)
-            strncpy (cfg.day_to_reset_Pcounters_str, value, MAXLEN);
-            else if (strcmp(name, "night_boost")==0)
-            strncpy (cfg.night_boost_str, value, MAXLEN);
-            else if (strcmp(name, "abs_max")==0)
-            strncpy (cfg.abs_max_str, value, MAXLEN);
         }
         /* Close file */
         fclose (fp);
     }
 
     /* Convert strings to int */
-    strcpy( buff, cfg.bat_powered_pin_str );
+    strcpy( buff, cfg.ac1cmp_pin_str );
     i = atoi( buff );
-    cfg.bat_powered_pin = i;
-    rangecheck_GPIO_pin( cfg.bat_powered_pin );
-    strcpy( buff, cfg.pump1_pin_str );
+    cfg.ac1cmp_pin = i;
+    rangecheck_GPIO_pin( cfg.ac1cmp_pin );
+    strcpy( buff, cfg.ac1fan_pin_str );
     i = atoi( buff );
-    cfg.pump1_pin = i;
-    rangecheck_GPIO_pin( cfg.pump1_pin );
-    strcpy( buff, cfg.pump2_pin_str );
+    cfg.ac1fan_pin = i;
+    rangecheck_GPIO_pin( cfg.ac1fan_pin );
+    strcpy( buff, cfg.ac1v_pin_str );
     i = atoi( buff );
-    cfg.pump2_pin = i;
-    rangecheck_GPIO_pin( cfg.pump2_pin );
-    strcpy( buff, cfg.valve1_pin_str );
+    cfg.ac1v_pin = i;
+    rangecheck_GPIO_pin( cfg.ac1v_pin );
+    strcpy( buff, cfg.ac2cmp_pin_str );
     i = atoi( buff );
-    cfg.valve1_pin = i;
-    rangecheck_GPIO_pin( cfg.valve1_pin );
-    strcpy( buff, cfg.el_heater_pin_str );
+    cfg.ac2cmp_pin = i;
+    rangecheck_GPIO_pin( cfg.ac2cmp_pin );
+    strcpy( buff, cfg.ac2fan_pin_str );
     i = atoi( buff );
-    cfg.el_heater_pin = i;
-    rangecheck_GPIO_pin( cfg.el_heater_pin );
+    cfg.ac2fan_pin = i;
+    rangecheck_GPIO_pin( cfg.ac2fan_pin );
+    strcpy( buff, cfg.ac2v_pin_str );
+    i = atoi( buff );
+    cfg.ac2v_pin = i;
+    rangecheck_GPIO_pin( cfg.ac2v_pin );
     strcpy( buff, cfg.commspin1_pin_str );
     i = atoi( buff );
     cfg.commspin1_pin = i;
@@ -548,62 +495,47 @@ parse_config()
     i = atoi( buff );
     cfg.mode = i;
     rangecheck_mode( cfg.mode );
-    strcpy( buff, cfg.wanted_T_str );
+    strcpy( buff, cfg.use_ac1_str );
     i = atoi( buff );
-    cfg.wanted_T = i;
-    rangecheck_wanted_temp( cfg.wanted_T );
-    strcpy( buff, cfg.use_electric_heater_night_str );
-    i = atoi( buff );
-    cfg.use_electric_heater_night = i;
+    cfg.use_ac1 = i;
     /* ^ no need for range check - 0 is OFF, non-zero is ON */
-    strcpy( buff, cfg.use_electric_heater_day_str );
+    strcpy( buff, cfg.use_ac2_str );
     i = atoi( buff );
-    cfg.use_electric_heater_day = i;
+    cfg.use_ac2 = i;
     /* ^ no need for range check - 0 is OFF, non-zero is ON */
-    strcpy( buff, cfg.pump1_always_on_str );
-    i = atoi( buff );
-    cfg.pump1_always_on = i;
-    /* ^ no need for range check - 0 is OFF, non-zero is ON */
-    strcpy( buff, cfg.use_pump1_str );
-    i = atoi( buff );
-    cfg.use_pump1 = i;
-    /* ^ no need for range check - 0 is OFF, non-zero is ON */
-    strcpy( buff, cfg.use_pump2_str );
-    i = atoi( buff );
-    cfg.use_pump2 = i;
-    /* ^ no need for range check - 0 is OFF, non-zero is ON */
-    strcpy( buff, cfg.day_to_reset_Pcounters_str );
-    i = atoi( buff );
-    cfg.day_to_reset_Pcounters = i;
-    rangecheck_day_of_month( cfg.day_to_reset_Pcounters );
-    strcpy( buff, cfg.night_boost_str );
-    i = atoi( buff );
-    cfg.night_boost = i;
-    /* ^ no need for range check - 0 is OFF, non-zero is ON */
-    strcpy( buff, cfg.abs_max_str );
-    i = atoi( buff );
-    cfg.abs_max = i;
-    rangecheck_abs_max_temp( cfg.abs_max );
 
     /* Prepare log messages with sensor paths and write them to log file */
-    sprintf( buff, "Furnace temp sensor file: %s", cfg.tkotel_sensor );
+    sprintf( buff, "AC1 compressor temp sensor file: %s", cfg.ac1cmp_sensor );
     log_message(LOG_FILE, buff);
-    sprintf( buff, "Solar collector temp sensor file: %s", cfg.tkolektor_sensor );
+    sprintf( buff, "AC1 condenser temp sensor file: %s", cfg.ac1cnd_sensor );
     log_message(LOG_FILE, buff);
-    sprintf( buff, "Boiler high temp sensor file: %s", cfg.tboilerh_sensor );
+    sprintf( buff, "Heat exchanger 1 IN temp sensor file: %s", cfg.he1i_sensor );
     log_message(LOG_FILE, buff);
-    sprintf( buff, "Boiler low temp sensor file: %s", cfg.tboilerl_sensor );
+    sprintf( buff, "Heat exchanger 1 OUT temp sensor file: %s", cfg.he1o_sensor );
+    log_message(LOG_FILE, buff);
+    sprintf( buff, "AC2 compressor temp sensor file: %s", cfg.ac2cmp_sensor );
+    log_message(LOG_FILE, buff);
+    sprintf( buff, "AC2 condenser temp sensor file: %s", cfg.ac2cnd_sensor );
+    log_message(LOG_FILE, buff);
+    sprintf( buff, "Heat exchanger 2 IN temp sensor file: %s", cfg.he2i_sensor );
+    log_message(LOG_FILE, buff);
+    sprintf( buff, "Heat exchanger 2 OUT temp sensor file: %s", cfg.he2o_sensor );
+    log_message(LOG_FILE, buff);
+    sprintf( buff, "Water IN temp sensor file: %s", cfg.wi_sensor );
+    log_message(LOG_FILE, buff);
+    sprintf( buff, "Water OUT temp sensor file: %s", cfg.wo_sensor );
     log_message(LOG_FILE, buff);
     sprintf( buff, "Outdoor environment temp sensor file: %s", cfg.tenv_sensor );
     log_message(LOG_FILE, buff);
     /* Prepare log messages with GPIO pins used and write them to log file */
-    sprintf( buff, "Using INPUT GPIO pins (BCM mode) as follows: battery powered: %d", cfg.bat_powered_pin );
-    log_message(LOG_FILE, buff);
     sprintf( buff, "Using COMMs GPIO pins (BCM mode) as follows: comms1: %d, comms2: %d, comms3: %d, "\
 	"comms4: %d ", cfg.commspin1_pin, cfg.commspin2_pin, cfg.commspin3_pin, cfg.commspin4_pin );
     log_message(LOG_FILE, buff);
-    sprintf( buff, "Using OUTPUT GPIO pins (BCM mode) as follows: furnace pump: %d, ETC pump: %d, boiler valve: %d, "\
-	"electrical heater: %d ", cfg.pump1_pin, cfg.pump2_pin, cfg.valve1_pin, cfg.el_heater_pin );
+    sprintf( buff, "Using OUTPUT GPIO pins (BCM mode) as follows: AC1 comp: %d, AC1 fan: %d, AC1 valve: %d",
+           cfg.ac1cmp_pin, cfg.ac1fan_pin, cfg.ac1v_pin );
+    log_message(LOG_FILE, buff);
+    sprintf( buff, "Using OUTPUT GPIO pins (BCM mode) as follows: AC2 comp: %d, AC2 fan: %d, AC2 valve: %d",
+           cfg.ac2cmp_pin, cfg.ac2fan_pin, cfg.ac2v_pin );
     log_message(LOG_FILE, buff);
     if (cfg.invert_output) {
         sprintf( buff, "OUTPUT GPIO pins controlling is INVERTED - ON is LOW (0)" );
@@ -615,23 +547,11 @@ parse_config()
     }
     /* Prepare log message part 1 and write it to log file */
     if (fp == NULL) {
-        sprintf( buff, "INFO: Using values: Mode=%d, wanted temp=%d, el. heater: night=%d, day=%d,",\
-        cfg.mode, cfg.wanted_T, cfg.use_electric_heater_night, cfg.use_electric_heater_day );
+        sprintf( buff, "INFO: Using values: Mode=%d, use AC1=%d, use AC2=%d", cfg.mode, cfg.use_ac1, cfg.use_ac2 );
         } else {
-        sprintf( buff, "INFO: Read CFG file: Mode=%d, wanted temp=%d, el. heater: night=%d, day=%d,",\
-        cfg.mode, cfg.wanted_T, cfg.use_electric_heater_night, cfg.use_electric_heater_day );
+        sprintf( buff, "INFO: Read CFG file: Mode=%d, use AC1=%d, use AC2=%d", cfg.mode, cfg.use_ac1, cfg.use_ac2 );
     }
     log_message(LOG_FILE, buff);
-    /* Prepare log message part 2 and write it to log file */
-    sprintf( buff, "INFO: Furnace pump always on=%d, use furnace pump=%d, use solar pump=%d, reset P counters day=%d, "\
-    "night boiler boost=%d, absMAX=%d", cfg.pump1_always_on, cfg.use_pump1, cfg.use_pump2,\
-    cfg.day_to_reset_Pcounters, cfg.night_boost, cfg.abs_max );
-    log_message(LOG_FILE, buff);
-	
-    /* stuff for after parsing config file: */
-    /* calculate maximum possible temp for use in night_boost case */
-    nightEnergyTemp = ((float)cfg.wanted_T + 12);
-    if (nightEnergyTemp > (float)cfg.abs_max) { nightEnergyTemp = (float)cfg.abs_max; }
 }
 
 void
