@@ -1069,8 +1069,10 @@ LogData(short _ST_L) {
     Time(by log function) AC1: Tcomp1,Tcnd1,The1i,The1o; AC2: Tcomp2,Tcnd2,The2i,The2o;
         WaterIn, WaterOut, Tenv
     */
-    sprintf( data, "AC1: %4.1f,%4.1f,%4.1f,%4.1f;   AC2:%4.1f,%4.1f,%4.1f,%4.1f;   %6.3f,%6.3f,%6.3f",
+    sprintf( data, "AC1: %4.1f,%4.1f,%4.1f,%4.1f;  AC2:%4.1f,%4.1f,%4.1f,%4.1f;  %6.3f,%6.3f,%6.3f",
     Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv );
+    if (HPL) sprintf( data + strlen(data), " *L*");
+    if (HPH) sprintf( data + strlen(data), " *H*");
     sprintf( data + strlen(data), " WANTED::");
     if (_ST_L&1) sprintf( data + strlen(data), " 1COMP");
     if (_ST_L&2) sprintf( data + strlen(data), " 1FAN");
