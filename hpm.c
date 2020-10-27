@@ -1071,9 +1071,7 @@ LogData(short _ST_L) {
     */
     sprintf( data, "AC1: %4.1f,%4.1f,%4.1f,%4.1f;  AC2:%4.1f,%4.1f,%4.1f,%4.1f;  %6.3f,%6.3f,%6.3f",
     Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv );
-    if (HPL) sprintf( data + strlen(data), " *L*");
-    if (HPH) sprintf( data + strlen(data), " *H*");
-    sprintf( data + strlen(data), " WANTED::");
+    sprintf( data + strlen(data), " WANTED:");
     if (_ST_L&1) sprintf( data + strlen(data), " 1COMP");
     if (_ST_L&2) sprintf( data + strlen(data), " 1FAN");
     if (_ST_L&4) sprintf( data + strlen(data), " 1V");
@@ -1087,6 +1085,7 @@ LogData(short _ST_L) {
     if (Cac2cmp) sprintf( data + strlen(data), " 2COMP");
     if (Cac2fan) sprintf( data + strlen(data), " 2FAN");
     if (Cac2fv) sprintf( data + strlen(data), " 2V");
+    sprintf( data + strlen(data), "; COMMS:%d", COMMS);
     log_message(DATA_FILE, data);
 
     sprintf( data, ",AC1COMP,%5.3f\n_,AC1CND,%5.3f\n_,HE1I,%5.3f\n_,HE1O,%5.3f\n"\
