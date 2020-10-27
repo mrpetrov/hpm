@@ -795,7 +795,7 @@ GPIOWrite(int pin, int value)
 float
 sensorRead(const char* sensor)
 {
-    char msg_buff[280];
+    char msg_buf[280];
     char path[VALUE_MAX];
     char value_str[50];
     int fd;
