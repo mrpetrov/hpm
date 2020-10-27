@@ -1199,7 +1199,7 @@ SelectOpMode() {
     short t = 0;
     
     if (HPL) { /* need to turn one AC one if possible */
-        t = use_ac1 + use_ac2;
+        t = cfg.use_ac1 + cfg.use_ac2;
         if (t==2) { /* both ACs are allowed - choose the one that has worked less */
             if (C1RunCs <= C2RunCs) t=1;
             else t=2;
@@ -1285,24 +1285,16 @@ ActivateDevicesState(const unsigned short _ST_) {
 
 void
 AdjustWantedStateForBatteryPower(unsigned short WS) {
-    /* Check for power source switch */
+    /* Check for power source switch 
     if ( CPowerByBattery != CPowerByBatteryPrev ) {
-        /* If we just switched to battery.. */
+        /* If we just switched to battery.. 
         if ( CPowerByBattery ) {
             log_message(LOG_FILE,"WARNING: Switch to BATTERY POWER detected.");
         }
         else {
             log_message(LOG_FILE,"INFO: Powered by GRID now.");
         }
-    }
-    /* in the first 10 minutes of battery power there is a high chance that power will be back;
-    prepare for this by keeping the boiler electrical heater ON and ready to switch it off */
-    if ( CPowerByBattery ) {
-        /* When battery powered - force electrical heater ON */
-        WS |= 16;
-        /* enable quick heater turn off */
-        SCHeater = 30;
-    }
+    } */
 }
 
 int
