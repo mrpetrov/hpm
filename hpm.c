@@ -131,6 +131,12 @@ unsigned long ProgramRunCycles  = 0;
 /* Comms buffer */
 unsigned short COMMS = 0;
 
+/* If other than zero - low mode is enabled, i.e. one AC can be run */
+unsigned short HPL = 0;
+
+/* If other than zero - HIGH mode is enabled, i.e. both ACs can be run */
+unsigned short HPH = 0;
+
 struct cfg_struct
 {
     char    ac1cmp_sensor[MAXLEN];
@@ -904,15 +910,17 @@ ReadSensors() {
     }
 }
 
-/* Read comms pins one by one, and in the end - assemble a byte COMMS */
+/* Read comms pins one by one, and in the end - assemble a global byte COMMS */
 void
 ReadCommsPins() {
     unsigned short temp = 0;
     COMMS = 0;
     temp = GPIORead(cfg.commspin1_pin);
+    HPL = temp;
     if (temp) COMMS = 1;
     temp = 0;
     temp = GPIORead(cfg.commspin2_pin);
+    HPH = temp;
     if (temp) COMMS += 2;
     temp = 0;
     temp = GPIORead(cfg.commspin3_pin);
