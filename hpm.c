@@ -1316,17 +1316,17 @@ main(int argc, char *argv[])
         }
         if ( gettimeofday( &tvalAfter, NULL ) ) {
             log_message(LOG_FILE,"WARNING: error getting tvalAfter...");
-            sleep( 7 );
+            sleep( 1 );
         }
         else {
             /* use hardcoded sleep() if time is skewed (for eg. daylight saving, ntp adjustments, etc.) */
             if ((tvalAfter.tv_sec - tvalBefore.tv_sec) > 12) {
-                sleep( 7 );
+                sleep( 1 );
             }
             else {
                 /* otherwise we have valid time data - so calculate exact sleep time
-                so period between active operations is bang on 10 seconds */
-                usleep(10000000 - (((tvalAfter.tv_sec - tvalBefore.tv_sec)*1000000L \
+                so period between active operations is bang on 5 seconds */
+                usleep(5000000 - (((tvalAfter.tv_sec - tvalBefore.tv_sec)*500000L \
                 + tvalAfter.tv_usec) - tvalBefore.tv_usec));
             }
         }
