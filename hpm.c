@@ -44,7 +44,7 @@
 #define JSON_FILE	"/run/shm/hpm_current_json"
 #define CFG_TABLE_FILE  "/run/shm/hpm_cur_cfg"
 #define CONFIG_FILE     "/etc/hpm.cfg"
-#define POWER_FILE      "/var/log/hpm_power"
+#define PRSSTNC_FILE      "/var/log/hpm_prsstnc"
 
 #define BUFFER_MAX 3
 #define DIRECTION_MAX 35
@@ -590,9 +590,9 @@ WritePersistentData() {
     t_struct = localtime( &t );
     strftime( timestamp, sizeof timestamp, "%F %T", t_struct );
 
-    logfile = fopen( POWER_FILE, "w" );
+    logfile = fopen( PRSSTNC_FILE, "w" );
     if ( !logfile ) return;
-    fprintf( logfile, "# hwwm power persistence file written %s\n", timestamp );
+    fprintf( logfile, "# hwwm data persistence file written %s\n", timestamp );
     fprintf( logfile, "C1RunCs=%dl\n", C1RunCs );
     fprintf( logfile, "C2RunCs=%dl\n", C2RunCs );
     fclose( logfile );
@@ -607,9 +607,9 @@ ReadPersistentData() {
     short should_write=0;
     strcpy( totalP_str, "0" );
     strcpy( nightlyP_str, "0" );
-    FILE *fp = fopen(POWER_FILE, "r");
+    FILE *fp = fopen(PRSSTNC_FILE, "r");
     if (fp == NULL) {
-        log_message(LOG_FILE,"WARNING: Failed to open "POWER_FILE" file for reading!");
+        log_message(LOG_FILE,"WARNING: Failed to open "PRSSTNC_FILE" file for reading!");
         should_write = 1;
         } else {
         /* Read next line */
@@ -1053,7 +1053,7 @@ write_log_start() {
     log_message(LOG_FILE,"Running in "RUNNING_DIR", config file "CONFIG_FILE );
     log_message(LOG_FILE,"PID written to "LOCK_FILE", writing CSV data to "DATA_FILE );
     log_message(LOG_FILE,"Writing table data for collectd to "TABLE_FILE );
-    log_message(LOG_FILE,"Power used persistence file "POWER_FILE );
+    log_message(LOG_FILE,"Power used persistence file "PRSSTNC_FILE );
 }
 
 void
