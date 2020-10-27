@@ -116,7 +116,7 @@ short controls[7] = { -1, 0, 0, 0, 0, 0, 0 };
 #define   Cac2fv                  controls[6]
 
 /* controls state cycles - zeroed on change to state */
-long ctrlstatecycles[7] = { -1, 0, 0, 0, 0, 0, 0 };
+long ctrlstatecycles[7] = { -1, 118, 0, 0, 118, 0, 0 };
 
 #define   SCac1cmp             ctrlstatecycles[1]
 #define   SCac1fan               ctrlstatecycles[2]
@@ -125,8 +125,18 @@ long ctrlstatecycles[7] = { -1, 0, 0, 0, 0, 0, 0 };
 #define   SCac2fan               ctrlstatecycles[5]
 #define   SCac2fv                 ctrlstatecycles[6]
 
+unsigned long C1RunCs = 0;
+unsigned long C2RunCs = 0;
+
 /* Nubmer of cycles (circa 10 seconds each) that the program has run */
 unsigned long ProgramRunCycles  = 0;
+
+/* timers - current hour and month vars - used in keeping things up to date */
+unsigned short current_timer_hour = 0;
+unsigned short current_month = 0;
+
+/* a var to be non-zero if it is winter time - so furnace should not be allowed to go too cold */
+unsigned short now_is_winter = 0;
 
 /* Comms buffer */
 unsigned short COMMS = 0;
@@ -962,7 +972,7 @@ write_log_start() {
 }
 
 void
-LogData(short HM) {
+LogData(short _ST_L) {
     static char data[280];
     /* Log data like so:
     Time(by log function) AC1: Tcomp1,Tcnd1,The1i,The1o; AC2: Tcomp2,Tcnd2,The2i,The2o;
@@ -970,7 +980,14 @@ LogData(short HM) {
     */
     sprintf( data, "AC1: %6.3f,%6.3f,%6.3f,%6.3f; AC2:%6.3f,%6.3f,%6.3f,%6.3f; %6.3f,%6.3f,%6.3f",
     Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv );
-    sprintf( data + strlen(data), "; CONTROLS:");
+    sprintf( data + strlen(data), " WANTED::");
+    if (_ST_L&1) sprintf( data + strlen(data), " 1COMP");
+    if (_ST_L&2) sprintf( data + strlen(data), " 1FAN");
+    if (_ST_L&4) sprintf( data + strlen(data), " 1V");
+    if (_ST_L&8) sprintf( data + strlen(data), " 2COMP");
+    if (_ST_L&16) sprintf( data + strlen(data), " 2FAN");
+    if (_ST_L&32) sprintf( data + strlen(data), " 2V");
+    sprintf( data + strlen(data), "; GOT:");
     if (Cac1cmp) sprintf( data + strlen(data), " 1COMP");
     if (Cac1fan) sprintf( data + strlen(data), " 1FAN");
     if (Cac1fv) sprintf( data + strlen(data), " 1V");
@@ -984,7 +1001,7 @@ LogData(short HM) {
     "_,WaterIN,%5.3f\n_,WaterOUT,%5.3f\n_,Tenv,%5.3f\n"\
     "_,Comp1,%d\n_,Fan1,%d\n_,Valve1,%d\n_,Comp2,%d\n_,Fan2,%d\n_,Valve2,%d",\
     Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv,\
-    Cac1cmp,Cac1fan,Cac1fv,Cac2cmp,Cac2fan,Cac2fv);
+    Cac1cmp, Cac1fan, Cac1fv, Cac2cmp, Cac2fan, Cac2fv);
     log_msg_ovr(TABLE_FILE, data);
 
     sprintf( data, "{AC1COMP:%5.3f,AC1CND:%5.3f,HE1I:%5.3f,HE1O:%5.3f,"\
@@ -992,20 +1009,225 @@ LogData(short HM) {
     "WaterIN:%5.3f,WaterOUT:%5.3f,Tenv:%5.3f\n,"\
     "Comp1:%d,Fan1:%d,Valve1:%d,Comp2:%d,Fan2:%d,Valve2:%d}",\
     Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv,\
-    Cac1cmp,Cac1fan,Cac1fv,Cac2cmp,Cac2fan,Cac2fv);
+    Cac1cmp, Cac1fan, Cac1fv, Cac2cmp, Cac2fan, Cac2fv);
     log_msg_cln(JSON_FILE, data);
 }
 
+/* Function to get current time and put the hour in current_timer_hour */
+void
+GetCurrentTime() {
+    static char buff[80];
+    time_t t;
+    struct tm *t_struct;
+	
+    t = time(NULL);
+    t_struct = localtime( &t );
+    strftime( buff, sizeof buff, "%H", t_struct );
+
+    current_timer_hour = atoi( buff );
+    
+    strftime( buff, sizeof buff, "%m", t_struct );
+    current_month = atoi( buff );
+}
+
+unsigned short CanTurnC1On() {
+    if (!Cac1cmp && (SCac1cmp > 120) && (SCac1fv > 2)) return 1;
+    else return 0;
+}
+
+unsigned short CanTurnC1Off() {
+    if (Cac1cmp && (SCac1cmp > 120)) return 1;
+    else return 0;
+}
+
+unsigned short CanTurnF1On() {
+    return 1;
+}
+
+unsigned short CanTurnF1Off() {
+    if (!Cac1cmp && (SCac1cmp > 18)) return 1;
+    else return 0;
+}
+
+unsigned short CanTurnV1On() {
+    if (!Cac1cmp && (SCac1cmp > 12)) return 1;
+    else return 0;
+}
+
+unsigned short CanTurnV1Off() {
+    if (!Cac1cmp && (SCac1cmp > 12)) return 1;
+    else return 0;
+}
+
+unsigned short CanTurnC2On() {
+    if (!Cac2cmp && (SCac2cmp > 120) && (SCac2fv > 2)) return 1;
+    else return 0;
+}
+
+unsigned short CanTurnC2Off() {
+    if (Cac2cmp && (SCac2cmp > 120)) return 1;
+    else return 0;
+}
+
+unsigned short CanTurnF2On() {
+    return 1;
+}
+
+unsigned short CanTurnF2Off() {
+    if (!Cac2cmp && (SCac2cmp > 18)) return 1;
+    else return 0;
+}
+
+unsigned short CanTurnV2On() {
+    if (!Cac2cmp && (SCac2cmp > 12)) return 1;
+    else return 0;
+}
+
+unsigned short CanTurnV2Off() {
+    if (!Cac2cmp && (SCac2cmp > 12)) return 1;
+    else return 0;
+}
+
+void TurnC1Off() { CPump1 = 0; SCPump1 = 0; }
+void TurnC1On() { CPump1 = 1; SCPump1 = 0; }
+void TurnF1Off() { CPump2  = 0; SCPump2 = 0; }
+void TurnF1On() { CPump2  = 1; SCPump2 = 0; }
+void TurnV1Off() { CValve  = 0; SCValve = 0; }
+void TurnV1On() { CValve  = 1; SCValve = 0; }
+void TurnC2Off() { CPump1 = 0; SCPump1 = 0; }
+void TurnC2On() { CPump1 = 1; SCPump1 = 0; }
+void TurnF2Off() { CPump2  = 0; SCPump2 = 0; }
+void TurnF2On() { CPump2  = 1; SCPump2 = 0; }
+void TurnV2Off() { CValve  = 0; SCValve = 0; }
+void TurnV2On() { CValve  = 1; SCValve = 0; }
+
 short
 SelectOpMode() {
-    return 0;
+    short StateDesired = 0;
+    short wantC1on = 0;
+    short wantF1on = 0;
+    short wantV1on = 1;
+    short wantC2on = 0;
+    short wantF2on = 0;
+    short wantV2on = 1;
+ //   static char data[280];
+    short t = 0;
+    
+    if (HPL) { /* need to turn one AC one if possible */
+        t = use_ac1 + use_ac2;
+        if (t==2) { /* both ACs are allowed - choose the one that has worked less */
+            if (C1RunCs <= C2RunCs) t=1;
+            else t=2;
+        }
+        switch (t) {
+            default:
+            case 0: /* no ACs allowed? */
+            break;
+            case 1: /* AC1 only */
+            wantC1on = 1;
+            wantF1on = 1;
+            break;
+            case 2: /* AC2 only */
+            wantC2on = 1;
+            wantF2on = 1;
+            break;
+        }
+    }
+    if (HPH) { /* need to turn both ACs if possible */
+        wantC1on = 1;
+        wantF1on = 1;
+        wantC2on = 1;
+        wantF2on = 1;
+    }
+    
+    if ( wantC1on) StateDesired |= 1;
+    if ( wantF1on ) StateDesired |= 2;
+    if ( wantV1on )  StateDesired |= 4;
+    if ( wantC2on )  StateDesired |= 8;
+    if ( wantF2on ) StateDesired |= 16;
+    if ( wantV2on )  StateDesired |= 32;
+
+    return StateDesired;
+}
+
+void
+ActivateDevicesState(const unsigned short _ST_) {
+    unsigned short current_state = 0;
+    unsigned short new_state = 0;
+
+    /* calculate current state */
+    if ( Cac1cmp ) current_state |= 1;
+    if ( Cac1fan ) current_state |= 2;
+    if ( Cac1fv ) current_state |= 4;
+    if ( Cac2cmp ) current_state |= 8;
+    if ( Cac2fan ) current_state |= 32;
+    if ( Cac2fv ) current_state |= 64;
+    /* make changes as needed */
+    /* _ST_'s bits describe the peripherals desired state:
+        bit 1  (1) - compressor 1
+        bit 2  (2) - fan 1
+        bit 3  (4) - fourway valve 1
+        bit 4  (8) - compressor 2
+        bit 5 (16) - fan 2
+        bit 6 (32) - fourway valve 2 */
+    if (_ST_ &   1)  { if (CanTurnC1On()) TurnC1On(); } else { if (CanTurnC1Off()) TurnC1Off(); }
+    if (_ST_ &   2)  { if (CanTurnF1On()) TurnF1On(); } else { if (CanTurnF1Off()) TurnF1Off(); }
+    if (_ST_ &   4)  { if (CanTurnV1On()) TurnV1On(); } else { if (CanTurnV1Off()) TurnV1Off(); }
+    if (_ST_ &   8)  { if (CanTurnC2On()) TurnC2On(); } else { if (CanTurnC2Off()) TurnC2Off(); }
+    if (_ST_ &  16) { if (CanTurnF2On()) TurnF2On(); } else { if (CanTurnF2Off()) TurnF2Off(); }
+    if (_ST_ &  32) { if (CanTurnV2On()) TurnV2On(); } else { if (CanTurnV2Off()) TurnV2Off(); }
+    
+    SCac1cmp++;
+    SCac1fan++;
+    SCac1fv++;
+    SCac2cmp++;
+    SCac2fan++;
+    SCac2fv++;
+
+    /* calculate desired new state */
+    if ( Cac1cmp ) { new_state |= 1; C1RunCs++; }
+    if ( Cac1fan ) new_state |= 2;
+    if ( Cac1fv ) new_state |= 4;
+    if ( Cac2cmp ) { new_state |= 8; C2RunCs++; }
+    if ( Cac2fan ) new_state |= 32;
+    if ( Cac2fv ) new_state |= 64;
+    /* if current state and new state are different... */
+    if ( current_state != new_state ) {
+        /* then put state on GPIO pins - this prevents lots of toggling at every 10s decision */
+        ControlStateToGPIO();
+    }
+}
+
+void
+AdjustWantedStateForBatteryPower(unsigned short WS) {
+    /* Check for power source switch */
+    if ( CPowerByBattery != CPowerByBatteryPrev ) {
+        /* If we just switched to battery.. */
+        if ( CPowerByBattery ) {
+            log_message(LOG_FILE,"WARNING: Switch to BATTERY POWER detected.");
+        }
+        else {
+            log_message(LOG_FILE,"INFO: Powered by GRID now.");
+        }
+    }
+    /* in the first 10 minutes of battery power there is a high chance that power will be back;
+    prepare for this by keeping the boiler electrical heater ON and ready to switch it off */
+    if ( CPowerByBattery ) {
+        /* When battery powered - force electrical heater ON */
+        WS |= 16;
+        /* enable quick heater turn off */
+        SCHeater = 30;
+    }
 }
 
 int
 main(int argc, char *argv[])
 {
+    /* set iter to its max value - makes sure we get a clock reading upon start */
+    unsigned short iter = 30;
+    unsigned short iter_P = 0;
     unsigned short AlarmRaised = 0;
-    unsigned short OpMode = 0;
+    unsigned short DevicesWantedState = 0;
     struct timeval tvalBefore, tvalAfter;
 
     SetDefaultCfg();
@@ -1041,6 +1263,8 @@ main(int argc, char *argv[])
 
     parse_config();
 
+    ReadPersistentPower();
+
     /* Enable GPIO pins */
     if ( ! EnableGPIOpins() ) {
         log_message(LOG_FILE,"ALARM: Cannot enable GPIO! Aborting run.");
@@ -1058,14 +1282,31 @@ main(int argc, char *argv[])
         if ( gettimeofday( &tvalBefore, NULL ) ) {
             log_message(LOG_FILE,"WARNING: error getting tvalBefore...");
         }
+        /* get the current hour every 5 minutes for electric heater schedule */
+        if ( iter == 30 ) {
+            iter = 0;
+            GetCurrentTime();
+            /* and increase counter controlling writing out persistent power use data */
+            iter_P++;
+            if ( iter_P == 2) {
+                iter_P = 0;
+                WritePersistentPower();
+            }
+        }
+        iter++;
         ReadSensors();
         ReadCommsPins();
         /* if MODE is not 0==OFF, work away */
         if (cfg.mode) {
             /* process sensors data here, and decide what devices should do */
-            OpMode = SelectOpMode();
+            DevicesWantedState = SelectOpMode();
+        } else {
+            DevicesWantedState = 0;
         }
-        LogData(OpMode);
+        AdjustWantedStateForBatteryPower(DevicesWantedState);
+        ActivateDevicesState(DevicesWantedState);
+        /* for the first 2 cycles  = 10 seconds - do not log anything */
+        if ( ProgramRunCycles > 1 ) { LogData(DevicesWantedState); }
         ProgramRunCycles++;
         if ( just_started ) { just_started--; }
         if ( need_to_read_cfg ) {
