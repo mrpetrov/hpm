@@ -593,8 +593,8 @@ WritePersistentData() {
     logfile = fopen( PRSSTNC_FILE, "w" );
     if ( !logfile ) return;
     fprintf( logfile, "# hwwm data persistence file written %s\n", timestamp );
-    fprintf( logfile, "C1RunCs=%dl\n", C1RunCs );
-    fprintf( logfile, "C2RunCs=%dl\n", C2RunCs );
+    fprintf( logfile, "C1RunCs=%ld\n", C1RunCs );
+    fprintf( logfile, "C2RunCs=%ld\n", C2RunCs );
     fclose( logfile );
 }
 
@@ -605,8 +605,8 @@ ReadPersistentData() {
     char C1RunCs_str[MAXLEN];
     char C2RunCs_str[MAXLEN];
     short should_write=0;
-    strcpy( totalP_str, "0" );
-    strcpy( nightlyP_str, "0" );
+    strcpy( C1RunCs_str, "0" );
+    strcpy( C2RunCs_str, "0" );
     FILE *fp = fopen(PRSSTNC_FILE, "r");
     if (fp == NULL) {
         log_message(LOG_FILE,"WARNING: Failed to open "PRSSTNC_FILE" file for reading!");
@@ -655,10 +655,10 @@ ReadPersistentData() {
 
     /* Prepare log message and write it to log file */
     if (fp == NULL) {
-        sprintf( buff, "INFO: Using compressor run cycles start values: C1RunCs=%dl, C2RunCs=%dl",
+        sprintf( buff, "INFO: Using compressor run cycles start values: C1RunCs=%ld, C2RunCs=%ld",
         C1RunCs, C2RunCs );
         } else {
-        sprintf( buff, "INFO: Read compressor run cycles start values: C1RunCs=%dl, C2RunCs=%dl",
+        sprintf( buff, "INFO: Read compressor run cycles start values: C1RunCs=%ld, C2RunCs=%ld",
         C1RunCs, C2RunCs );
     }
     log_message(LOG_FILE, buff);
@@ -1173,18 +1173,18 @@ unsigned short CanTurnV2Off() {
     else return 0;
 }
 
-void TurnC1Off() { CPump1 = 0; SCPump1 = 0; }
-void TurnC1On() { CPump1 = 1; SCPump1 = 0; }
-void TurnF1Off() { CPump2  = 0; SCPump2 = 0; }
-void TurnF1On() { CPump2  = 1; SCPump2 = 0; }
-void TurnV1Off() { CValve  = 0; SCValve = 0; }
-void TurnV1On() { CValve  = 1; SCValve = 0; }
-void TurnC2Off() { CPump1 = 0; SCPump1 = 0; }
-void TurnC2On() { CPump1 = 1; SCPump1 = 0; }
-void TurnF2Off() { CPump2  = 0; SCPump2 = 0; }
-void TurnF2On() { CPump2  = 1; SCPump2 = 0; }
-void TurnV2Off() { CValve  = 0; SCValve = 0; }
-void TurnV2On() { CValve  = 1; SCValve = 0; }
+void TurnC1Off() { Cac1cmp = 0; SCac1cmp = 0;  }
+void TurnC1On() { Cac1cmp = 1; SCac1cmp = 0; }
+void TurnF1Off() { Cac1fan  = 0; SCac1fan = 0; }
+void TurnF1On() { Cac1fan  = 1; SCac1fan = 0; }
+void TurnV1Off() { Cac1fv  = 0; SCac1fv = 0; }
+void TurnV1On() { Cac1fv  = 1; SCac1fv = 0; }
+void TurnC2Off() { Cac2cmp = 0; SCac2cmp = 0; }
+void TurnC2On() { Cac2cmp = 1; SCac2cmp = 0; }
+void TurnF2Off() { Cac2fan  = 0; SCac2fan = 0; }
+void TurnF2On() { Cac2fan  = 1; SCac2fan = 0; }
+void TurnV2Off() { Cac2fv  = 0; SCac2fv = 0; }
+void TurnV2On() { Cac2fv  = 1; SCac2fv = 0; }
 
 short
 SelectOpMode() {
