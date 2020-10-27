@@ -1,0 +1,36 @@
+Read all connected sensors data in one go:
+time ls /sys/bus/w1/devices | grep 28- | awk '{print "/sys/bus/w1/devices/" $1 "/w1_slave";}' | xargs cat
+
+List all connected temp sensors:
+ls /sys/bus/w1/devices/2* -dl
+
+Manually send daemon USR1 signal:
+cat /run/hwwm.pid | awk '{print "-USR1 " $1;}'| xargs sudo kill
+
+
+On DS18B20 resolution:
+
+As seen here: https://www.kernel.org/doc/Documentation/w1/slaves/w1_therm
+
+"
+Writing a value between 9 and 12 to the sysfs w1_slave file will change the
+precision of the sensor for the next readings. This value is in (volatile)
+SRAM, so it is reset when the sensor gets power-cycled.
+
+To store the current precision configuration into EEPROM, the value 0
+has to be written to the sysfs w1_slave file. Since the EEPROM has a limited
+amount of writes (>50k), this command should be used wisely.
+"
+
+Get all connected temp sensors resolution:
+cat /sys/bus/w1/devices/28-*/resolution
+
+To setup a specific DS18B20 temp sensor resolution as default between power cycling:
+# to set resolution:
+sudo sh -c "echo 9 >/sys/bus/w1/devices/28-0315549b98ff/w1_slave"
+# to write resolution as default (write to EEPROM):
+sudo sh -c "echo 0 >/sys/bus/w1/devices/28-0315549b98ff/w1_slave"
+
+sudo sh -c "echo 9 >/sys/bus/w1/devices//w1_slave"
+sudo sh -c "echo 0 >/sys/bus/w1/devices//w1_slave"
+
