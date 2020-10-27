@@ -579,6 +579,91 @@ parse_config()
     log_message(LOG_FILE, buff);
 }
 
+void
+WritePersistentData() {
+    FILE *logfile;
+    char timestamp[30];
+    time_t t;
+    struct tm *t_struct;
+
+    t = time(NULL);
+    t_struct = localtime( &t );
+    strftime( timestamp, sizeof timestamp, "%F %T", t_struct );
+
+    logfile = fopen( POWER_FILE, "w" );
+    if ( !logfile ) return;
+    fprintf( logfile, "# hwwm power persistence file written %s\n", timestamp );
+    fprintf( logfile, "C1RunCs=%dl\n", C1RunCs );
+    fprintf( logfile, "C2RunCs=%dl\n", C2RunCs );
+    fclose( logfile );
+}
+
+void
+ReadPersistentData() {
+    unsigned long tmp = 0;
+    char *s, buff[150];
+    char C1RunCs_str[MAXLEN];
+    char C2RunCs_str[MAXLEN];
+    short should_write=0;
+    strcpy( totalP_str, "0" );
+    strcpy( nightlyP_str, "0" );
+    FILE *fp = fopen(POWER_FILE, "r");
+    if (fp == NULL) {
+        log_message(LOG_FILE,"WARNING: Failed to open "POWER_FILE" file for reading!");
+        should_write = 1;
+        } else {
+        /* Read next line */
+        while ((s = fgets (buff, sizeof buff, fp)) != NULL)
+        {
+            /* Skip blank lines and comments */
+            if (buff[0] == '\n' || buff[0] == '#')
+            continue;
+
+            /* Parse name/value pair from line */
+            char name[MAXLEN], value[MAXLEN];
+            s = strtok (buff, "=");
+            if (s==NULL) continue;
+            else strncpy (name, s, MAXLEN);
+            s = strtok (NULL, "=");
+            if (s==NULL) continue;
+            else strncpy (value, s, MAXLEN);
+            trim (value);
+
+            /* Copy data in corresponding strings */
+            if (strcmp(name, "C1RunCs")==0)
+            strncpy (C1RunCs_str, value, MAXLEN);
+            else if (strcmp(name, "C2RunCs")==0)
+            strncpy (C2RunCs_str, value, MAXLEN);
+        }
+        /* Close file */
+        fclose (fp);
+    }
+
+    if (should_write) {
+        log_message(LOG_FILE, "Creating missing power persistence data file...");
+        WritePersistentData();
+    }
+    else {
+        /* Convert strings to float */
+        strcpy( buff, C1RunCs_str );
+        tmp = atol( buff );
+        C1RunCs = tmp;
+        strcpy( buff, C2RunCs_str );
+        tmp = atol( buff );
+        C2RunCs = tmp;
+    }
+
+    /* Prepare log message and write it to log file */
+    if (fp == NULL) {
+        sprintf( buff, "INFO: Using compressor run cycles start values: C1RunCs=%dl, C2RunCs=%dl",
+        C1RunCs, C2RunCs );
+        } else {
+        sprintf( buff, "INFO: Read compressor run cycles start values: C1RunCs=%dl, C2RunCs=%dl",
+        C1RunCs, C2RunCs );
+    }
+    log_message(LOG_FILE, buff);
+}
+
 int
 GPIOExport(int pin)
 {
@@ -1263,7 +1348,7 @@ main(int argc, char *argv[])
 
     parse_config();
 
-    ReadPersistentPower();
+    ReadPersistentData();
 
     /* Enable GPIO pins */
     if ( ! EnableGPIOpins() ) {
@@ -1282,15 +1367,15 @@ main(int argc, char *argv[])
         if ( gettimeofday( &tvalBefore, NULL ) ) {
             log_message(LOG_FILE,"WARNING: error getting tvalBefore...");
         }
-        /* get the current hour every 5 minutes for electric heater schedule */
-        if ( iter == 30 ) {
+        /* get the current hour every 5 minutes */
+        if ( iter == 60 ) {
             iter = 0;
             GetCurrentTime();
             /* and increase counter controlling writing out persistent power use data */
             iter_P++;
             if ( iter_P == 2) {
                 iter_P = 0;
-                WritePersistentPower();
+                WritePersistentData();
             }
         }
         iter++;
@@ -1320,7 +1405,7 @@ main(int argc, char *argv[])
         }
         else {
             /* use hardcoded sleep() if time is skewed (for eg. daylight saving, ntp adjustments, etc.) */
-            if ((tvalAfter.tv_sec - tvalBefore.tv_sec) > 12) {
+            if ((tvalAfter.tv_sec - tvalBefore.tv_sec) > 8) {
                 sleep( 1 );
             }
             else {
