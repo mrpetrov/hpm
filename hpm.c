@@ -809,14 +809,14 @@ sensorRead(const char* sensor)
     snprintf(path, VALUE_MAX, "%s", sensor);
     fd = open(path, O_RDONLY);
     if (-1 == fd) {
-        sprintf (msg_buf, "Error opening sensor file '%s'. Continuing.", sensor)
+        sprintf (msg_buf, "Error opening sensor file '%s'. Continuing.", sensor);
         log_message(LOG_FILE, msg_buf);
         return(temp);
     }
 
     /* read the first line of data */
     if (-1 == read(fd, value_str, 39)) {
-        sprintf (msg_buf, "Error reading from sensor file '%s'. Continuing.", sensor)
+        sprintf (msg_buf, "Error reading from sensor file '%s'. Continuing.", sensor);
         log_message(LOG_FILE, msg_buf);
         close(fd);
         return(temp);
@@ -827,7 +827,7 @@ sensorRead(const char* sensor)
 
     /* read the second line into value_str */
     if (-1 == read(fd, value_str, 35)) {
-        sprintf (msg_buf, "Error reading row 2 from sensor file '%s'. Continuing.", sensor)
+        sprintf (msg_buf, "Error reading row 2 from sensor file '%s'. Continuing.", sensor);
         log_message(LOG_FILE, msg_buf);
         close(fd);
         return(temp);
