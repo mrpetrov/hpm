@@ -71,13 +71,13 @@ char* sensor_paths[TOTALSENSORS+1];
     initialised with borderline value to trigger immediately on errors during
     start-up; the program logic tolerates 1 minute of missing sensor data
 */
-unsigned short sensor_read_errors[TOTALSENSORS+1] = { 3, 3, 3, 3, 3, 3 };
+unsigned short sensor_read_errors[TOTALSENSORS+1] = { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 };
 
 /* current sensors temperatures - e.g. values from last read */
-float sensors[TOTALSENSORS+1] = { 0, -200, -200, -200, -200, -200 };
+float sensors[TOTALSENSORS+1] = { 0, -200, -200, -200, -200, -200, -200, -200, -200, -200, -200, -200 };
 
 /* previous sensors temperatures - e.g. values from previous to last read */
-float sensors_prv[TOTALSENSORS+1] = { 0, -200, -200, -200, -200, -200 };
+float sensors_prv[TOTALSENSORS+1] = { 0, -200, -200, -200, -200, -200, -200, -200, -200, -200, -200, -200 };
 
 /* and sensor name mappings */
 #define   Tac1cmp            sensors[1]
