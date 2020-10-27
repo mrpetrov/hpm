@@ -432,6 +432,12 @@ parse_config()
             strncpy (cfg.he2i_sensor, value, MAXLEN);
             else if (strcmp(name, "he2o_sensor")==0)
             strncpy (cfg.he2o_sensor, value, MAXLEN);
+            else if (strcmp(name, "wi_sensor")==0)
+            strncpy (cfg.wi_sensor, value, MAXLEN);
+            else if (strcmp(name, "wo_sensor")==0)
+            strncpy (cfg.wo_sensor, value, MAXLEN);
+            else if (strcmp(name, "tenv_sensor")==0)
+            strncpy (cfg.tenv_sensor, value, MAXLEN);
             else if (strcmp(name, "ac1cmp_pin")==0)
             strncpy (cfg.ac1cmp_pin_str, value, MAXLEN);
             else if (strcmp(name, "ac1fan_pin")==0)
