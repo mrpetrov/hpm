@@ -310,9 +310,9 @@ SetDefaultCfg() {
     sensor_paths[6] = (char *) &cfg.ac2cnd_sensor;
     sensor_paths[7] = (char *) &cfg.he2i_sensor;
     sensor_paths[8] = (char *) &cfg.he2o_sensor;
-    sensor_paths[8] = (char *) &cfg.wi_sensor;
-    sensor_paths[9] = (char *) &cfg.wo_sensor;
-    sensor_paths[10] = (char *) &cfg.tenv_sensor;
+    sensor_paths[9] = (char *) &cfg.wi_sensor;
+    sensor_paths[10] = (char *) &cfg.wo_sensor;
+    sensor_paths[11] = (char *) &cfg.tenv_sensor;
 }
 
 short
