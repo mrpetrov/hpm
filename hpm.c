@@ -1109,7 +1109,7 @@ LogData(short _ST_L) {
 
     sprintf( data, "{AC1COMP:%5.3f,AC1CND:%5.3f,HE1I:%5.3f,HE1O:%5.3f,"\
     "AC2COMP:%5.3f,AC2CND:%5.3f,HE2I:%5.3f,HE2O:%5.3f,"\
-    "WaterIN:%5.3f,WaterOUT:%5.3f,Tenv:%5.3f\n,"\
+    "WaterIN:%5.3f,WaterOUT:%5.3f,Tenv:%5.3f,"\
     "Comp1:%d,Fan1:%d,Valve1:%d,Comp2:%d,Fan2:%d,Valve2:%d}",\
     Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv,\
     Cac1cmp, Cac1fan, Cac1fv, Cac2cmp, Cac2fan, Cac2fv);
