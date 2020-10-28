@@ -1,0 +1,18 @@
+[Unit]
+Description=hpm - a custom heat pump manager
+Documentation=
+After=sshd.service
+
+[Service]
+ExecStart=/usr/sbin/hpm
+ExecReload=/bin/kill -USR1 $MAINPID
+KillMode=process
+Restart=on-failure
+RestartPreventExitStatus=255
+Type=notify
+RuntimeDirectory=/tmp
+RuntimeDirectoryMode=0755
+
+[Install]
+WantedBy=multi-user.target
+
