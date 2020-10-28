@@ -1366,7 +1366,6 @@ main(int argc, char *argv[])
         if ( gettimeofday( &tvalBefore, NULL ) ) {
             log_message(LOG_FILE,"WARNING: error getting tvalBefore...");
         }
-        log_message(DATA_FILE,"main-1");
         /* get the current hour every 5 minutes */
         if ( iter == 60 ) {
             iter = 0;
@@ -1378,12 +1377,9 @@ main(int argc, char *argv[])
                 WritePersistentData();
             }
         }
-        log_message(DATA_FILE,"main-2");
         iter++;
         ReadSensors();
-        log_message(DATA_FILE,"main-3");
         ReadCommsPins();
-        log_message(DATA_FILE,"main-4");
         /* if MODE is not 0==OFF, work away */
         if (cfg.mode) {
             /* process sensors data here, and decide what devices should do */
@@ -1393,7 +1389,6 @@ main(int argc, char *argv[])
         }
         AdjustWantedStateForBatteryPower(DevicesWantedState);
         ActivateDevicesState(DevicesWantedState);
-        log_message(DATA_FILE,"main-5");
         /* for the first 2 cycles  = 10 seconds - do not log anything */
         if ( ProgramRunCycles > 1 ) { LogData(DevicesWantedState); }
         ProgramRunCycles++;
@@ -1419,7 +1414,6 @@ main(int argc, char *argv[])
                 + tvalAfter.tv_usec) - tvalBefore.tv_usec));
             }
         }
-        log_message(DATA_FILE,"main-6");
     } while (1);
 
     /* Disable GPIO pins */
