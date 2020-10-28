@@ -1415,7 +1415,7 @@ main(int argc, char *argv[])
             else {
                 /* otherwise we have valid time data - so calculate exact sleep time
                 so period between active operations is bang on 5 seconds */
-                usleep(5000000 - (((tvalAfter.tv_sec - tvalBefore.tv_sec)*500000L \
+                usleep(5000000 - (((tvalAfter.tv_sec - tvalBefore.tv_sec)*1000000L \
                 + tvalAfter.tv_usec) - tvalBefore.tv_usec));
             }
         }
