@@ -4,9 +4,9 @@
 #
 
 log_opts="-p user.warning -t /etc/rc.hpm_sender"
-sleep_time="9.8"
+sleep_time="4.8"
 json_file="/run/shm/hpm_current_json"
-emoncms_node="5"
+emoncms_node="6"
 emoncms_server="http://localhost/emoncms/input/post"
 api_key="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
