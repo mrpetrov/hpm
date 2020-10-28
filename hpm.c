@@ -188,6 +188,8 @@ struct cfg_struct
     int     use_ac1;
     char    use_ac2_str[MAXLEN];
     int     use_ac2;
+    char    wicorr_str[MAXLEN];
+    float  wicorr;
 }
 cfg_struct;
 
@@ -300,6 +302,7 @@ SetDefaultCfg() {
     cfg.mode = 1;
     cfg.use_ac1 = 1;
     cfg.use_ac2 = 1;
+    cfg.wicorr = 0;
 
     sensor_paths[0] = (char *) &cfg.ac1cmp_sensor;
     sensor_paths[1] = (char *) &cfg.ac1cmp_sensor;
@@ -393,6 +396,7 @@ void
 parse_config()
 {
     int i = 0;
+    float f = 0;
     char *s, buff[150];
     FILE *fp = fopen(CONFIG_FILE, "r");
     if (fp == NULL) {
@@ -466,6 +470,8 @@ parse_config()
             strncpy (cfg.use_ac1_str, value, MAXLEN);
             else if (strcmp(name, "use_ac2")==0)
             strncpy (cfg.use_ac2_str, value, MAXLEN);
+            else if (strcmp(name, "wicorr")==0)
+            strncpy (cfg.wicorr_str, value, MAXLEN);
         }
         /* Close file */
         fclose (fp);
@@ -534,6 +540,9 @@ parse_config()
     i = atoi( buff );
     cfg.use_ac2 = i;
     /* ^ no need for range check - 0 is OFF, non-zero is ON */
+    strcpy( buff, cfg.wicorr_str );
+    f = atof( buff );
+    cfg.wicorr = f;
 
     /* Prepare log messages with sensor paths and write them to log file */
     sprintf( buff, "AC1 compressor temp sensor file: %s", cfg.ac1cmp_sensor );
@@ -578,9 +587,11 @@ parse_config()
     }
     /* Prepare log message part 1 and write it to log file */
     if (fp == NULL) {
-        sprintf( buff, "INFO: Using values: Mode=%d, use AC1=%d, use AC2=%d", cfg.mode, cfg.use_ac1, cfg.use_ac2 );
+        sprintf( buff, "INFO: Using values: Mode=%d, use AC1=%d, use AC2=%d, water IN correction=%5.3f",
+            cfg.mode, cfg.use_ac1, cfg.use_ac2, cfg.wicorr );
         } else {
-        sprintf( buff, "INFO: Read CFG file: Mode=%d, use AC1=%d, use AC2=%d", cfg.mode, cfg.use_ac1, cfg.use_ac2 );
+        sprintf( buff, "INFO: Read CFG file: Mode=%d, use AC1=%d, use AC2=%d, water IN correction=%5.3f",
+            cfg.mode, cfg.use_ac1, cfg.use_ac2, cfg.wicorr );
     }
     log_message(LOG_FILE, buff);
 }
@@ -1380,6 +1391,8 @@ main(int argc, char *argv[])
         iter++;
         ReadSensors();
         ReadCommsPins();
+        /* Apply water IN sensor correction */
+        Twi += cfg.wicorr;
         /* if MODE is not 0==OFF, work away */
         if (cfg.mode) {
             /* process sensors data here, and decide what devices should do */
