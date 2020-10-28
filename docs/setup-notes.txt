@@ -1,3 +1,8 @@
+
+Copy hpm.service to /etc/systemd/system and then
+systemctl enable hpm.service
+
+
 Read all connected sensors data in one go:
 time ls /sys/bus/w1/devices | grep 28- | awk '{print "/sys/bus/w1/devices/" $1 "/w1_slave";}' | xargs cat
 
