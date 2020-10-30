@@ -1337,8 +1337,10 @@ ComputeSendBits() {
             if (sendBits>2) sendBits = 0;
             break;
         case 2:
-            sendBits++;
-            if (sendBits>3) sendBits = 0;
+            if ((ProgramRunCycles%2)==1) {
+                sendBits++;
+                if (sendBits>3) sendBits = 0;
+            }
             break;
         case 3:
             break;
