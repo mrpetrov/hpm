@@ -105,25 +105,29 @@ float sensors_prv[TOTALSENSORS+1] = { 0, -200, -200, -200, -200, -200, -200, -20
 #define   TenvPrev                  sensors_prv[11]
 
 /* current controls state - e.g. set on last decision making */
-short controls[7] = { -1, 0, 0, 0, 0, 0, 0 };
+short controls[9] = { -1, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 /* and control name mappings */
 #define   Cac1cmp             controls[1]
 #define   Cac1fan               controls[2]
 #define   Cac1fv                 controls[3]
-#define   Cac2cmp              controls[4]
-#define   Cac2fan                controls[5]
-#define   Cac2fv                  controls[6]
+#define   Cac1mode            controls[4]
+#define   Cac2cmp              controls[5]
+#define   Cac2fan                controls[6]
+#define   Cac2fv                  controls[7]
+#define   Cac2mode            controls[8]
 
 /* controls state cycles - zeroed on change to state */
-long ctrlstatecycles[7] = { -1, 118, 0, 0, 118, 0, 0 };
+long ctrlstatecycles[9] = { -1, 118, 0, 0, 0, 118, 0, 0, 0 };
 
 #define   SCac1cmp             ctrlstatecycles[1]
 #define   SCac1fan               ctrlstatecycles[2]
 #define   SCac1fv                 ctrlstatecycles[3]
-#define   SCac2cmp             ctrlstatecycles[4]
-#define   SCac2fan               ctrlstatecycles[5]
-#define   SCac2fv                 ctrlstatecycles[6]
+#define   SCac1mode           ctrlstatecycles[4]
+#define   SCac2cmp             ctrlstatecycles[5]
+#define   SCac2fan               ctrlstatecycles[6]
+#define   SCac2fv                 ctrlstatecycles[7]
+#define   SCac2mode           ctrlstatecycles[8]
 
 unsigned long C1RunCs = 0;
 unsigned long C2RunCs = 0;
@@ -1301,9 +1305,11 @@ ActivateDevicesState(const unsigned short _ST_) {
     SCac1cmp++;
     SCac1fan++;
     SCac1fv++;
+    SCac1mode++;
     SCac2cmp++;
     SCac2fan++;
     SCac2fv++;
+    SCac2mode++;
 
     /* calculate desired new state */
     if ( Cac1cmp ) { new_state |= 1; C1RunCs++; }
@@ -1327,7 +1333,7 @@ ComputeSendBits() {
             sendBits = 3;
             break;
         case 1:
-            sendBits = 3;
+            sendBits = ProgramRunCycles % 3;
             break;
         case 2:
             break;
