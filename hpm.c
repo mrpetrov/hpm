@@ -147,6 +147,14 @@ unsigned short HPL = 0;
 /* If other than zero - HIGH mode is enabled, i.e. both ACs can be run */
 unsigned short HPH = 0;
 
+/* The buffer Var that holds what needs to sent over to hwwm 
+    States:
+    0 == busy; no changes to state allowed/will be honered
+    1 == busy; can ADD an AC
+    2 == busy; can REMOVE an AC
+    3 == done/request is fullfilled; can change state as desired */
+unsigned short sendBits = 0;
+
 struct cfg_struct
 {
     char    ac1cmp_sensor[MAXLEN];
@@ -1030,24 +1038,26 @@ ReadSensors() {
     }
 }
 
-/* Read comms pins one by one, and in the end - assemble a global byte COMMS */
+/* Read comms and assemble the global byte COMMS, as sent by hwwm */
 void
 ReadCommsPins() {
     unsigned short temp = 0;
+    HPL = 0;
+    HPH = 0;
     COMMS = 0;
     temp = GPIORead(cfg.commspin1_pin);
-    HPL = temp;
-    if (temp) COMMS = 1;
-    temp = 0;
+    if (temp) COMMS |= 1;
     temp = GPIORead(cfg.commspin2_pin);
-    HPH = temp;
-    if (temp) COMMS += 2;
-    temp = 0;
-    temp = GPIORead(cfg.commspin3_pin);
-    if (temp) COMMS += 4;
-    temp = 0;
-    temp = GPIORead(cfg.commspin4_pin);
-    if (temp) COMMS += 8;
+    if (temp) COMMS |= 2;
+    if (COMMS==1) HPL = 1;
+    if (COMMS==2) HPH = 1;
+}
+
+/* Write comms  */
+void
+WriteCommsPins() {
+    GPIOWrite( cfg.commspin3_pin,  (sendBits&1) );
+    GPIOWrite( cfg.commspin4_pin,  (sendBits&2) );
 }
 
 /* Function to make GPIO state represent what is in controls[] */
@@ -1104,7 +1114,7 @@ LogData(short _ST_L) {
     if (Cac2cmp) sprintf( data + strlen(data), " C2");
     if (Cac2fan) sprintf( data + strlen(data), " F2");
     if (Cac2fv) sprintf( data + strlen(data), " V2");
-    sprintf( data + strlen(data), "; COMMS:%d", COMMS);
+    sprintf( data + strlen(data), "; COMMS:%d sendBits:%d", COMMS, sendBits);
     log_message(DATA_FILE, data);
 
     sprintf( data, ",AC1COMP,%5.3f\n_,AC1CND,%5.3f\n_,HE1I,%5.3f\n_,HE1O,%5.3f\n"\
@@ -1417,6 +1427,7 @@ main(int argc, char *argv[])
         }
         AdjustWantedStateForBatteryPower(DevicesWantedState);
         ActivateDevicesState(DevicesWantedState);
+        WriteCommsPins();
         /* for the first 2 cycles  = 10 seconds - do not log anything */
         if ( ProgramRunCycles > 1 ) { LogData(DevicesWantedState); }
         ProgramRunCycles++;
