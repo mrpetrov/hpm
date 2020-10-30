@@ -953,8 +953,6 @@ SetGPIODirection()
     /* input pins */
     if (-1 == GPIODirection(cfg.commspin1_pin, IN))  return 0;
     if (-1 == GPIODirection(cfg.commspin2_pin, IN))  return 0;
-    if (-1 == GPIODirection(cfg.commspin3_pin, IN))  return 0;
-    if (-1 == GPIODirection(cfg.commspin4_pin, IN))  return 0;
     /* output pins */
     if (-1 == GPIODirection(cfg.ac1cmp_pin, OUT)) return 0;
     if (-1 == GPIODirection(cfg.ac1fan_pin, OUT)) return 0;
@@ -962,6 +960,8 @@ SetGPIODirection()
     if (-1 == GPIODirection(cfg.ac2cmp_pin, OUT)) return 0;
     if (-1 == GPIODirection(cfg.ac2fan_pin, OUT)) return 0;
     if (-1 == GPIODirection(cfg.ac2v_pin, OUT)) return 0;
+    if (-1 == GPIODirection(cfg.commspin3_pin, OUT))  return 0;
+    if (-1 == GPIODirection(cfg.commspin4_pin, OUT))  return 0;
     return -1;
 }
 
