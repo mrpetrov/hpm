@@ -1320,6 +1320,23 @@ ActivateDevicesState(const unsigned short _ST_) {
 }
 
 void
+ComputeSendBits() {
+    switch (COMMS) {
+        default:
+        case 0:
+            sendBits = 3;
+            break;
+        case 1:
+            sendBits = 3;
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+    }
+}
+
+void
 AdjustWantedStateForBatteryPower(unsigned short WS) {
     /* Check for power source switch 
     if ( CPowerByBattery != CPowerByBatteryPrev ) {
@@ -1427,6 +1444,7 @@ main(int argc, char *argv[])
         }
         AdjustWantedStateForBatteryPower(DevicesWantedState);
         ActivateDevicesState(DevicesWantedState);
+        ComputeSendBits();
         WriteCommsPins();
         /* for the first 2 cycles  = 10 seconds - do not log anything */
         if ( ProgramRunCycles > 1 ) { LogData(DevicesWantedState); }
