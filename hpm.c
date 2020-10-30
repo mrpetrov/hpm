@@ -1333,9 +1333,12 @@ ComputeSendBits() {
             sendBits = 3;
             break;
         case 1:
-            sendBits = ProgramRunCycles % 3;
+            sendBits++;
+            if (sendBits>2) sendBits = 0;
             break;
         case 2:
+            sendBits++;
+            if (sendBits>3) sendBits = 0;
             break;
         case 3:
             break;
