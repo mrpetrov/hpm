@@ -1105,7 +1105,7 @@ void
 LogData(short _ST_L) {
     static char data[280];
     unsigned short diff=0;
-    unsigned short RS=0; /* will hold real state for inverting */
+    unsigned short RS=0; /* real state */
     if (Cac1cmp) RS|=1;
     if (Cac1fan) RS|=2;
     if (Cac1fv) RS|=4;
@@ -1131,20 +1131,23 @@ LogData(short _ST_L) {
     if (_ST_L&8) sprintf( data + strlen(data), " C2");
     if (_ST_L&16) sprintf( data + strlen(data), " F2");
     if (_ST_L&32) sprintf( data + strlen(data), " V2");
-    sprintf( data + strlen(data), "; GOT:");
+    sprintf( data + strlen(data), "; got:");
     if (Cac1cmp) sprintf( data + strlen(data), " C1");
     if (Cac1fan) sprintf( data + strlen(data), " F1");
     if (Cac1fv) sprintf( data + strlen(data), " V1");
     if (Cac2cmp) sprintf( data + strlen(data), " C2");
     if (Cac2fan) sprintf( data + strlen(data), " F2");
     if (Cac2fv) sprintf( data + strlen(data), " V2");
-    sprintf( data + strlen(data), "; STILL MISSING:%d", diff);
-    if (diff&1) sprintf( data + strlen(data), " C1");
-    if (diff&2) sprintf( data + strlen(data), " F1");
-    if (diff&4) sprintf( data + strlen(data), " V1");
-    if (diff&8) sprintf( data + strlen(data), " C2");
-    if (diff&16) sprintf( data + strlen(data), " F2");
-    if (diff&32) sprintf( data + strlen(data), " V2");
+    if (diff) {
+        sprintf( data + strlen(data), "; MISSING:%d", diff);
+        if (diff&1) sprintf( data + strlen(data), " C1");
+        if (diff&2) sprintf( data + strlen(data), " F1");
+        if (diff&4) sprintf( data + strlen(data), " V1");
+        if (diff&8) sprintf( data + strlen(data), " C2");
+        if (diff&16) sprintf( data + strlen(data), " F2");
+        if (diff&32) sprintf( data + strlen(data), " V2");
+    }
+    else sprintf( data + strlen(data), "; OK!", diff);
     sprintf( data + strlen(data), "; COMMS:%d sendBits:%d", COMMS, sendBits);
     log_message(DATA_FILE, data);
     
