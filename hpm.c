@@ -1161,62 +1161,82 @@ GetCurrentTime() {
     current_month = atoi( buff );
 }
 
+/* Turn ON compressor 1 limitations:
+    1 - it must be off
+    2 - it must have been off for 5 minutes = 120 5 sec cycles */
 unsigned short CanTurnC1On() {
-    if (!Cac1cmp && (SCac1cmp > 120) && (SCac1fv > 2)) return 1;
+    if (!Cac1cmp && (SCac1cmp > 120)) return 1;
     else return 0;
 }
 
+/* Turn OFF compressor 2 limitations:
+    1 - it must be ON
+    2 - it must have been ON for 5 minutes = 120 5 sec cycles */
 unsigned short CanTurnC1Off() {
     if (Cac1cmp && (SCac1cmp > 120)) return 1;
     else return 0;
 }
 
+/* Turn ON/OFF fan limitations - fans can be toggled at will */
 unsigned short CanTurnF1On() {
     return 1;
 }
 
+/* Turn ON/OFF fan limitations - fans can be toggled at will */
 unsigned short CanTurnF1Off() {
-    if (!Cac1cmp && (SCac1cmp > 18)) return 1;
-    else return 0;
+    return 1;
 }
 
+/* Turn ON/OFF valve limitations:
+    1 - to change a valve state - the compressor must be OFF
+    2 - the compressor must have been OFF for 10 seconds = 2 cycles */
 unsigned short CanTurnV1On() {
-    if (!Cac1cmp && (SCac1cmp > 12)) return 1;
+    if (!Cac1cmp && (SCac1cmp > 1)) return 1;
     else return 0;
 }
 
+/* Limitations are the same between valve on and valve off */
 unsigned short CanTurnV1Off() {
-    if (!Cac1cmp && (SCac1cmp > 12)) return 1;
-    else return 0;
+    return CanTurnV1On();
 }
 
+/* Turn ON compressor 2 limitations:
+    1 - it must be off
+    2 - it must have been off for 5 minutes = 120 5 sec cycles */
 unsigned short CanTurnC2On() {
-    if (!Cac2cmp && (SCac2cmp > 120) && (SCac2fv > 2)) return 1;
+    if (!Cac2cmp && (SCac2cmp > 120)) return 1;
     else return 0;
 }
 
+/* Turn OFF compressor 2 limitations:
+    1 - it must be ON
+    2 - it must have been ON for 5 minutes = 120 5 sec cycles */
 unsigned short CanTurnC2Off() {
     if (Cac2cmp && (SCac2cmp > 120)) return 1;
     else return 0;
 }
 
+/* Turn ON/OFF fan limitations - fans can be toggled at will */
 unsigned short CanTurnF2On() {
     return 1;
 }
 
+/* Turn ON/OFF fan limitations - fans can be toggled at will */
 unsigned short CanTurnF2Off() {
-    if (!Cac2cmp && (SCac2cmp > 18)) return 1;
-    else return 0;
+    return 1;
 }
 
+/* Turn ON/OFF valve limitations:
+    1 - to change a valve state - the compressor must be OFF
+    2 - the compressor must have been OFF for 10 seconds = 2 cycles */
 unsigned short CanTurnV2On() {
-    if (!Cac2cmp && (SCac2cmp > 12)) return 1;
+    if (!Cac2cmp && (SCac2cmp > 1)) return 1;
     else return 0;
 }
 
+/* Limitations are the same between valve on and valve off */
 unsigned short CanTurnV2Off() {
-    if (!Cac2cmp && (SCac2cmp > 12)) return 1;
-    else return 0;
+    return CanTurnV2On();
 }
 
 void TurnC1Off() { Cac1cmp = 0; SCac1cmp = 0;  }
