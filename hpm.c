@@ -1147,7 +1147,7 @@ LogData(short _ST_L) {
         if (diff&16) sprintf( data + strlen(data), " F2");
         if (diff&32) sprintf( data + strlen(data), " V2");
     }
-    else sprintf( data + strlen(data), " OK!");
+    else sprintf( data + strlen(data), "    OK!  ");
     sprintf( data + strlen(data), " COMMS:%d sendBits:%d", COMMS, sendBits);
     log_message(DATA_FILE, data);
     
