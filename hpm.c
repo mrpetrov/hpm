@@ -1510,7 +1510,6 @@ main(int argc, char *argv[])
     /* set iter to its max value - makes sure we get a clock reading upon start */
     unsigned short iter = 30;
     unsigned short iter_P = 0;
-    unsigned short AlarmRaised = 0;
     unsigned short DevicesWantedState = 0;
     struct timeval tvalBefore, tvalAfter;
 
