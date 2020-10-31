@@ -620,6 +620,10 @@ parse_config()
             cfg.mode, cfg.use_ac1, cfg.use_ac2, cfg.wicorr, cfg.wocorr );
     }
     log_message(LOG_FILE, buff);
+    if(!cfg.mode){
+        sprintf( buff, "WARNING: For some reason, hpm is configured to be OFF, i.e. the config file option \"mode\" is recognised as ZERO !!!!!" );
+        log_message(LOG_FILE, buff);
+    }
 }
 
 void
