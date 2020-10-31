@@ -1167,9 +1167,10 @@ GetCurrentTime() {
 
 /* Turn ON compressor 1 limitations:
     1 - it must be off
-    2 - it must have been off for 5 minutes = 120 5 sec cycles */
+    2 - it must have been off for 5 minutes = 120 5 sec cycles
+    3 - it must not be too hot */
 unsigned short CanTurnC1On() {
-    if (!Cac1cmp && (SCac1cmp > 120)) return 1;
+    if (!Cac1cmp && (SCac1cmp > 120) && (Tac1cmp<56)) return 1;
     else return 0;
 }
 
@@ -1206,9 +1207,10 @@ unsigned short CanTurnV1Off() {
 
 /* Turn ON compressor 2 limitations:
     1 - it must be off
-    2 - it must have been off for 5 minutes = 120 5 sec cycles */
+    2 - it must have been off for 5 minutes = 120 5 sec cycles
+    3 - it must not be too hot */
 unsigned short CanTurnC2On() {
-    if (!Cac2cmp && (SCac2cmp > 120)) return 1;
+    if (!Cac2cmp && (SCac2cmp > 120) && (Tac2cmp<56)) return 1;
     else return 0;
 }
 
