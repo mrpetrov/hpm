@@ -1353,20 +1353,6 @@ ComputeSendBits() {
     }
 }
 
-void
-AdjustWantedStateForBatteryPower(unsigned short WS) {
-    /* Check for power source switch 
-    if ( CPowerByBattery != CPowerByBatteryPrev ) {
-        /* If we just switched to battery.. 
-        if ( CPowerByBattery ) {
-            log_message(LOG_FILE,"WARNING: Switch to BATTERY POWER detected.");
-        }
-        else {
-            log_message(LOG_FILE,"INFO: Powered by GRID now.");
-        }
-    } */
-}
-
 int
 main(int argc, char *argv[])
 {
@@ -1459,7 +1445,6 @@ main(int argc, char *argv[])
         } else {
             DevicesWantedState = 0;
         }
-        AdjustWantedStateForBatteryPower(DevicesWantedState);
         ActivateDevicesState(DevicesWantedState);
         ComputeSendBits();
         WriteCommsPins();
