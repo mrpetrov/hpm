@@ -1110,7 +1110,7 @@ LogData(short _ST_L) {
     */
     sprintf( data, "AC1: %4.1f,%4.1f,%4.1f,%4.1f;  AC2:%4.1f,%4.1f,%4.1f,%4.1f;  %6.3f,%6.3f,%6.3f",
     Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv );
-    sprintf( data + strlen(data), " wanted:");
+    sprintf( data + strlen(data), "Mode1:%d Mode2:%d wanted:", Cac1mode, Cac2mode );
     if (_ST_L&1) sprintf( data + strlen(data), " C1");
     if (_ST_L&2) sprintf( data + strlen(data), " F1");
     if (_ST_L&4) sprintf( data + strlen(data), " V1");
