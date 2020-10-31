@@ -1104,6 +1104,7 @@ write_log_start() {
 void
 LogData(short _ST_L) {
     static char data[280];
+    unsigned short diff=0;
     unsigned short RS=0; /* will hold real state for inverting */
     if (Cac1cmp) RS|=1;
     if (Cac1fan) RS|=2;
@@ -1111,7 +1112,7 @@ LogData(short _ST_L) {
     if (Cac2cmp) RS|=8;
     if (Cac2fan) RS|=16;
     if (Cac2fv) RS|=32;
-    RS = ~RS;
+    diff = ~(_ST_L & RS);
 
     sprintf( data, "AC1: %4.1f,%4.1f,%4.1f,%4.1f;  AC2:%4.1f,%4.1f,%4.1f,%4.1f;  %6.3f,%6.3f,%6.3f ",
     Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv );
@@ -1123,20 +1124,27 @@ LogData(short _ST_L) {
     if (Cac2mode==1) sprintf( data + strlen(data), " M2:starting");
     if (Cac2mode==2) sprintf( data + strlen(data), " M2:comp cooling");
     if (Cac2mode==3) sprintf( data + strlen(data), " M2:fins heating");
-    sprintf( data + strlen(data), " wanted:", Cac1mode, Cac2mode );
+    sprintf( data + strlen(data), " wanted:");
     if (_ST_L&1) sprintf( data + strlen(data), " C1");
     if (_ST_L&2) sprintf( data + strlen(data), " F1");
     if (_ST_L&4) sprintf( data + strlen(data), " V1");
     if (_ST_L&8) sprintf( data + strlen(data), " C2");
     if (_ST_L&16) sprintf( data + strlen(data), " F2");
     if (_ST_L&32) sprintf( data + strlen(data), " V2");
+    sprintf( data + strlen(data), "; GOT:");
+    if (Cac1cmp) sprintf( data + strlen(data), " C1");
+    if (Cac1fan) sprintf( data + strlen(data), " F1");
+    if (Cac1fv) sprintf( data + strlen(data), " V1");
+    if (Cac2cmp) sprintf( data + strlen(data), " C2");
+    if (Cac2fan) sprintf( data + strlen(data), " F2");
+    if (Cac2fv) sprintf( data + strlen(data), " V2");
     sprintf( data + strlen(data), "; DIFF:");
-    if (RS&1) sprintf( data + strlen(data), " C1");
-    if (RS&2) sprintf( data + strlen(data), " F1");
-    if (RS&4) sprintf( data + strlen(data), " V1");
-    if (RS&8) sprintf( data + strlen(data), " C2");
-    if (RS&16) sprintf( data + strlen(data), " F2");
-    if (RS&32) sprintf( data + strlen(data), " V2");
+    if (diff&1) sprintf( data + strlen(data), " C1");
+    if (diff&2) sprintf( data + strlen(data), " F1");
+    if (diff&4) sprintf( data + strlen(data), " V1");
+    if (diff&8) sprintf( data + strlen(data), " C2");
+    if (diff&16) sprintf( data + strlen(data), " F2");
+    if (diff&32) sprintf( data + strlen(data), " V2");
     sprintf( data + strlen(data), "; COMMS:%d sendBits:%d", COMMS, sendBits);
     log_message(DATA_FILE, data);
     
