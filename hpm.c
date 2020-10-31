@@ -1261,43 +1261,156 @@ SelectOpMode() {
     short wantC2on = 0;
     short wantF2on = 0;
     short wantV2on = 1;
+    short nrACs_running = 0;
  //   static char data[280];
     short t = 0;
     
-    if (HPL) { /* need to turn one AC one if possible */
-        t = cfg.use_ac1 + cfg.use_ac2;
-        if (t==2) { /* both ACs are allowed - choose the one that has worked less */
-            if (C1RunCs <= C2RunCs) t=1;
-            else t=2;
-        }
-        switch (t) {
-            default:
-            case 0: /* no ACs allowed? */
-            break;
-            case 1: /* AC1 only */
-            wantC1on = 1;
-            wantF1on = 1;
-            break;
-            case 2: /* AC2 only */
-            wantC2on = 1;
-            wantF2on = 1;
-            break;
+    if (Cac1cmp) nrACs_running++;
+    if (Cac2cmp) nrACs_running++;
+    if (HPL) { /* need to turn one AC on if possible */
+        switch (nrACs_running) { /* check if we already have ACs running */
+             case 0: /* both ACs are off - we need to decide which one we would want ON */
+                t = cfg.use_ac1 + cfg.use_ac2;
+                if (t==2) { /* both ACs are allowed - choose the one that has worked less */
+                    if (C1RunCs <= C2RunCs) t=1;
+                    else t=2;
+                }
+                switch (t) {
+                    default:
+                    case 0: /* no ACs allowed? */
+                        break;
+                    case 1: /* AC1 only */
+                        wantC1on = 1;
+                        break;
+                    case 2: /* AC2 only */
+                        wantC2on = 1;
+                        break;
+                }
+                break;
+             case 1: /* exactly 1 AC is already running - find out which one it is, and keep it running */
+                if (Cac1cmp) { /* its AC1 */
+                    wantC1on = 1;
+                }
+                else { /* its AC2 */
+                    wantC2on = 1;
+                }
+                break;
+             case 2: /* 2 ACs are running - we need to decide which one we want turned off */
+                    /* keep it simple - try to turn OFF the AC that has more cycles since last state change */
+                    if (SCac1cmp>=SCac2cmp) {
+                        wantC1on = 0;
+                    }
+                    else {
+                        wantC2on = 0;
+                    }
+                break;
         }
     }
     if (HPH) { /* need to turn both ACs if possible */
         wantC1on = 1;
-        wantF1on = 1;
         wantC2on = 1;
-        wantF2on = 1;
     }
-    
+
+    /* Until now we alredy know which ACs we want on; check wantC_on for that.
+        Now, it is time to manage running ACs mode, so that we keep the compressors within
+        allowed working parameters */
+    if (wantC1on) { 
+        switch (Cac1mode) {
+            case 0: /* AC 1 has been in OFF mode: */
+                    /* switch it to STARTING mode */
+                    Cac1mode = 1;
+                    SCac1mode = 0;
+                break;
+            case 1: /* AC 1 has been in STARTING mode: */
+                    /* when the compressor temp reaches 57 - switch mode to COMP COOLING */
+                    if (Tac1cmp>=57) { 
+                        Cac1mode = 2;
+                        SCac1mode = 0;
+                    }
+                break;
+            case 2: /* AC 1 has been in COMP COOLING mode: */
+                    /* when the compressor temp falls below 56 - switch mode to FIN STACK HEATING */
+                    if (Tac1cmp<=56) {
+                        Cac1mode = 3;
+                        SCac1mode = 0;
+                    }
+                break;
+            case 3: /* AC 1 has been in FIN STACK HEATING mode: */
+                    /* when the compressor temp goes back up to 57 *OR* the fin stack up to 0 -
+                        switch mode to COMP COOLING */
+                    if ((Tac1cmp>=57) || (Tac1cnd>=0)) {
+                        Cac1mode = 3;
+                        SCac1mode = 0;
+                    }
+                break;
+        }
+    }
+    if (wantC2on) { 
+        switch (Cac2mode) {
+            case 0: /* AC 2 has been in OFF mode: */
+                    /* switch it to STARTING mode */
+                    Cac2mode = 1;
+                    SCac2mode = 0;
+                break;
+            case 1: /* AC 2 has been in STARTING mode: */
+                    /* when the compressor temp reaches 57 - switch mode to COMP COOLING */
+                    if (Tac2cmp>=57) { 
+                        Cac2mode = 2;
+                        SCac2mode = 0;
+                    }
+                break;
+            case 2: /* AC 2 has been in COMP COOLING mode: */
+                    /* when the compressor temp falls below 56 - switch mode to FIN STACK HEATING */
+                    if (Tac2cmp<=56) {
+                        Cac2mode = 3;
+                        SCac2mode = 0;
+                    }
+                break;
+            case 3: /* AC 2 has been in FIN STACK HEATING mode: */
+                    /* when the compressor temp goes back up to 57 *OR* the fin stack up to 0 -
+                        switch mode to COMP COOLING */
+                    if ((Tac2cmp>=57) || (Tac2cnd>=0)) {
+                        Cac2mode = 3;
+                        SCac2mode = 0;
+                    }
+                break;
+        }
+    }
+
+    /* Now that we have ACs working modes determined - apply them */
+    /* funny how the only difference is the fan... ain't it? */
+    if (Cac1mode==3) { wantF1on = 1; }
+    if (Cac2mode==3) { wantF2on = 1; }
+
+    /* as a final action - if an AC is not allowed to be used by config file - make sure it stays OFF */
+    if (!cfg.use_ac1) {
+        wantC1on = 0;
+        wantF1on = 0;
+        wantV1on = 0;
+    }
+    if (!cfg.use_ac2) {
+        wantC2on = 0;
+        wantF2on = 0;
+        wantV2on = 0;
+    }
+
+    /* Turning to OFF mode cleanup:
+        If an AC has been ON, but now will be turned OFF - change its mode accordingly */
+    if (Cac1cmp && !wantC1on) {
+        Cac1mode = 0;
+        SCac1mode = 0;
+    }
+    if (Cac2cmp && !wantC2on) {
+        Cac2mode = 0;
+        SCac2mode = 0;
+    }
+
     if ( wantC1on) StateDesired |= 1;
     if ( wantF1on ) StateDesired |= 2;
     if ( wantV1on )  StateDesired |= 4;
     if ( wantC2on )  StateDesired |= 8;
     if ( wantF2on ) StateDesired |= 16;
     if ( wantV2on )  StateDesired |= 32;
-
     return StateDesired;
 }
 
