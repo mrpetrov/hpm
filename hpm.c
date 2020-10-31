@@ -1464,26 +1464,40 @@ ActivateDevicesState(const unsigned short _ST_) {
     }
 }
 
+
+/* Gets called after main decision making for the cycle has taken place. This means that
+   control states can be used to make decisions. The task here is to take into account limitations, 
+   and compute an answer to return to hwwm */
 void
 ComputeSendBits() {
-    switch (COMMS) {
-        default:
-        case 0:
-            sendBits = 3;
-            break;
-        case 1:
-            sendBits++;
-            if (sendBits>2) sendBits = 0;
-            break;
-        case 2:
-            if ((ProgramRunCycles%2)==1) {
-                sendBits++;
-                if (sendBits>3) sendBits = 0;
-            }
-            break;
-        case 3:
-            break;
+    unsigned short nrACs_startable = 0;
+    unsigned short nrACs_stoppable = 0;
+    unsigned short k = 0;
+
+    /* Start by determining how many AC we can START */
+    if (CanTurnC1On()) nrACs_startable++;
+    if (CanTurnC2On()) nrACs_startable++;
+
+    /* Then determine how many AC we can STOP */
+    if (CanTurnC1Off()) nrACs_stoppable++;
+    if (CanTurnC2Off()) nrACs_stoppable++;
+    
+    /* If we cannot start or stop ACs - do no allow changes */
+    if (!(nrACs_startable || nrACs_stoppable)) {
+            sendBits = 0;
+            return;
     }
+
+    /* What follows here is the smallest possible code I came up with to give the desired 
+       results as seen in a all-possible-scenarios-blown-up table; 
+       Basically, this is magic! ;) */
+    if (nrACs_startable) { k = 1; }
+    if (nrACs_startable==nrACs_stoppable) { k = 0; }
+    if (nrACs_stoppable) {
+        k += 1 + nrACs_stoppable + nrACs_startable;
+    }
+    
+    sendBits = k;
 }
 
 int
