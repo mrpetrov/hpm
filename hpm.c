@@ -138,7 +138,7 @@ long ctrlstatecycles[9] = { -1, 118, 0, 0, 0, 118, 0, 0, 0 };
 unsigned long C1RunCs = 0;
 unsigned long C2RunCs = 0;
 
-/* Nubmer of cycles (circa 10 seconds each) that the program has run */
+/* Nubmer of cycles (~5 seconds each) that the program has run */
 unsigned long ProgramRunCycles  = 0;
 
 /* timers - current hour and month vars - used in keeping things up to date */
