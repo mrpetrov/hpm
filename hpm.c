@@ -1128,20 +1128,24 @@ LogData(short _ST_L) {
     if (Cac2mode==1) sprintf( data + strlen(data), " M2:starting");
     if (Cac2mode==2) sprintf( data + strlen(data), " M2:c cooling");
     if (Cac2mode==3) sprintf( data + strlen(data), " M2:fins heat");
-    sprintf( data + strlen(data), "  WANTED:");
-    if (_ST_L&1) sprintf( data + strlen(data), " C1");
-    if (_ST_L&2) sprintf( data + strlen(data), " F1");
-    if (_ST_L&4) sprintf( data + strlen(data), " V1");
-    if (_ST_L&8) sprintf( data + strlen(data), " C2");
-    if (_ST_L&16) sprintf( data + strlen(data), " F2");
-    if (_ST_L&32) sprintf( data + strlen(data), " V2");
-    sprintf( data + strlen(data), " got:");
-    if (Cac1cmp) sprintf( data + strlen(data), " C1");
-    if (Cac1fan) sprintf( data + strlen(data), " F1");
-    if (Cac1fv) sprintf( data + strlen(data), " V1");
-    if (Cac2cmp) sprintf( data + strlen(data), " C2");
-    if (Cac2fan) sprintf( data + strlen(data), " F2");
-    if (Cac2fv) sprintf( data + strlen(data), " V2");
+    if (_ST_L) {
+        sprintf( data + strlen(data), "  WANTED:");
+        if (_ST_L&1) sprintf( data + strlen(data), " C1");
+        if (_ST_L&2) sprintf( data + strlen(data), " F1");
+        if (_ST_L&4) sprintf( data + strlen(data), " V1");
+        if (_ST_L&8) sprintf( data + strlen(data), " C2");
+        if (_ST_L&16) sprintf( data + strlen(data), " F2");
+        if (_ST_L&32) sprintf( data + strlen(data), " V2");
+    } else sprintf( data + strlen(data), "   idle    ");
+    if (RS) {
+        sprintf( data + strlen(data), " got:");
+        if (Cac1cmp) sprintf( data + strlen(data), " C1");
+        if (Cac1fan) sprintf( data + strlen(data), " F1");
+        if (Cac1fv) sprintf( data + strlen(data), " V1");
+        if (Cac2cmp) sprintf( data + strlen(data), " C2");
+        if (Cac2fan) sprintf( data + strlen(data), " F2");
+        if (Cac2fv) sprintf( data + strlen(data), " V2");
+    }
     if (diff) {
         sprintf( data + strlen(data), " MISSING:");
         if (diff&1) sprintf( data + strlen(data), " C1");
