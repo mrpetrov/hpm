@@ -1165,12 +1165,15 @@ GetCurrentTime() {
     current_month = atoi( buff );
 }
 
-/* Turn ON compressor 1 limitations:
+/* Turn ON compressor limitations:
     1 - it must be off
     2 - it must have been off for 5 minutes = 120 5 sec cycles
-    3 - it must not be too hot */
+    3 - it must not be too hot 
+    4 - the other compressor must not have been switched ON
+         in the last 15 seconds */
 unsigned short CanTurnC1On() {
-    if (!Cac1cmp && (SCac1cmp > 120) && (Tac1cmp<56)) return 1;
+    if (!Cac1cmp && (SCac1cmp > 120) && (Tac1cmp<56) &&
+        ((Cac2cmp && (SCac2cmp > 3))||(!Cac2cmp))) return 1;
     else return 0;
 }
 
@@ -1205,12 +1208,15 @@ unsigned short CanTurnV1Off() {
     return CanTurnV1On();
 }
 
-/* Turn ON compressor 2 limitations:
+/* Turn ON compressor limitations:
     1 - it must be off
     2 - it must have been off for 5 minutes = 120 5 sec cycles
-    3 - it must not be too hot */
+    3 - it must not be too hot 
+    4 - the other compressor must not have been switched ON
+         in the last 15 seconds */
 unsigned short CanTurnC2On() {
-    if (!Cac2cmp && (SCac2cmp > 120) && (Tac2cmp<56)) return 1;
+    if (!Cac2cmp && (SCac2cmp > 120) && (Tac2cmp<56) &&
+        ((Cac1cmp && (SCac1cmp > 3))||(!Cac1cmp))) return 1;
     else return 0;
 }
 
@@ -1354,12 +1360,9 @@ SelectOpMode() {
     if (wantC2on) { 
         switch (Cac2mode) {
             case 0: /* AC 2 has been in OFF mode: */
-                    /* switch it to STARTING mode, but avoid doing it all at once:
-                       we want to avoid the grid having to start 2 compressors simultaneously */
-                    if (!(wantC1on && (Cac1mode==1) && (SCac1mode<3))) {
-                        Cac2mode = 1;
-                        SCac2mode = 0;
-                    }
+                    /* switch it to STARTING mode */
+                    Cac2mode = 1;
+                    SCac2mode = 0;
                 break;
             case 1: /* AC 2 has been in STARTING mode: */
                     /* when the compressor temp reaches 57 - switch mode to COMP COOLING */
