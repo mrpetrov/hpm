@@ -687,7 +687,7 @@ ReadPersistentData() {
     }
 
     if (should_write) {
-        log_message(LOG_FILE, "Creating missing power persistence data file...");
+        log_message(LOG_FILE, "INFO: Creating missing persistent data file...");
         WritePersistentData();
     }
     else {
