@@ -1104,26 +1104,39 @@ write_log_start() {
 void
 LogData(short _ST_L) {
     static char data[280];
-    /* Log data like so:
-    Time(by log function) AC1: Tcomp1,Tcnd1,The1i,The1o; AC2: Tcomp2,Tcnd2,The2i,The2o;
-        WaterIn, WaterOut, Tenv
-    */
-    sprintf( data, "AC1: %4.1f,%4.1f,%4.1f,%4.1f;  AC2:%4.1f,%4.1f,%4.1f,%4.1f;  %6.3f,%6.3f,%6.3f",
+    unsigned short RS=0; /* will hold real state for inverting */
+    if (Cac1cmp) RS|=1;
+    if (Cac1fan) RS|=2;
+    if (Cac1fv) RS|=4;
+    if (Cac2cmp) RS|=8;
+    if (Cac2fan) RS|=16;
+    if (Cac2fv) RS|=32;
+    RS = ~RS;
+
+    sprintf( data, "AC1: %4.1f,%4.1f,%4.1f,%4.1f;  AC2:%4.1f,%4.1f,%4.1f,%4.1f;  %6.3f,%6.3f,%6.3f ",
     Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv );
-    sprintf( data + strlen(data), " Mode1:%d Mode2:%d wanted:", Cac1mode, Cac2mode );
+    if (Cac1mode==0) sprintf( data + strlen(data), "M1:off");
+    if (Cac1mode==1) sprintf( data + strlen(data), "M1:starting");
+    if (Cac1mode==2) sprintf( data + strlen(data), "M1:comp cooling");
+    if (Cac1mode==3) sprintf( data + strlen(data), "M1:fins heating");
+    if (Cac2mode==0) sprintf( data + strlen(data), " M2:off");
+    if (Cac2mode==1) sprintf( data + strlen(data), " M2:starting");
+    if (Cac2mode==2) sprintf( data + strlen(data), " M2:comp cooling");
+    if (Cac2mode==3) sprintf( data + strlen(data), " M2:fins heating");
+    sprintf( data + strlen(data), " wanted:", Cac1mode, Cac2mode );
     if (_ST_L&1) sprintf( data + strlen(data), " C1");
     if (_ST_L&2) sprintf( data + strlen(data), " F1");
     if (_ST_L&4) sprintf( data + strlen(data), " V1");
     if (_ST_L&8) sprintf( data + strlen(data), " C2");
     if (_ST_L&16) sprintf( data + strlen(data), " F2");
     if (_ST_L&32) sprintf( data + strlen(data), " V2");
-    sprintf( data + strlen(data), "; GOT:");
-    if (Cac1cmp) sprintf( data + strlen(data), " C1");
-    if (Cac1fan) sprintf( data + strlen(data), " F1");
-    if (Cac1fv) sprintf( data + strlen(data), " V1");
-    if (Cac2cmp) sprintf( data + strlen(data), " C2");
-    if (Cac2fan) sprintf( data + strlen(data), " F2");
-    if (Cac2fv) sprintf( data + strlen(data), " V2");
+    sprintf( data + strlen(data), "; DIFF:");
+    if (RS&1) sprintf( data + strlen(data), " C1");
+    if (RS&2) sprintf( data + strlen(data), " F1");
+    if (RS&4) sprintf( data + strlen(data), " V1");
+    if (RS&8) sprintf( data + strlen(data), " C2");
+    if (RS&16) sprintf( data + strlen(data), " F2");
+    if (RS&32) sprintf( data + strlen(data), " V2");
     sprintf( data + strlen(data), "; COMMS:%d sendBits:%d", COMMS, sendBits);
     log_message(DATA_FILE, data);
     
