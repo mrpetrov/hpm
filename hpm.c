@@ -1102,7 +1102,7 @@ write_log_start() {
     log_message(LOG_FILE,"Running in "RUNNING_DIR", config file "CONFIG_FILE );
     log_message(LOG_FILE,"PID written to "LOCK_FILE", writing CSV data to "DATA_FILE );
     log_message(LOG_FILE,"Writing table data for collectd to "TABLE_FILE );
-    log_message(LOG_FILE,"Power used persistence file "PRSSTNC_FILE );
+    log_message(LOG_FILE,"Persistent data file is "PRSSTNC_FILE );
 }
 
 void
