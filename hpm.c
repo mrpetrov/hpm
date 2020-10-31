@@ -1126,6 +1126,10 @@ LogData(short _ST_L) {
     if (Cac2fv) sprintf( data + strlen(data), " V2");
     sprintf( data + strlen(data), "; COMMS:%d sendBits:%d", COMMS, sendBits);
     log_message(DATA_FILE, data);
+    
+    /* for the first 8 cycles = 40 seconds - do not create or update the files that go out to
+       other systems - sometimes there is garbage, which would be nice if is not sent at all */
+    if ( ProgramRunCycles < 8 ) return;
 
     sprintf( data, ",AC1COMP,%5.3f\n_,AC1CND,%5.3f\n_,HE1I,%5.3f\n_,HE1O,%5.3f\n"\
     "_,AC2COMP,%5.3f\n_,AC2CND,%5.3f\n_,HE2I,%5.3f\n_,HE2O,%5.3f\n"\
@@ -1595,8 +1599,7 @@ main(int argc, char *argv[])
         ActivateDevicesState(DevicesWantedState);
         ComputeSendBits();
         WriteCommsPins();
-        /* for the first 2 cycles  = 10 seconds - do not log anything */
-        if ( ProgramRunCycles > 1 ) { LogData(DevicesWantedState); }
+        LogData(DevicesWantedState);
         ProgramRunCycles++;
         if ( just_started ) { just_started--; }
         if ( need_to_read_cfg ) {
