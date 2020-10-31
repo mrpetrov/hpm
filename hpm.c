@@ -1112,7 +1112,7 @@ LogData(short _ST_L) {
     if (Cac2cmp) RS|=8;
     if (Cac2fan) RS|=16;
     if (Cac2fv) RS|=32;
-    diff = ~(_ST_L & RS);
+    diff = (_ST_L ^ RS);
 
     sprintf( data, "AC1: %4.1f,%4.1f,%4.1f,%4.1f;  AC2:%4.1f,%4.1f,%4.1f,%4.1f;  %6.3f,%6.3f,%6.3f ",
     Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv );
