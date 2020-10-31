@@ -1545,10 +1545,16 @@ ComputeSendBits() {
     if (CanTurnC1Off()) nrACs_stoppable++;
     if (CanTurnC2Off()) nrACs_stoppable++;
     
-    /* If we cannot start or stop ACs - do no allow changes */
+    /* When cfg.mode is set to OFF -  allow all changes */
+    if (!cfg.mode) {
+        sendBits = 3;
+        return;
+    }
+
+    /* If we cannot start or stop ACs - do not allow changes */
     if (!(nrACs_startable || nrACs_stoppable)) {
-            sendBits = 0;
-            return;
+        sendBits = 0;
+        return;
     }
 
     /* What follows here is the smallest possible code I came up with to give the desired 
