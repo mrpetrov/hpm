@@ -117,6 +117,12 @@ short controls[9] = { -1, 0, 0, 0, 0, 0, 0, 0, 0 };
 #define   Cac2fv                  controls[7]
 #define   Cac2mode            controls[8]
 
+/* AC mode states:
+            0 - off; 
+            1 - starting; 
+            2 - compressor cooling; 
+            3 - fin stack heating up */
+
 /* controls state cycles - zeroed on change to state */
 long ctrlstatecycles[9] = { -1, 118, 0, 0, 0, 118, 0, 0, 0 };
 
