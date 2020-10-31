@@ -1131,7 +1131,7 @@ LogData(short _ST_L) {
     if (_ST_L&8) sprintf( data + strlen(data), " C2");
     if (_ST_L&16) sprintf( data + strlen(data), " F2");
     if (_ST_L&32) sprintf( data + strlen(data), " V2");
-    sprintf( data + strlen(data), "; got:");
+    sprintf( data + strlen(data), " got:");
     if (Cac1cmp) sprintf( data + strlen(data), " C1");
     if (Cac1fan) sprintf( data + strlen(data), " F1");
     if (Cac1fv) sprintf( data + strlen(data), " V1");
@@ -1139,7 +1139,7 @@ LogData(short _ST_L) {
     if (Cac2fan) sprintf( data + strlen(data), " F2");
     if (Cac2fv) sprintf( data + strlen(data), " V2");
     if (diff) {
-        sprintf( data + strlen(data), "; MISSING:%d", diff);
+        sprintf( data + strlen(data), " MISSING:");
         if (diff&1) sprintf( data + strlen(data), " C1");
         if (diff&2) sprintf( data + strlen(data), " F1");
         if (diff&4) sprintf( data + strlen(data), " V1");
@@ -1147,8 +1147,8 @@ LogData(short _ST_L) {
         if (diff&16) sprintf( data + strlen(data), " F2");
         if (diff&32) sprintf( data + strlen(data), " V2");
     }
-    else sprintf( data + strlen(data), "; OK!", diff);
-    sprintf( data + strlen(data), "; COMMS:%d sendBits:%d", COMMS, sendBits);
+    else sprintf( data + strlen(data), " OK!", diff);
+    sprintf( data + strlen(data), " COMMS:%d sendBits:%d", COMMS, sendBits);
     log_message(DATA_FILE, data);
     
     /* for the first 8 cycles = 40 seconds - do not create or update the files that go out to
