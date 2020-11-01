@@ -1445,6 +1445,8 @@ SelectOpMode() {
     }
 
     /* Now that we have ACs working modes determined - apply them */
+    if (Cac1mode==1) { wantF1on = 1; }
+    if (Cac2mode==1) { wantF2on = 1; }
     /* funny how the only difference is the fan... ain't it? */
     if (Cac1mode==3) { wantF1on = 1; }
     if (Cac2mode==3) { wantF2on = 1; }
