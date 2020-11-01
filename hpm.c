@@ -1391,9 +1391,9 @@ SelectOpMode() {
                     }
                 break;
             case 3: /* AC 1 has been in FIN STACK HEATING mode: */
-                    /* when the compressor temp goes back up to 57 *OR* the fin stack up to 0 -
+                    /* when the compressor temp goes back up to 57 *OR* the fin stack up to 1 -
                         switch mode to COMP COOLING */
-                    if ((Tac1cmp>=57) || (Tac1cnd>=0)) {
+                    if (((Tac1cmp>=57) || (Tac1cnd>=1)) && (SCac1mode>5)) {
                         Cac1mode = 2;
                         SCac1mode = 0;
                     }
@@ -1429,9 +1429,9 @@ SelectOpMode() {
                     }
                 break;
             case 3: /* AC 2 has been in FIN STACK HEATING mode: */
-                    /* when the compressor temp goes back up to 57 *OR* the fin stack up to 0 -
+                    /* when the compressor temp goes back up to 57 *OR* the fin stack up to 1 -
                         switch mode to COMP COOLING */
-                    if ((Tac2cmp>=57) || (Tac2cnd>=0)) {
+                    if (((Tac2cmp>=57) || (Tac2cnd>=1)) && (SCac2mode>5)) {
                         Cac2mode = 2;
                         SCac2mode = 0;
                     }
