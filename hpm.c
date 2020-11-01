@@ -1394,7 +1394,7 @@ SelectOpMode() {
                     /* when the compressor temp goes back up to 57 *OR* the fin stack up to 0 -
                         switch mode to COMP COOLING */
                     if ((Tac1cmp>=57) || (Tac1cnd>=0)) {
-                        Cac1mode = 3;
+                        Cac1mode = 2;
                         SCac1mode = 0;
                     }
                 break;
@@ -1432,7 +1432,7 @@ SelectOpMode() {
                     /* when the compressor temp goes back up to 57 *OR* the fin stack up to 0 -
                         switch mode to COMP COOLING */
                     if ((Tac2cmp>=57) || (Tac2cnd>=0)) {
-                        Cac2mode = 3;
+                        Cac2mode = 2;
                         SCac2mode = 0;
                     }
                 break;
