@@ -1339,13 +1339,13 @@ SelectOpMode() {
                     wantC2on = 1;
                 }
                 break;
-             case 2: /* 2 ACs are running - we need to decide which one we want turned off */
+             case 2: /* 2 ACs are running - we need to decide which one we want turned off - in practice we leave ON the other one*/
                     /* keep it simple - try to turn OFF the AC that has more cycles since last state change */
                     if (SCac1cmp>=SCac2cmp) {
-                        wantC1on = 0;
+                        wantC2on = 1;
                     }
                     else {
-                        wantC2on = 0;
+                        wantC1on = 1;
                     }
                 break;
         }
