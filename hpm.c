@@ -1423,7 +1423,7 @@ SelectOpMode() {
                 break;
             case 2: /* AC 2 has been in COMP COOLING mode: */
                     /* when the compressor temp falls below 56 - switch mode to FIN STACK HEATING */
-                    if ((Tac2cmp<=56) && (SCac2mode>10) {
+                    if ((Tac2cmp<=56) && (SCac2mode>10)) {
                         Cac2mode = 3;
                         SCac2mode = 0;
                     }
