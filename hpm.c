@@ -1364,9 +1364,6 @@ SelectOpMode() {
         wantC1on = 1;
         wantC2on = 1;
     }
-    /* trigger DEFROST logic properly */
-    if (Cac1mode==4) wantC1on = 1;
-    if (Cac2mode==4) wantC2on = 1;
     
     if (COMMS==3) { /* hwwm is signaling power has switched to battery */
         /* assume everything is OFF, even the fourway valves */
@@ -1376,12 +1373,14 @@ SelectOpMode() {
         wantC2on = 0;
         wantF2on = 0;
         wantV2on = 0;
+        Cac1mode = 0;
+        Cac2mode = 0;
     }
 
     /* Until now we alredy know which ACs we want on; check wantC_on for that.
         Now, it is time to manage running ACs mode, so that we keep the compressors within
         allowed working parameters */
-    if (wantC1on) { 
+    if (wantC1on || (Cac1mode==4)) { 
         switch (Cac1mode) {
             case 0: /* AC 1 has been in OFF mode: */
                     /* if AC1 can be turned ON, switch its mode to STARTING */
@@ -1464,7 +1463,7 @@ SelectOpMode() {
             SCac1mode = 0;
         }
     }
-    if (wantC2on) { 
+    if (wantC2on || (Cac2mode==4)) { 
         switch (Cac2mode) {
             case 0: /* AC 2 has been in OFF mode: */
                     /* if AC2 can be turned ON, switch its mode to STARTING */
