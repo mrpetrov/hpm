@@ -1395,8 +1395,8 @@ SelectOpMode() {
                         Cac1mode = 2;
                         SCac1mode = 0;
                     }
-                    /* if 5 minutes into starting fins are at -5 or lower - switch to defrost mode */
-                    if ((SCac1mode>59) && (Tac1cnd<=-5)) {
+                    /* if 2 minutes into starting fins are at -5 or lower - switch to defrost mode */
+                    if ((SCac1mode>24) && (Tac1cnd<=-5)) {
                         Cac1mode = 4;
                         SCac1mode = 0;
                     }
@@ -1478,8 +1478,8 @@ SelectOpMode() {
                         Cac2mode = 2;
                         SCac2mode = 0;
                     }
-                    /* if 5 minutes into starting fins are at -5 or lower - switch to defrost mode */
-                    if ((SCac2mode>59) && (Tac2cnd<=-5)) {
+                    /* if 2 minutes into starting fins are at -5 or lower - switch to defrost mode */
+                    if ((SCac2mode>24) && (Tac2cnd<=-5)) {
                         Cac2mode = 4;
                         SCac2mode = 0;
                     }
