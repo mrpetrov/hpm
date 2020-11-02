@@ -1437,7 +1437,7 @@ SelectOpMode() {
                         case 110 ... 112: /* ONLY VALVE ON */
                             break;
                     }
-                    if (SCac1mode>=112)) {
+                    if (SCac1mode>=112) {
                         Cac1mode = 1;
                         SCac1mode = 0;
                     }
@@ -1515,7 +1515,7 @@ SelectOpMode() {
                         case 110 ... 112: /* ONLY VALVE ON */
                             break;
                     }
-                    if (SCac2mode>=112)) {
+                    if (SCac2mode>=112) {
                         Cac2mode = 1;
                         SCac2mode = 0;
                     }
