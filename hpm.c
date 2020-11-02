@@ -1403,7 +1403,7 @@ SelectOpMode() {
                     }
                     /* if enough time passes, fins stack gets seriosly cold -
                     switch to defrost mode */
-                    if ((SCac1mode>239) && (Tac1cnd<-6)) {
+                    if ((SCac1mode>159) && (Tac1cnd<-6)) {
                         Cac1mode = 4;
                         SCac1mode = 0;
                     }
@@ -1481,7 +1481,7 @@ SelectOpMode() {
                     }
                     /* if enough time passes, fins stack gets seriosly cold -
                     switch to defrost mode */
-                    if ((SCac2mode>239) && (Tac2cnd<-6)) {
+                    if ((SCac2mode>159) && (Tac2cnd<-6)) {
                         Cac2mode = 4;
                         SCac2mode = 0;
                     }
