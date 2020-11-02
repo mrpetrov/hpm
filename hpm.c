@@ -1386,6 +1386,11 @@ SelectOpMode() {
                         Cac1mode = 2;
                         SCac1mode = 0;
                     }
+                    /* if while starting fins stack gets seriosly cold - switch to defrost mode */
+                    if (Tac1cnd<-7) {
+                        Cac1mode = 4;
+                        SCac1mode = 0;
+                    }
                 break;
             case 2: /* AC 1 has been in COMP COOLING mode: */
                     /* when the compressor temp falls below 56 - switch mode to FIN STACK HEATING */
@@ -1462,6 +1467,11 @@ SelectOpMode() {
                     /* when the compressor temp reaches 57 - switch mode to COMP COOLING */
                     if (Tac2cmp>=57) { 
                         Cac2mode = 2;
+                        SCac2mode = 0;
+                    }
+                    /* if while starting fins stack gets seriosly cold - switch to defrost mode */
+                    if (Tac2cnd<-7) {
+                        Cac2mode = 4;
                         SCac2mode = 0;
                     }
                 break;
