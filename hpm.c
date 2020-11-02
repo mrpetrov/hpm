@@ -1644,12 +1644,12 @@ ComputeSendBits() {
     unsigned short k = 0;
 
     /* Start by determining how many AC we can START */
-    if (CanTurnC1On()) nrACs_startable++;
-    if (CanTurnC2On()) nrACs_startable++;
+    if (CanTurnC1On() && (Cac1mode!=4)) nrACs_startable++;
+    if (CanTurnC2On() && (Cac2mode!=4)) nrACs_startable++;
 
     /* Then determine how many AC we can STOP */
-    if (CanTurnC1Off()) nrACs_stoppable++;
-    if (CanTurnC2Off()) nrACs_stoppable++;
+    if (CanTurnC1Off() && (Cac1mode!=4)) nrACs_stoppable++;
+    if (CanTurnC2Off() && (Cac2mode!=4)) nrACs_stoppable++;
     
     /* When cfg.mode is set to OFF -  allow all changes */
     if (!cfg.mode) {
