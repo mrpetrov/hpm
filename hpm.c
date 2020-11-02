@@ -1793,7 +1793,7 @@ main(int argc, char *argv[])
         }
         else {
             /* use hardcoded sleep() if time is skewed (for eg. daylight saving, ntp adjustments, etc.) */
-            if ((tvalAfter.tv_sec - tvalBefore.tv_sec) > 8) {
+            if ((tvalAfter.tv_sec - tvalBefore.tv_sec) > 5) {
                 sleep( 1 );
             }
             else {
