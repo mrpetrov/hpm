@@ -1357,6 +1357,9 @@ SelectOpMode() {
                     else {
                         wantC1on = 1;
                     }
+                    /* in case one of the running ACs is DEFROSTING - turn the other one OFF */
+                    if (Cac1mode==4) { wantC1on = 1; wantC2on = 0; }
+                    if (Cac2mode==4) { wantC2on = 1; wantC1on = 0; }
                 break;
         }
     }
