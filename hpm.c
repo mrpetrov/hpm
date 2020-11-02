@@ -1207,7 +1207,7 @@ GetCurrentTime() {
          in the last 15 seconds 
     5 - for DEFROST - allow quick toggling */
 unsigned short CanTurnC1On() {
-    if (Cac1mode==4) return 1;
+    if (!Cac1cmp && (Cac1mode==4)) return 1;
     if (!Cac1cmp && (SCac1cmp > 120) && (Tac1cmp<56) &&
         ((Cac2cmp && (SCac2cmp > 3))||(!Cac2cmp))) return 1;
     else return 0;
@@ -1218,7 +1218,7 @@ unsigned short CanTurnC1On() {
     2 - it must have been ON for 5 minutes = 120 5 sec cycles
     3 - during DEFROST cycle - can be turned off quicker */
 unsigned short CanTurnC1Off() {
-    if (Cac1mode==4) return 1;
+    if (Cac1cmp && (Cac1mode==4)) return 1;
     if (Cac1cmp && (SCac1cmp > 120)) return 1;
     else return 0;
 }
@@ -1254,7 +1254,7 @@ unsigned short CanTurnV1Off() {
          in the last 15 seconds 
     5 - for DEFROST - allow quick toggling */
 unsigned short CanTurnC2On() {
-    if (Cac2mode==4) return 1;
+    if (!Cac2cmp && (Cac2mode==4)) return 1;
     if (!Cac2cmp && (SCac2cmp > 120) && (Tac2cmp<56) &&
         ((Cac1cmp && (SCac1cmp > 3))||(!Cac1cmp))) return 1;
     else return 0;
@@ -1265,7 +1265,7 @@ unsigned short CanTurnC2On() {
     2 - it must have been ON for 5 minutes = 120 5 sec cycles
     3 - during DEFROST cycle - can be turned off quicker */
 unsigned short CanTurnC2Off() {
-    if (Cac2mode==4) return 1;
+    if (Cac2cmp && (Cac2mode==4)) return 1;
     if (Cac2cmp && (SCac2cmp > 120)) return 1;
     else return 0;
 }
