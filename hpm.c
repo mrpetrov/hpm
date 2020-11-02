@@ -1364,6 +1364,10 @@ SelectOpMode() {
         wantC1on = 1;
         wantC2on = 1;
     }
+    /* trigger DEFROST logic properly */
+    if (Cac1mode==4) wantC1on = 1;
+    if (Cac2mode==4) wantC2on = 1;
+    
     if (COMMS==3) { /* hwwm is signaling power has switched to battery */
         /* assume everything is OFF, even the fourway valves */
         wantC1on = 0;
