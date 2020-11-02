@@ -1214,9 +1214,10 @@ unsigned short CanTurnC1On() {
 /* Turn OFF compressor 2 limitations:
     1 - it must be ON
     2 - it must have been ON for 5 minutes = 120 5 sec cycles
-    3 - it must NOT be in defrost cycle */
+    3 - during DEFROST cycle - can be turned off quicker */
 unsigned short CanTurnC1Off() {
-    if (Cac1cmp && (SCac1cmp > 120) && (Cac1mode!=4)) return 1;
+    if (Cac1mode==4) return 1;
+    if (Cac1cmp && (SCac1cmp > 120)) return 1;
     else return 0;
 }
 
@@ -1258,9 +1259,10 @@ unsigned short CanTurnC2On() {
 /* Turn OFF compressor 2 limitations:
     1 - it must be ON
     2 - it must have been ON for 5 minutes = 120 5 sec cycles
-    3 - it must NOT be in defrost cycle */
+    3 - during DEFROST cycle - can be turned off quicker */
 unsigned short CanTurnC2Off() {
-    if (Cac2cmp && (SCac2cmp > 120) && (Cac2mode!=4)) return 1;
+    if (Cac2mode==4) return 1;
+    if (Cac2cmp && (SCac2cmp > 120)) return 1;
     else return 0;
 }
 
