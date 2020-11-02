@@ -1124,10 +1124,12 @@ LogData(short _ST_L) {
     if (Cac1mode==1) sprintf( data + strlen(data), "M1:starting");
     if (Cac1mode==2) sprintf( data + strlen(data), "M1:c cooling");
     if (Cac1mode==3) sprintf( data + strlen(data), "M1:fins heat");
+    if (Cac1mode==4) sprintf( data + strlen(data), "M1:defrost");
     if (Cac2mode==0) sprintf( data + strlen(data), " M2: off   ");
     if (Cac2mode==1) sprintf( data + strlen(data), " M2:starting");
     if (Cac2mode==2) sprintf( data + strlen(data), " M2:c cooling");
     if (Cac2mode==3) sprintf( data + strlen(data), " M2:fins heat");
+    if (Cac2mode==4) sprintf( data + strlen(data), " M2:defrost");
     if (_ST_L) {
         sprintf( data + strlen(data), "  WANTED:");
         if (_ST_L&1) sprintf( data + strlen(data), " C1");
@@ -1211,9 +1213,10 @@ unsigned short CanTurnC1On() {
 
 /* Turn OFF compressor 2 limitations:
     1 - it must be ON
-    2 - it must have been ON for 5 minutes = 120 5 sec cycles */
+    2 - it must have been ON for 5 minutes = 120 5 sec cycles
+    3 - it must NOT be in defrost cycle */
 unsigned short CanTurnC1Off() {
-    if (Cac1cmp && (SCac1cmp > 120)) return 1;
+    if (Cac1cmp && (SCac1cmp > 120) && (Cac1mode!=4)) return 1;
     else return 0;
 }
 
@@ -1254,9 +1257,10 @@ unsigned short CanTurnC2On() {
 
 /* Turn OFF compressor 2 limitations:
     1 - it must be ON
-    2 - it must have been ON for 5 minutes = 120 5 sec cycles */
+    2 - it must have been ON for 5 minutes = 120 5 sec cycles
+    3 - it must NOT be in defrost cycle */
 unsigned short CanTurnC2Off() {
-    if (Cac2cmp && (SCac2cmp > 120)) return 1;
+    if (Cac2cmp && (SCac2cmp > 120) && (Cac2mode!=4)) return 1;
     else return 0;
 }
 
@@ -1397,6 +1401,46 @@ SelectOpMode() {
                         Cac1mode = 2;
                         SCac1mode = 0;
                     }
+                    /* if enough time passes, fins stack gets seriosly cold -
+                    switch to defrost mode */
+                    if ((SCac1mode>239) && (Tac1cnd<-6)) {
+                        Cac1mode = 4;
+                        SCac1mode = 0;
+                    }
+                break;
+            case 4: /* this AC need a defrost cycle */
+                    /* when the DEFROST cycle reaches cycle nr 112 - switch mode back
+                        to STARTING*/
+                    switch (SCac1mode) {
+                        case 0 ... 11: /* ONLY VALVE ON */
+                            break;
+                        case 12 ... 17: /* ALL INCLUDING VALVE OFF */
+                            wantV1on = 0;
+                            break;
+                        case 18 ... 23: /* ONLY VALVE ON */
+                            break;
+                        case 24 ... 29: /* ALL INCLUDING VALVE OFF */
+                            wantV1on = 0;
+                            break;
+                        case 30 ... 89: /* COMPRESSOR ON WITH VALVE OFF */
+                            wantC1on = 1;
+                            wantV1on = 0;
+                            break;
+                        case 90 ... 101: /* COMPRESSOR OFF WITH VALVE OFF */
+                            wantV1on = 0;
+                            break;
+                        case 102 ... 104: /* ONLY VALVE ON */
+                            break;
+                        case 105 ... 109: /* ALL INCLUDING VALVE OFF */
+                            wantV1on = 0;
+                            break;
+                        case 110 ... 112: /* ONLY VALVE ON */
+                            break;
+                    }
+                    if (SCac1mode>=112)) {
+                        Cac1mode = 1;
+                        SCac1mode = 0;
+                    }
                 break;
         }
     } else {
@@ -1433,6 +1477,46 @@ SelectOpMode() {
                         switch mode to COMP COOLING */
                     if ((Tac2cmp>56) && (SCac2mode>10)) {
                         Cac2mode = 2;
+                        SCac2mode = 0;
+                    }
+                    /* if enough time passes, fins stack gets seriosly cold -
+                    switch to defrost mode */
+                    if ((SCac2mode>239) && (Tac2cnd<-6)) {
+                        Cac2mode = 4;
+                        SCac2mode = 0;
+                    }
+                break;
+            case 4: /* this AC need a defrost cycle */
+                    /* when the DEFROST cycle reaches cycle nr 112 - switch mode back
+                        to STARTING*/
+                    switch (SCac2mode) {
+                        case 0 ... 11: /* ONLY VALVE ON */
+                            break;
+                        case 12 ... 17: /* ALL INCLUDING VALVE OFF */
+                            wantV2on = 0;
+                            break;
+                        case 18 ... 23: /* ONLY VALVE ON */
+                            break;
+                        case 24 ... 29: /* ALL INCLUDING VALVE OFF */
+                            wantV2on = 0;
+                            break;
+                        case 30 ... 89: /* COMPRESSOR ON WITH VALVE OFF */
+                            wantC2on = 1;
+                            wantV2on = 0;
+                            break;
+                        case 90 ... 101: /* COMPRESSOR OFF WITH VALVE OFF */
+                            wantV2on = 0;
+                            break;
+                        case 102 ... 104: /* ONLY VALVE ON */
+                            break;
+                        case 105 ... 109: /* ALL INCLUDING VALVE OFF */
+                            wantV2on = 0;
+                            break;
+                        case 110 ... 112: /* ONLY VALVE ON */
+                            break;
+                    }
+                    if (SCac2mode>=112)) {
+                        Cac2mode = 1;
                         SCac2mode = 0;
                     }
                 break;
