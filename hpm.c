@@ -1568,13 +1568,17 @@ SelectOpMode() {
 
     /* Turning to OFF mode cleanup:
         If an AC has been ON, but now will be turned OFF - change its mode accordingly */
-    if (Cac1cmp && !wantC1on) {
-        Cac1mode = 0;
-        SCac1mode = 0;
+    if (Cac1mode!=4) {
+        if (Cac1cmp && !wantC1on) {
+            Cac1mode = 0;
+            SCac1mode = 0;
+        }
     }
-    if (Cac2cmp && !wantC2on) {
-        Cac2mode = 0;
-        SCac2mode = 0;
+    if (Cac2mode!=4) {
+        if (Cac2cmp && !wantC2on) {
+            Cac2mode = 0;
+            SCac2mode = 0;
+        }
     }
 
     if ( wantC1on) StateDesired |= 1;
