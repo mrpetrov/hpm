@@ -1204,8 +1204,10 @@ GetCurrentTime() {
     2 - it must have been off for 5 minutes = 120 5 sec cycles
     3 - it must not be too hot 
     4 - the other compressor must not have been switched ON
-         in the last 15 seconds */
+         in the last 15 seconds 
+    5 - for DEFROST - allow quick toggling */
 unsigned short CanTurnC1On() {
+    if (Cac1mode==4) return 1;
     if (!Cac1cmp && (SCac1cmp > 120) && (Tac1cmp<56) &&
         ((Cac2cmp && (SCac2cmp > 3))||(!Cac2cmp))) return 1;
     else return 0;
@@ -1249,8 +1251,10 @@ unsigned short CanTurnV1Off() {
     2 - it must have been off for 5 minutes = 120 5 sec cycles
     3 - it must not be too hot 
     4 - the other compressor must not have been switched ON
-         in the last 15 seconds */
+         in the last 15 seconds 
+    5 - for DEFROST - allow quick toggling */
 unsigned short CanTurnC2On() {
+    if (Cac2mode==4) return 1;
     if (!Cac2cmp && (SCac2cmp > 120) && (Tac2cmp<56) &&
         ((Cac1cmp && (SCac1cmp > 3))||(!Cac1cmp))) return 1;
     else return 0;
