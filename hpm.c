@@ -1355,16 +1355,13 @@ SelectOpMode() {
                 }
                 break;
              case 2: /* 2 ACs are running - we need to decide which one we want turned off - in practice we leave ON the other one*/
-                    /* keep it simple - try to turn OFF the AC that has more cycles since last state change */
-                    if (SCac1cmp>=SCac2cmp) {
+                    /* keep it simple - try to turn OFF the AC that has worked more in the long run */
+                    if (C1RunCs>=C2RunCs) {
                         wantC2on = 1;
                     }
                     else {
                         wantC1on = 1;
                     }
-                    /* in case one of the running ACs is DEFROSTING - turn the other one OFF */
-                    if (Cac1mode==4) { wantC1on = 1; wantC2on = 0; }
-                    if (Cac2mode==4) { wantC2on = 1; wantC1on = 0; }
                 break;
         }
     }
