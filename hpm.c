@@ -1214,13 +1214,13 @@ unsigned short CanTurnC1On() {
     else return 0;
 }
 
-/* Turn OFF compressor 2 limitations:
+/* Turn OFF compressor 1 limitations:
     1 - it must be ON
-    2 - it must have been ON for 10 minutes = 120 5 sec cycles
+    2 - it must have been ON for at least 7 minutes = 84 5 sec cycles
     3 - during DEFROST cycle or power failure - can be turned off quicker */
 unsigned short CanTurnC1Off() {
     if (Cac1cmp && ((Cac1mode==4)||(COMMS==3))) return 1;
-    if (Cac1cmp && (SCac1cmp > 120)) return 1;
+    if (Cac1cmp && (SCac1cmp > 84)) return 1;
     else return 0;
 }
 
@@ -1264,11 +1264,11 @@ unsigned short CanTurnC2On() {
 
 /* Turn OFF compressor 2 limitations:
     1 - it must be ON
-    2 - it must have been ON for 10 minutes = 120 5 sec cycles
+    2 - it must have been ON for at least 7 minutes = 84 5 sec cycles
     3 - during DEFROST cycle or power failure - can be turned off quicker */
 unsigned short CanTurnC2Off() {
     if (Cac2cmp && ((Cac2mode==4)||(COMMS==3))) return 1;
-    if (Cac2cmp && (SCac2cmp > 120)) return 1;
+    if (Cac2cmp && (SCac2cmp > 84)) return 1;
     else return 0;
 }
 
