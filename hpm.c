@@ -1385,14 +1385,14 @@ SelectOpMode() {
         allowed working parameters */
     if (wantC1on || (Cac1mode==4)) { 
         switch (Cac1mode) {
-            case 0: /* AC 1 has been in OFF mode: */
+            case 0: /* AC 1 is in OFF mode: */
                     /* if AC1 can be turned ON, switch its mode to STARTING */
                     if (CanTurnC1On()) {
                         Cac1mode = 1;
                         SCac1mode = 0;
                     }
                 break;
-            case 1: /* AC 1 has been in STARTING mode: */
+            case 1: /* AC 1 is in STARTING mode: */
                     wantF1on = 1;
                     /* when the compressor temp reaches 57 - switch mode to COMP COOLING */
                     if (Tac1cmp>=57) { 
@@ -1405,14 +1405,14 @@ SelectOpMode() {
                         SCac1mode = 0;
                     }
                 break;
-            case 2: /* AC 1 has been in COMP COOLING mode: */
+            case 2: /* AC 1 is in COMP COOLING mode: */
                     /* when the compressor temp falls below 56 - switch mode to FIN STACK HEATING */
                     if ((Tac1cmp<56) && (SCac1mode>10)) {
                         Cac1mode = 3;
                         SCac1mode = 0;
                     }
                 break;
-            case 3: /* AC 1 has been in FIN STACK HEATING mode: */
+            case 3: /* AC 1 is in FIN STACK HEATING mode: */
                     wantF1on = 1;
                     /* when the compressor temp goes back up to 56
                         switch mode to COMP COOLING */
@@ -1431,9 +1431,7 @@ SelectOpMode() {
                         SCac1mode = 0;
                     }
                 break;
-            case 4: /* this AC need a defrost cycle */
-                    /* when the DEFROST cycle reaches cycle nr 112 - switch mode back
-                        to STARTING*/
+            case 4: /* AC1 is in DEFROST mode */
                     switch (SCac1mode) {
                         case 0 ... 11: /* ONLY VALVE ON */
                             break;
@@ -1474,14 +1472,14 @@ SelectOpMode() {
     }
     if (wantC2on || (Cac2mode==4)) { 
         switch (Cac2mode) {
-            case 0: /* AC 2 has been in OFF mode: */
+            case 0: /* AC 2 is in OFF mode, but we want it ON: */
                     /* if AC2 can be turned ON, switch its mode to STARTING */
                     if (CanTurnC2On()) {
                         Cac2mode = 1;
                         SCac2mode = 0;
                     }
                 break;
-            case 1: /* AC 2 has been in STARTING mode: */
+            case 1: /* AC 2 is in STARTING mode: */
                     wantF2on = 1;
                     /* when the compressor temp reaches 57 - switch mode to COMP COOLING */
                     if (Tac2cmp>=57) { 
@@ -1494,14 +1492,14 @@ SelectOpMode() {
                         SCac2mode = 0;
                     }
                 break;
-            case 2: /* AC 2 has been in COMP COOLING mode: */
+            case 2: /* AC 2 is in COMP COOLING mode: */
                     /* when the compressor temp falls below 56 - switch mode to FIN STACK HEATING */
                     if ((Tac2cmp<56) && (SCac2mode>10)) {
                         Cac2mode = 3;
                         SCac2mode = 0;
                     }
                 break;
-            case 3: /* AC 2 has been in FIN STACK HEATING mode: */
+            case 3: /* AC 2 is in FIN STACK HEATING mode: */
                     wantF2on = 1;
                     /* when the compressor temp goes back up to 56
                         switch mode to COMP COOLING */
