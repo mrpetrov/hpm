@@ -1207,9 +1207,9 @@ GetCurrentTime() {
          in the last 15 seconds 
     5 - for DEFROST - allow quick toggling */
 unsigned short CanTurnC1On() {
-    if (!cfg.use_ac1) return 0;
+    if (!cfg.use_ac1 || (Tac1cmp>59)) return 0;
     if (!Cac1cmp && (Cac1mode==4)) return 1;
-    if (!Cac1cmp && (SCac1cmp > 60) && (Tac1cmp<56) &&
+    if (!Cac1cmp && (SCac1cmp > 60) &&
         ((Cac2cmp && (SCac2cmp > 3))||(!Cac2cmp))) return 1;
     else return 0;
 }
@@ -1255,9 +1255,9 @@ unsigned short CanTurnV1Off() {
          in the last 15 seconds 
     5 - for DEFROST - allow quick toggling */
 unsigned short CanTurnC2On() {
-    if (!cfg.use_ac2) return 0;
+    if (!cfg.use_ac2 || (Tac2cmp>59)) return 0;
     if (!Cac2cmp && (Cac2mode==4)) return 1;
-    if (!Cac2cmp && (SCac2cmp > 60) && (Tac2cmp<56) &&
+    if (!Cac2cmp && (SCac2cmp > 60) &&
         ((Cac1cmp && (SCac1cmp > 3))||(!Cac1cmp))) return 1;
     else return 0;
 }
@@ -1374,18 +1374,16 @@ SelectOpMode() {
     if (Cac1mode==4) { wantC1on = 1; }
     if (Cac2mode==4) { wantC2on = 1; }
     
-    if ((Tac1cmp>63)) { /* compressor 1 overheating protection */
+    if ((Tac1cmp>62)) { /* compressor 1 overheating protection */
         /* turn compressor and fan OFF */
         wantC1on = 0;
         wantF1on = 0;
-        Cac1mode = 0;
     }
 
-    if ((Tac2cmp>63)) { /* compressor 2 overheating protection */
+    if ((Tac2cmp>62)) { /* compressor 2 overheating protection */
         /* turn compressor and fan OFF */
         wantC2on = 0;
         wantF2on = 0;
-        Cac2mode = 0;
     }
 
     if (COMMS==3) { /* hwwm is signaling power has switched to battery */
