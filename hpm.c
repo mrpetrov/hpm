@@ -1691,7 +1691,7 @@ ComputeSendBits() {
     
     /* When cfg.mode is set to OFF -  allow all changes */
     if (!cfg.mode) {
-        sendBits = 3;
+        sendBits = 0;
         return;
     }
 
