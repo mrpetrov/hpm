@@ -1340,6 +1340,9 @@ SelectOpMode() {
                         wantC2on = 1;
                         break;
                 }
+                /* we have selected the AC that has worked less; if the other one can start sooner - switch to it */
+                if (wantC1on && (SCac2cmp > SCac1cmp)) { wantC1on = 0; wantC2on = 1; }
+                if (wantC2on && (SCac1cmp > SCac2cmp)) { wantC1on = 1; wantC2on = 0; }
                 break;
              case 1: /* exactly 1 AC is already running - find out which one it is, and keep it running */
                 if (Cac1cmp) { /* its AC1 */
