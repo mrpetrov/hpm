@@ -124,7 +124,7 @@ short controls[9] = { -1, 0, 0, 0, 0, 0, 0, 0, 0 };
             3 - fin stack heating up */
 
 /* controls state cycles - zeroed on change to state */
-long ctrlstatecycles[9] = { -1, 92, 0, 0, 0, 92, 0, 0, 0 };
+long ctrlstatecycles[9] = { -1, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 #define   SCac1cmp             ctrlstatecycles[1]
 #define   SCac1fan               ctrlstatecycles[2]
