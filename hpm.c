@@ -1372,6 +1372,20 @@ SelectOpMode() {
     if (Cac1mode==4) { wantC1on = 1; }
     if (Cac2mode==4) { wantC2on = 1; }
     
+    if ((Tac1cmp>63)) { /* compressor 1 overheating protection */
+        /* turn compressor and fan OFF */
+        wantC1on = 0;
+        wantF1on = 0;
+        Cac1mode = 0;
+    }
+
+    if ((Tac2cmp>63)) { /* compressor 2 overheating protection */
+        /* turn compressor and fan OFF */
+        wantC2on = 0;
+        wantF2on = 0;
+        Cac2mode = 0;
+    }
+
     if (COMMS==3) { /* hwwm is signaling power has switched to battery */
         /* assume everything is OFF, even the fourway valves */
         wantC1on = 0;
