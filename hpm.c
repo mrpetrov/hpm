@@ -1207,6 +1207,7 @@ GetCurrentTime() {
          in the last 15 seconds 
     5 - for DEFROST - allow quick toggling */
 unsigned short CanTurnC1On() {
+    if (!cfg.use_ac1) return 0;
     if (!Cac1cmp && (Cac1mode==4)) return 1;
     if (!Cac1cmp && (SCac1cmp > 120) && (Tac1cmp<56) &&
         ((Cac2cmp && (SCac2cmp > 3))||(!Cac2cmp))) return 1;
@@ -1254,6 +1255,7 @@ unsigned short CanTurnV1Off() {
          in the last 15 seconds 
     5 - for DEFROST - allow quick toggling */
 unsigned short CanTurnC2On() {
+    if (!cfg.use_ac2) return 0;
     if (!Cac2cmp && (Cac2mode==4)) return 1;
     if (!Cac2cmp && (SCac2cmp > 120) && (Tac2cmp<56) &&
         ((Cac1cmp && (SCac1cmp > 3))||(!Cac1cmp))) return 1;
