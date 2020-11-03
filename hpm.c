@@ -1201,7 +1201,7 @@ GetCurrentTime() {
 
 /* Turn ON compressor limitations:
     1 - it must be off
-    2 - it must have been off for 5 minutes = 120 5 sec cycles
+    2 - it must have been off for 5 minutes = 60 5 sec cycles
     3 - it must not be too hot 
     4 - the other compressor must not have been switched ON
          in the last 15 seconds 
@@ -1209,14 +1209,14 @@ GetCurrentTime() {
 unsigned short CanTurnC1On() {
     if (!cfg.use_ac1) return 0;
     if (!Cac1cmp && (Cac1mode==4)) return 1;
-    if (!Cac1cmp && (SCac1cmp > 120) && (Tac1cmp<56) &&
+    if (!Cac1cmp && (SCac1cmp > 60) && (Tac1cmp<56) &&
         ((Cac2cmp && (SCac2cmp > 3))||(!Cac2cmp))) return 1;
     else return 0;
 }
 
 /* Turn OFF compressor 2 limitations:
     1 - it must be ON
-    2 - it must have been ON for 5 minutes = 120 5 sec cycles
+    2 - it must have been ON for 10 minutes = 120 5 sec cycles
     3 - during DEFROST cycle - can be turned off quicker */
 unsigned short CanTurnC1Off() {
     if (Cac1cmp && (Cac1mode==4)) return 1;
@@ -1249,7 +1249,7 @@ unsigned short CanTurnV1Off() {
 
 /* Turn ON compressor limitations:
     1 - it must be off
-    2 - it must have been off for 5 minutes = 120 5 sec cycles
+    2 - it must have been off for 5 minutes = 60 5 sec cycles
     3 - it must not be too hot 
     4 - the other compressor must not have been switched ON
          in the last 15 seconds 
@@ -1257,14 +1257,14 @@ unsigned short CanTurnV1Off() {
 unsigned short CanTurnC2On() {
     if (!cfg.use_ac2) return 0;
     if (!Cac2cmp && (Cac2mode==4)) return 1;
-    if (!Cac2cmp && (SCac2cmp > 120) && (Tac2cmp<56) &&
+    if (!Cac2cmp && (SCac2cmp > 60) && (Tac2cmp<56) &&
         ((Cac1cmp && (SCac1cmp > 3))||(!Cac1cmp))) return 1;
     else return 0;
 }
 
 /* Turn OFF compressor 2 limitations:
     1 - it must be ON
-    2 - it must have been ON for 5 minutes = 120 5 sec cycles
+    2 - it must have been ON for 10 minutes = 120 5 sec cycles
     3 - during DEFROST cycle - can be turned off quicker */
 unsigned short CanTurnC2Off() {
     if (Cac2cmp && (Cac2mode==4)) return 1;
