@@ -1217,9 +1217,9 @@ unsigned short CanTurnC1On() {
 /* Turn OFF compressor 2 limitations:
     1 - it must be ON
     2 - it must have been ON for 10 minutes = 120 5 sec cycles
-    3 - during DEFROST cycle - can be turned off quicker */
+    3 - during DEFROST cycle or power failure - can be turned off quicker */
 unsigned short CanTurnC1Off() {
-    if (Cac1cmp && (Cac1mode==4)) return 1;
+    if (Cac1cmp && ((Cac1mode==4)||(COMMS==3))) return 1;
     if (Cac1cmp && (SCac1cmp > 120)) return 1;
     else return 0;
 }
@@ -1265,9 +1265,9 @@ unsigned short CanTurnC2On() {
 /* Turn OFF compressor 2 limitations:
     1 - it must be ON
     2 - it must have been ON for 10 minutes = 120 5 sec cycles
-    3 - during DEFROST cycle - can be turned off quicker */
+    3 - during DEFROST cycle or power failure - can be turned off quicker */
 unsigned short CanTurnC2Off() {
-    if (Cac2cmp && (Cac2mode==4)) return 1;
+    if (Cac2cmp && ((Cac2mode==4)||(COMMS==3))) return 1;
     if (Cac2cmp && (SCac2cmp > 120)) return 1;
     else return 0;
 }
@@ -1396,8 +1396,6 @@ SelectOpMode() {
         wantC2on = 0;
         wantF2on = 0;
         wantV2on = 0;
-        Cac1mode = 0;
-        Cac2mode = 0;
     }
 
     /* Until now we alredy know which ACs we want on; check wantC_on for that.
