@@ -1393,6 +1393,7 @@ SelectOpMode() {
                     }
                 break;
             case 1: /* AC 1 has been in STARTING mode: */
+                    wantF1on = 1;
                     /* when the compressor temp reaches 57 - switch mode to COMP COOLING */
                     if (Tac1cmp>=57) { 
                         Cac1mode = 2;
@@ -1412,6 +1413,7 @@ SelectOpMode() {
                     }
                 break;
             case 3: /* AC 1 has been in FIN STACK HEATING mode: */
+                    wantF1on = 1;
                     /* when the compressor temp goes back up to 56
                         switch mode to COMP COOLING */
                     if ((Tac1cmp>56) && (SCac1mode>10)) {
@@ -1480,6 +1482,7 @@ SelectOpMode() {
                     }
                 break;
             case 1: /* AC 2 has been in STARTING mode: */
+                    wantF2on = 1;
                     /* when the compressor temp reaches 57 - switch mode to COMP COOLING */
                     if (Tac2cmp>=57) { 
                         Cac2mode = 2;
@@ -1499,6 +1502,7 @@ SelectOpMode() {
                     }
                 break;
             case 3: /* AC 2 has been in FIN STACK HEATING mode: */
+                    wantF2on = 1;
                     /* when the compressor temp goes back up to 56
                         switch mode to COMP COOLING */
                     if ((Tac2cmp>56) && (SCac2mode>10)) {
@@ -1557,13 +1561,6 @@ SelectOpMode() {
             SCac2mode = 0;
         }
     }
-
-    /* Now that we have ACs working modes determined - apply them */
-    if (Cac1mode==1) { wantF1on = 1; }
-    if (Cac2mode==1) { wantF2on = 1; }
-    /* funny how the only difference is the fan... ain't it? */
-    if (Cac1mode==3) { wantF1on = 1; }
-    if (Cac2mode==3) { wantF2on = 1; }
 
     /* as a final action - if an AC is not allowed to be used by config file - make sure it stays OFF */
     if (!cfg.use_ac1) {
