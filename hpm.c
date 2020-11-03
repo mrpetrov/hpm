@@ -1330,6 +1330,9 @@ SelectOpMode() {
                 if (t==2) { /* both ACs are allowed - choose the one that has worked less */
                     if (C1RunCs <= C2RunCs) t=1;
                     else t=2;
+                    /* if we selected the AC that is resting, and the other one can start - switch them */
+                    if (t==1 && !CanTurnC1On() && CanTurnC2On()) t=2;
+                    if (t==2 && !CanTurnC2On() && CanTurnC1On()) t=1;
                 }
                 switch (t) {
                     default:
@@ -1342,9 +1345,6 @@ SelectOpMode() {
                         wantC2on = 1;
                         break;
                 }
-                /* if we selected the AC that is resting, and the one one can start - switch them */
-                if (wantC1on && !CanTurnC1On() && CanTurnC2On()) { wantC1on = 0; wantC2on = 1; }
-                if (wantC2on && !CanTurnC2On() && CanTurnC1On()) { wantC2on = 0; wantC1on = 1; }
                 break;
              case 1: /* exactly 1 AC is already running - find out which one it is, and keep it running */
                 if (Cac1cmp) { /* its AC1 */
