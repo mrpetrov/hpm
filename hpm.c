@@ -1483,7 +1483,8 @@ SelectOpMode() {
                 break;
         }
     } else {
-        if (Cac1mode) {
+        /* only do the mode clean up if turning off the compressor is possible */
+        if (Cac1mode && CanTurnC1Off()) {
             Cac1mode = 0;
             SCac1mode = 0;
         }
@@ -1572,7 +1573,8 @@ SelectOpMode() {
                 break;
         }
     } else {
-        if (Cac2mode) {
+        /* only do the mode clean up if turning off the compressor is possible */
+        if (Cac2mode && CanTurnC2Off()) {
             Cac2mode = 0;
             SCac2mode = 0;
         }
@@ -1591,14 +1593,14 @@ SelectOpMode() {
     }
 
     /* Turning to OFF mode cleanup:
-        If an AC has been ON, but now will be turned OFF - change its mode accordingly */
-    if (Cac1mode!=4) {
+        If an AC has been ON, but now will be turned OFF - change its mode accordingly, if possible */
+    if (Cac1mode!=4 && CanTurnC1Off()) {
         if (Cac1cmp && !wantC1on) {
             Cac1mode = 0;
             SCac1mode = 0;
         }
     }
-    if (Cac2mode!=4) {
+    if (Cac2mode!=4 && CanTurnC2Off()) {
         if (Cac2cmp && !wantC2on) {
             Cac2mode = 0;
             SCac2mode = 0;
