@@ -1125,11 +1125,13 @@ LogData(short _ST_L) {
     if (Cac1mode==2) sprintf( data + strlen(data), "M1:c cooling");
     if (Cac1mode==3) sprintf( data + strlen(data), "M1:fins heat");
     if (Cac1mode==4) sprintf( data + strlen(data), "M1:defrost");
+    if (Cac1mode==5) sprintf( data + strlen(data), "M1:off (OHP)");
     if (Cac2mode==0) sprintf( data + strlen(data), " M2: off   ");
     if (Cac2mode==1) sprintf( data + strlen(data), " M2:starting");
     if (Cac2mode==2) sprintf( data + strlen(data), " M2:c cooling");
     if (Cac2mode==3) sprintf( data + strlen(data), " M2:fins heat");
     if (Cac2mode==4) sprintf( data + strlen(data), " M2:defrost");
+    if (Cac2mode==5) sprintf( data + strlen(data), " M2:off (OHP)");
     if (_ST_L) {
         sprintf( data + strlen(data), "  WANTED:");
         if (_ST_L&1) sprintf( data + strlen(data), " C1");
@@ -1219,7 +1221,7 @@ unsigned short CanTurnC1On() {
     2 - it must have been ON for at least 7 minutes = 84 5 sec cycles
     3 - during DEFROST cycle or power failure - can be turned off quicker */
 unsigned short CanTurnC1Off() {
-    if (Cac1cmp && ((Cac1mode==4)||(COMMS==3))) return 1;
+    if (Cac1cmp && ((Cac1mode>=4)||(COMMS==3))) return 1;
     if (Cac1cmp && (SCac1cmp > 84)) return 1;
     else return 0;
 }
@@ -1267,7 +1269,7 @@ unsigned short CanTurnC2On() {
     2 - it must have been ON for at least 7 minutes = 84 5 sec cycles
     3 - during DEFROST cycle or power failure - can be turned off quicker */
 unsigned short CanTurnC2Off() {
-    if (Cac2cmp && ((Cac2mode==4)||(COMMS==3))) return 1;
+    if (Cac2cmp && ((Cac2mode>=4)||(COMMS==3))) return 1;
     if (Cac2cmp && (SCac2cmp > 84)) return 1;
     else return 0;
 }
@@ -1374,18 +1376,10 @@ SelectOpMode() {
     if (Cac1mode==4) { wantC1on = 1; }
     if (Cac2mode==4) { wantC2on = 1; }
     
-    if ((Tac1cmp>62)) { /* compressor 1 overheating protection */
-        /* turn compressor and fan OFF */
-        wantC1on = 0;
-        wantF1on = 0;
-    }
-
-    if ((Tac2cmp>62)) { /* compressor 2 overheating protection */
-        /* turn compressor and fan OFF */
-        wantC2on = 0;
-        wantF2on = 0;
-    }
-
+    /* get back out of OVH protection: compressor is OFF, mode is OHP, stayed like so for 2 mins */
+    if (!Cac1cmp && (Cac1mode==5) && (SCac1mode>24)) { Cac1mode = 0; SCac1mode = 0; }
+    if (!Cac2cmp && (Cac2mode==5) && (SCac2mode>24)) { Cac2mode = 0; SCac2mode = 0; }
+    
     if (COMMS==3) { /* hwwm is signaling power has switched to battery */
         /* assume everything is OFF, even the fourway valves */
         wantC1on = 0;
@@ -1605,6 +1599,22 @@ SelectOpMode() {
             Cac2mode = 0;
             SCac2mode = 0;
         }
+    }
+
+    /* compressors overheating protection: if running and hotter than 63 C */
+    if (Cac1cmp && (Tac1cmp>63)) {
+        /* switch mode to OHP, turn compressor and fan OFF */
+        Cac1mode = 5;
+        SCac1mode = 0;
+        wantC1on = 0;
+        wantF1on = 0;
+    }
+    if (Cac2cmp && (Tac2cmp>63)) {
+        /* switch mode to OHP, turn compressor and fan OFF */
+        Cac2mode = 5;
+        SCac2mode = 0;
+        wantC2on = 0;
+        wantF2on = 0;
     }
 
     if ( wantC1on) StateDesired |= 1;
