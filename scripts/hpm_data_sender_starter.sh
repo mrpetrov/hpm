@@ -25,6 +25,9 @@ fi
 #
 /etc/rc.hpm_sender >>/run/shm/hpm_sender_log &
 
+# start main daemon
+/usr/sbin/hpm
+
 exit 0
 
 #EOF
