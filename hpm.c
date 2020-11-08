@@ -210,6 +210,8 @@ struct cfg_struct
     float  wicorr;
     char    wocorr_str[MAXLEN];
     float  wocorr;
+    char    tenvcorr_str[MAXLEN];
+    float  tenvcorr;
 }
 cfg_struct;
 
@@ -324,6 +326,7 @@ SetDefaultCfg() {
     cfg.use_ac2 = 1;
     cfg.wicorr = 0;
     cfg.wocorr = 0;
+    cfg.tenvcorr = 0;
 
     sensor_paths[0] = (char *) &cfg.ac1cmp_sensor;
     sensor_paths[1] = (char *) &cfg.ac1cmp_sensor;
@@ -495,6 +498,8 @@ parse_config()
             strncpy (cfg.wicorr_str, value, MAXLEN);
             else if (strcmp(name, "wocorr")==0)
             strncpy (cfg.wocorr_str, value, MAXLEN);
+            else if (strcmp(name, "tenvcorr")==0)
+            strncpy (cfg.tenvcorr_str, value, MAXLEN);
         }
         /* Close file */
         fclose (fp);
@@ -569,6 +574,9 @@ parse_config()
     strcpy( buff, cfg.wocorr_str );
     f = atof( buff );
     cfg.wocorr = f;
+    strcpy( buff, cfg.tenvcorr_str );
+    f = atof( buff );
+    cfg.tenvcorr = f;
 
     /* Prepare log messages with sensor paths and write them to log file */
     sprintf( buff, "AC1 compressor temp sensor file: %s", cfg.ac1cmp_sensor );
@@ -613,11 +621,11 @@ parse_config()
     }
     /* Prepare log message part 1 and write it to log file */
     if (fp == NULL) {
-        sprintf( buff, "INFO: Using values: Mode=%d, use AC1=%d, use AC2=%d, corrections: water IN=%5.3f, water OUT=%5.3f",
-            cfg.mode, cfg.use_ac1, cfg.use_ac2, cfg.wicorr, cfg.wocorr );
+        sprintf( buff, "INFO: Using values: Mode=%d, use AC1=%d, use AC2=%d, corrections: water IN=%5.3f, water OUT=%5.3f, Tenv=%5.3f",
+            cfg.mode, cfg.use_ac1, cfg.use_ac2, cfg.wicorr, cfg.wocorr, cfg.tenvcorr );
         } else {
-        sprintf( buff, "INFO: Read CFG file: Mode=%d, use AC1=%d, use AC2=%d, corrections: water IN=%5.3f, water OUT=%5.3f",
-            cfg.mode, cfg.use_ac1, cfg.use_ac2, cfg.wicorr, cfg.wocorr );
+        sprintf( buff, "INFO: Read CFG file: Mode=%d, use AC1=%d, use AC2=%d, corrections: water IN=%5.3f, water OUT=%5.3f, Tenv=%5.3f",
+            cfg.mode, cfg.use_ac1, cfg.use_ac2, cfg.wicorr, cfg.wocorr, cfg.tenvcorr );
     }
     log_message(LOG_FILE, buff);
     if(!cfg.mode){
@@ -1787,9 +1795,10 @@ main(int argc, char *argv[])
         iter++;
         ReadSensors();
         ReadCommsPins();
-        /* Apply water IN and OUT sensors corrections */
+        /* Apply sensors data corrections */
         Twi += cfg.wicorr;
         Two += cfg.wocorr;
+        Tenv += cfg.tenvcorr;
         /* if MODE is not 0==OFF, work away */
         if (cfg.mode) {
             /* process sensors data here, and decide what devices should do */
