@@ -1,0 +1,17 @@
+ check process hpm with pidfile /run/hpm.pid
+   start program = "/usr/sbin/hpm-restart"
+   stop  program = "/usr/bin/killall hpm"
+   if 3 restarts with 3 cycles then restart
+   if changed pid then alert
+
+ check file hpm_data with path /run/shm/hpm_current
+   if timestamp > 30 seconds then restart
+   if timestamp > 2 minute then alert
+   depends on hpm
+
+ check file hpm_log with path /var/log/hpm.log
+   if match ".*ALARM.*" then alert
+   if match ".*WARNING.*" then alert
+   if match ".*INFO.*" then alert
+   depends on hpm
+
