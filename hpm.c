@@ -1025,10 +1025,10 @@ ReadSensors() {
             log_message(LOG_FILE, msg);
         }
     }
-    /* Allow for maximum of 6 consecutive 10 second intervals of missing sensor data
+    /* Allow for maximum of 4 consecutive 5 seconds intervals of missing sensor data
     on any of the sensors before quitting screaming... */
     for (i=1;i<=TOTALSENSORS;i++) {
-        if (sensor_read_errors[i]>5) {
+        if (sensor_read_errors[i]>4) {
             /* log the errors, clean up and bail out */
             log_message(LOG_FILE, "ALARM: Too many sensor read errors! Stopping.");
             if ( ! DisableGPIOpins() ) {
