@@ -1,7 +1,6 @@
 
-Copy hpm.service to /etc/systemd/system and then
-systemctl enable hpm.service
-
+One-shot command to update hpm to the latest git tree and restart:
+cd ~/hpm && date && git pull && bash ./build.sh && sudo sh -c $HOME/hpm/scripts/update-hpm-executable.sh
 
 Read all connected sensors data in one go:
 time ls /sys/bus/w1/devices | grep 28- | awk '{print "/sys/bus/w1/devices/" $1 "/w1_slave";}' | xargs cat
@@ -10,7 +9,7 @@ List all connected temp sensors:
 ls /sys/bus/w1/devices/2* -dl
 
 Manually send daemon USR1 signal:
-cat /run/hwwm.pid | awk '{print "-USR1 " $1;}'| xargs sudo kill
+sudo hpm-reload
 
 
 On DS18B20 resolution:
