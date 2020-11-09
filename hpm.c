@@ -898,25 +898,26 @@ signal_handler(int sig)
 {
     switch(sig) {
         case SIGUSR1:
-        log_message(LOG_FILE, "INFO: Signal SIGUSR1 caught. Will re-read config file soon. *************************");
-        need_to_read_cfg = 1;
-        break;
+            log_message(LOG_FILE, "INFO: Signal SIGUSR1 caught. Will re-read config file soon. *************************");
+            need_to_read_cfg = 1;
+            break;
         case SIGUSR2:
-        log_message(LOG_FILE, "INFO: Signal SIGUSR2 caught. Not implemented. Continuing. *************************");
-        break;
+            log_message(LOG_FILE, "INFO: Signal SIGUSR2 caught. Not implemented. Continuing. *************************");
+            break;
         case SIGHUP:
-        log_message(LOG_FILE, "INFO: Signal SIGHUP caught. Not implemented. Continuing. *************************");
-        break;
+            log_message(LOG_FILE, "INFO: Signal SIGHUP caught. Not implemented. Continuing. *************************");
+            break;
         case SIGTERM:
-        log_message(LOG_FILE, "INFO: Terminate signal caught. Stopping. *************************");
-        if ( ! DisableGPIOpins() ) {
-            log_message(LOG_FILE, "WARNING: Errors disabling GPIO pins! Quitting anyway. *************************");
-            exit(14);
-        }
-        // this run was ProgramRunCycles cycles ;) 
-        log_message(LOG_FILE,"Exiting normally. Bye, bye! *************************");
-        exit(0);
-        break;
+            log_message(LOG_FILE, "INFO: Terminate signal caught. Stopping. *************************");
+            WritePersistentData();
+            if ( ! DisableGPIOpins() ) {
+                log_message(LOG_FILE, "WARNING: Errors disabling GPIO pins! Quitting anyway. *************************");
+                exit(14);
+            }
+            // this run was ProgramRunCycles cycles ;) 
+            log_message(LOG_FILE,"Exiting normally. Bye, bye! *************************");
+            exit(0);
+            break;
     }
 }
 
