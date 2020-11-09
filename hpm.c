@@ -1398,8 +1398,8 @@ SelectOpMode() {
                 break;
             case 1: /* AC 1 is in STARTING mode: */
                     wantF1on = 1;
-                    /* when the compressor temp reaches 57 - switch mode to COMP COOLING */
-                    if (Tac1cmp>=57) { 
+                    /* when the compressor temp reaches 56 - switch mode to COMP COOLING */
+                    if (Tac1cmp>56) { 
                         Cac1mode = 2;
                         SCac1mode = 0;
                     }
@@ -1487,8 +1487,8 @@ SelectOpMode() {
                 break;
             case 1: /* AC 2 is in STARTING mode: */
                     wantF2on = 1;
-                    /* when the compressor temp reaches 57 - switch mode to COMP COOLING */
-                    if (Tac2cmp>=57) { 
+                    /* when the compressor temp reaches 56 - switch mode to COMP COOLING */
+                    if (Tac2cmp>56) { 
                         Cac2mode = 2;
                         SCac2mode = 0;
                     }
