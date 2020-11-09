@@ -1392,8 +1392,8 @@ SelectOpMode() {
     if (wantC1on) { 
         switch (Cac1mode) {
             case 0: /* AC 1 is in OFF mode: */
-                    /* if AC1 can be turned ON, switch its mode to STARTING */
-                    if (CanTurnC1On()) {
+                    /* if AC1 can be turned ON and valve is ON, switch its mode to STARTING */
+                    if (CanTurnC1On() && Cac1fv) {
                         Cac1mode = 1;
                         SCac1mode = 0;
                     }
@@ -1482,8 +1482,8 @@ SelectOpMode() {
     if (wantC2on) { 
         switch (Cac2mode) {
             case 0: /* AC 2 is in OFF mode, but we want it ON: */
-                    /* if AC2 can be turned ON, switch its mode to STARTING */
-                    if (CanTurnC2On()) {
+                    /* if AC2 can be turned ON and valve is ON, switch its mode to STARTING */
+                    if (CanTurnC2On() && Cac2fv) {
                         Cac2mode = 1;
                         SCac2mode = 0;
                     }
