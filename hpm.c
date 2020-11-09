@@ -1380,10 +1380,8 @@ SelectOpMode() {
         /* assume everything is OFF, even the fourway valves */
         wantC1on = 0;
         wantF1on = 0;
-        wantV1on = 0;
         wantC2on = 0;
         wantF2on = 0;
-        wantV2on = 0;
     }
 
     /* Until now we alredy know which ACs we want on; check wantC_on for that.
