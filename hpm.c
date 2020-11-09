@@ -1377,7 +1377,7 @@ SelectOpMode() {
     if (!Cac2cmp && (Cac2mode==5) && (SCac2mode>24)) { Cac2mode = 0; SCac2mode = 0; }
     
     if (COMMS==3) { /* hwwm is signaling power has switched to battery */
-        /* assume everything is OFF, even the fourway valves */
+        /* assume everything is OFF except the fourway valves */
         wantC1on = 0;
         wantF1on = 0;
         wantC2on = 0;
@@ -1403,10 +1403,9 @@ SelectOpMode() {
                         Cac1mode = 2;
                         SCac1mode = 0;
                     }
-                    /* if 2 minutes into starting fins are at -4 or lower - switch to defrost mode */
-                    if ((SCac1mode>24) && (Tac1cnd<=-4)) {
-                        Cac1mode = 4;
-                        SCac1mode = 0;
+                    /* if 2 minutes into starting - make mode FIN STACK HEATING */
+                    if (SCac1mode>24) {
+                        Cac1mode = 3;
                     }
                 break;
             case 2: /* AC 1 is in COMP COOLING mode: */
@@ -1493,10 +1492,9 @@ SelectOpMode() {
                         Cac2mode = 2;
                         SCac2mode = 0;
                     }
-                    /* if 2 minutes into starting fins are at -4 or lower - switch to defrost mode */
-                    if ((SCac2mode>24) && (Tac2cnd<=-4)) {
-                        Cac2mode = 4;
-                        SCac2mode = 0;
+                    /* if 2 minutes into starting - make mode FIN STACK HEATING */
+                    if (SCac2mode>24) {
+                        Cac2mode = 3;
                     }
                 break;
             case 2: /* AC 2 is in COMP COOLING mode: */
