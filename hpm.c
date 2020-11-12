@@ -1361,6 +1361,9 @@ SelectOpMode() {
                     else {
                         wantC1on = 1;
                     }
+                    /* make sure we turn off an AC that can be turned off */
+                    if (wantC1on && !CanTurnC2Off()) { wantC1on = 0; wantC2on = 1; }
+                    if (wantC2on && !CanTurnC1Off()) { wantC2on = 0; wantC1on = 1; }
                 break;
         }
     }
