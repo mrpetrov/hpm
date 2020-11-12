@@ -1391,11 +1391,18 @@ SelectOpMode() {
     /* Until now we alredy know which ACs we want on; check wantC_on for that.
         Now, it is time to manage running ACs mode, so that we keep the compressors within
         allowed working parameters */
-    if (wantC1on) { 
+    /* On the other hand - we may have a compressor doing the necessary minumum time ON - 
+       manage that as well */
+    if (wantC1on || Cac1mode) { 
+        /* if AC1 is NOT needed - only do the mode clean up if turning off the compressor is possible */
+        if (!wantC1on && Cac1mode && CanTurnC1Off()) {
+            Cac1mode = 0;
+            SCac1mode = 0;
+        }
         switch (Cac1mode) {
             case 0: /* AC 1 is in OFF mode: */
-                    /* if AC1 can be turned ON and valve is ON, switch its mode to STARTING */
-                    if (CanTurnC1On() && Cac1fv) {
+                    /* if we want AC1 on - check if AC1 can be turned ON and valve is ON, switch its mode to STARTING */
+                    if (wantC1on && CanTurnC1On() && Cac1fv) {
                         Cac1mode = 1;
                         SCac1mode = 0;
                     }
@@ -1475,16 +1482,21 @@ SelectOpMode() {
         }
     } else {
         /* only do the mode clean up if turning off the compressor is possible */
-        if (Cac1mode && CanTurnC1Off()) {
+        if (!wantC1on && Cac1mode && CanTurnC1Off()) {
             Cac1mode = 0;
             SCac1mode = 0;
         }
     }
-    if (wantC2on) { 
+    if (wantC2on || Cac2mode) { 
+        /* if AC1 is NOT needed - only do the mode clean up if turning off the compressor is possible */
+        if (!wantC2on && Cac2mode && CanTurnC2Off()) {
+            Cac2mode = 0;
+            SCac2mode = 0;
+        }
         switch (Cac2mode) {
             case 0: /* AC 2 is in OFF mode, but we want it ON: */
                     /* if AC2 can be turned ON and valve is ON, switch its mode to STARTING */
-                    if (CanTurnC2On() && Cac2fv) {
+                    if (wantC2on && CanTurnC2On() && Cac2fv) {
                         Cac2mode = 1;
                         SCac2mode = 0;
                     }
@@ -1564,7 +1576,7 @@ SelectOpMode() {
         }
     } else {
         /* only do the mode clean up if turning off the compressor is possible */
-        if (Cac2mode && CanTurnC2Off()) {
+        if (!wantC2on && Cac2mode && CanTurnC2Off()) {
             Cac2mode = 0;
             SCac2mode = 0;
         }
