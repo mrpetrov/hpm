@@ -1414,8 +1414,8 @@ SelectOpMode() {
                         Cac1mode = 2;
                         SCac1mode = 0;
                     }
-                    /* if 2 minutes into starting - make mode FIN STACK HEATING */
-                    if (SCac1mode>24) {
+                    /* if 1 minute into starting - make mode FIN STACK HEATING */
+                    if (SCac1mode>12) {
                         Cac1mode = 3;
                     }
                 break;
@@ -1508,8 +1508,8 @@ SelectOpMode() {
                         Cac2mode = 2;
                         SCac2mode = 0;
                     }
-                    /* if 2 minutes into starting - make mode FIN STACK HEATING */
-                    if (SCac2mode>24) {
+                    /* if 1 minute into starting - make mode FIN STACK HEATING */
+                    if (SCac2mode>12) {
                         Cac2mode = 3;
                     }
                 break;
