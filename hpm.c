@@ -1472,9 +1472,14 @@ SelectOpMode() {
                             wantC1on = 0;
                             wantF1on = 0;
                             break;
+                        case 72: /* make AC work in HEATING mode, ALL ON */
+                            wantV1on = 1;
+                            wantC1on = 1;
+                            wantF1on = 1;
+                            break;
                     }
                     /* when the DEFROST is complete - switch mode back to STARTING*/
-                    if (SCac1mode>=72) {
+                    if (SCac1mode>=73) {
                         Cac1mode = 1;
                         SCac1mode = 0;
                     }
@@ -1566,9 +1571,14 @@ SelectOpMode() {
                             wantC2on = 0;
                             wantF2on = 0;
                             break;
+                        case 72: /* make AC work in HEATING mode, ALL ON */
+                            wantV2on = 1;
+                            wantC2on = 1;
+                            wantF2on = 1;
+                            break;
                     }
                     /* when the DEFROST is complete - switch mode back to STARTING*/
-                    if (SCac2mode>=72) {
+                    if (SCac2mode>=73) {
                         Cac2mode = 1;
                         SCac2mode = 0;
                     }
