@@ -1117,17 +1117,17 @@ LogData(short _ST_L) {
 
     sprintf( data, "AC1: %4.1f,%4.1f,%4.1f,%4.1f;  AC2:%4.1f,%4.1f,%4.1f,%4.1f;  %6.3f,%6.3f,%6.3f ",
     Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv );
-    if (Cac1mode==0) sprintf( data + strlen(data), "M1: off   ");
-    if (Cac1mode==1) sprintf( data + strlen(data), "M1:starting");
+    if (Cac1mode==0) sprintf( data + strlen(data), "M1: off     ");
+    if (Cac1mode==1) sprintf( data + strlen(data), "M1:starting ");
     if (Cac1mode==2) sprintf( data + strlen(data), "M1:c cooling");
     if (Cac1mode==3) sprintf( data + strlen(data), "M1:fins heat");
-    if (Cac1mode==4) sprintf( data + strlen(data), "M1:defrost");
+    if (Cac1mode==4) sprintf( data + strlen(data), "M1:defrost  ");
     if (Cac1mode==5) sprintf( data + strlen(data), "M1:off (OHP)");
-    if (Cac2mode==0) sprintf( data + strlen(data), " M2: off   ");
-    if (Cac2mode==1) sprintf( data + strlen(data), " M2:starting");
+    if (Cac2mode==0) sprintf( data + strlen(data), " M2: off     ");
+    if (Cac2mode==1) sprintf( data + strlen(data), " M2:starting ");
     if (Cac2mode==2) sprintf( data + strlen(data), " M2:c cooling");
     if (Cac2mode==3) sprintf( data + strlen(data), " M2:fins heat");
-    if (Cac2mode==4) sprintf( data + strlen(data), " M2:defrost");
+    if (Cac2mode==4) sprintf( data + strlen(data), " M2:defrost  ");
     if (Cac2mode==5) sprintf( data + strlen(data), " M2:off (OHP)");
     if (_ST_L) {
         sprintf( data + strlen(data), "  WANTED:");
