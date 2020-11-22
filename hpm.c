@@ -1447,39 +1447,39 @@ SelectOpMode() {
                 break;
             case 4: /* AC1 is in DEFROST mode */
                     switch (SCac1mode) {
-                        case 0 ... 8: /* ONLY VALVE ON */
+                        case 0 ... 5: /* ONLY VALVE ON */
                             wantV1on = 1;
                             wantC1on = 0;
                             wantF1on = 0;
                             break;
-                        case 9 ... 17: /* ALL OFF - this switches mode to cooling, so fins become heating */
+                        case 6 ... 11: /* ALL OFF - this switches mode to cooling, so fins become heating */
                             wantV1on = 0;
                             wantC1on = 0;
                             wantF1on = 0;
                             break;
-                        case 18 ... 41: /* COMPRESSOR ON WITH VALVE OFF */
+                        case 12 ... 35: /* COMPRESSOR ON WITH VALVE OFF */
                             wantV1on = 0;
                             wantC1on = 1;
                             wantF1on = 0;
                             break;
-                        case 42 ... 53: /* ALL OFF; prep to switch back to heating */
+                        case 36 ... 51: /* ALL OFF; prep to switch back to heating */
                             wantV1on = 0;
                             wantC1on = 0;
                             wantF1on = 0;
                             break;
-                        case 54 ... 65: /* VALVE back ON */
+                        case 52 ... 58: /* VALVE back ON */
                             wantV1on = 1;
                             wantC1on = 0;
                             wantF1on = 0;
                             break;
-                        case 66: /* make AC work in HEATING mode, ALL ON */
+                        case 59: /* make AC work in HEATING mode, ALL ON */
                             wantV1on = 1;
                             wantC1on = 1;
                             wantF1on = 1;
                             break;
                     }
                     /* when the DEFROST is complete - switch mode back to STARTING*/
-                    if (SCac1mode>=67) {
+                    if (SCac1mode>=60) {
                         Cac1mode = 1;
                         SCac1mode = 0;
                     }
@@ -1546,39 +1546,39 @@ SelectOpMode() {
                 break;
             case 4: /* AC2 is in DEFROST mode */
                     switch (SCac2mode) {
-                        case 0 ... 8: /* ONLY VALVE ON */
+                        case 0 ... 5: /* ONLY VALVE ON */
                             wantV2on = 1;
                             wantC2on = 0;
                             wantF2on = 0;
                             break;
-                        case 9 ... 17: /* ALL OFF - this switches mode to cooling, so fins become heating */
+                        case 6 ... 11: /* ALL OFF - this switches mode to cooling, so fins become heating */
                             wantV2on = 0;
                             wantC2on = 0;
                             wantF2on = 0;
                             break;
-                        case 18 ... 41: /* COMPRESSOR ON WITH VALVE OFF */
+                        case 12 ... 35: /* COMPRESSOR ON WITH VALVE OFF */
                             wantV2on = 0;
                             wantC2on = 1;
                             wantF2on = 0;
                             break;
-                        case 42 ... 53: /* ALL OFF; prep to switch back to heating */
+                        case 36 ... 51: /* ALL OFF; prep to switch back to heating */
                             wantV2on = 0;
                             wantC2on = 0;
                             wantF2on = 0;
                             break;
-                        case 54 ... 65: /* VALVE back ON */
+                        case 52 ... 58: /* VALVE back ON */
                             wantV2on = 1;
                             wantC2on = 0;
                             wantF2on = 0;
                             break;
-                        case 66: /* make AC work in HEATING mode, ALL ON */
+                        case 59: /* make AC work in HEATING mode, ALL ON */
                             wantV2on = 1;
                             wantC2on = 1;
                             wantF2on = 1;
                             break;
                     }
                     /* when the DEFROST is complete - switch mode back to STARTING*/
-                    if (SCac2mode>=67) {
+                    if (SCac2mode>=60) {
                         Cac2mode = 1;
                         SCac2mode = 0;
                     }
