@@ -1434,13 +1434,15 @@ SelectOpMode() {
                         Cac1mode = 2;
                         SCac1mode = 0;
                     }
-                    /* if enough time passes, fins stack gets seriosly cold - switch to defrost mode */
-                    if ((SCac1mode>159) && (Tac1cnd<-6)) {
+                    /* DEFROST mode activations - keep in mind that DEFROST takes around 5 mins, and
+                       takes 4 (four) !! compressor toggles in those 5 mins away... so like 40 mins normal work */
+                    /* if after 25 minutes fins stack is below -8 C - switch to DEFROST */
+                    if ((SCac1mode>25*12) && (Tac1cnd<-8)) {
                         Cac1mode = 4;
                         SCac1mode = 0;
                     }
-                    /* if FIN HEATING mode goes for 30 minutes and fins stay below -3 : DEFROST */
-                    if ((SCac1mode>359) && (Tac1cnd<-3)) {
+                    /* if after 40 minutes fins stack is below -3 C - switch to DEFROST */
+                    if ((SCac1mode>40*12) && (Tac1cnd<-3)) {
                         Cac1mode = 4;
                         SCac1mode = 0;
                     }
@@ -1540,13 +1542,15 @@ SelectOpMode() {
                         Cac2mode = 2;
                         SCac2mode = 0;
                     }
-                   /* if enough time passes, fins stack gets seriosly cold - switch to defrost mode */
-                    if ((SCac2mode>159) && (Tac2cnd<-6)) {
+                    /* DEFROST mode activations - keep in mind that DEFROST takes around 5 mins, and
+                       takes 4 (four) !! compressor toggles in those 5 mins away... so like 40 mins normal work */
+                    /* if after 25 minutes fins stack is below -8 C - switch to DEFROST */
+                    if ((SCac2mode>25*12) && (Tac2cnd<-8)) {
                         Cac2mode = 4;
                         SCac2mode = 0;
                     }
-                    /* if FIN HEATING mode goes for 30 minutes and fins stay below -3 : DEFROST */
-                    if ((SCac2mode>359) && (Tac2cnd<-3)) {
+                    /* if after 40 minutes fins stack is below -3 C - switch to DEFROST */
+                    if ((SCac2mode>40*12) && (Tac2cnd<-3)) {
                         Cac2mode = 4;
                         SCac2mode = 0;
                     }
