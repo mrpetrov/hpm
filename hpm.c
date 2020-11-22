@@ -1472,16 +1472,23 @@ SelectOpMode() {
                             wantC1on = 0;
                             wantF1on = 0;
                             break;
-                        case 59: /* make AC work in HEATING mode, ALL ON */
+                        case 59: /* make AC work in HEATING, COMP COOLING mode */
                             wantV1on = 1;
                             wantC1on = 1;
-                            wantF1on = 1;
+                            wantF1on = 0;
                             break;
                     }
-                    /* when the DEFROST is complete - switch mode back to STARTING*/
+                    /* when DEFROST cycle is complete - switch back to some working mode */
                     if (SCac1mode>=60) {
-                        Cac1mode = 1;
-                        SCac1mode = 0;
+                        /* if compressor is hot - go to COMP COOLING mode */
+                        if (Tac1cmp>56) {
+                            Cac1mode = 2;
+                            SCac1mode = 0;
+                        /* if compressor is NOT hot - go to FIN STACK HEATING mode */
+                        } else {
+                            Cac1mode = 3;
+                            SCac1mode = 0;
+                        }
                     }
                 break;
         }
@@ -1571,16 +1578,23 @@ SelectOpMode() {
                             wantC2on = 0;
                             wantF2on = 0;
                             break;
-                        case 59: /* make AC work in HEATING mode, ALL ON */
+                        case 59: /* make AC work in HEATING, COMP COOLING mode */
                             wantV2on = 1;
                             wantC2on = 1;
-                            wantF2on = 1;
+                            wantF2on = 0;
                             break;
                     }
-                    /* when the DEFROST is complete - switch mode back to STARTING*/
+                    /* when DEFROST cycle is complete - switch back to some working mode */
                     if (SCac2mode>=60) {
-                        Cac2mode = 1;
-                        SCac2mode = 0;
+                        /* if compressor is hot - go to COMP COOLING mode */
+                        if (Tac2cmp>56) {
+                            Cac2mode = 2;
+                            SCac2mode = 0;
+                        /* if compressor is NOT hot - go to FIN STACK HEATING mode */
+                        } else {
+                            Cac2mode = 3;
+                            SCac2mode = 0;
+                        }
                     }
                 break;
         }
