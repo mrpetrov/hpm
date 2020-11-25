@@ -1446,6 +1446,11 @@ SelectOpMode() {
                         Cac1mode = 4;
                         SCac1mode = 0;
                     }
+                    /* if after 40 minutes work the diff at the heat exchanger is less than 10 C - switch to DEFROST */
+                    if ((SCac1mode>40*12) && ((The1i-The1o)<10)) {
+                        Cac1mode = 4;
+                        SCac1mode = 0;
+                    }
                 break;
             case 4: /* AC1 is in DEFROST mode */
                     switch (SCac1mode) {
@@ -1551,6 +1556,11 @@ SelectOpMode() {
                     }
                     /* if after 40 minutes fins stack is below -3 C - switch to DEFROST */
                     if ((SCac2mode>40*12) && (Tac2cnd<-3)) {
+                        Cac2mode = 4;
+                        SCac2mode = 0;
+                    }
+                    /* if after 40 minutes work the diff at the heat exchanger is less than 10 C - switch to DEFROST */
+                    if ((SCac2mode>40*12) && ((The2i-The2o)<10)) {
                         Cac2mode = 4;
                         SCac2mode = 0;
                     }
