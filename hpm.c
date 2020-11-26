@@ -64,7 +64,7 @@
 #define TOTALSENSORS         11
 
 /* The temp at which a compressor is considered overheating */
-#define COMP_MAX_TEMP        62
+#define COMP_MAX_TEMP        63
 
 /* Array of char* holding the paths to temperature DS18B20 sensors */
 char* sensor_paths[TOTALSENSORS+1];
