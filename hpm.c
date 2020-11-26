@@ -1435,7 +1435,7 @@ SelectOpMode() {
                         SCac1mode = 0;
                     }
                     /* DEFROST mode activations - keep in mind that DEFROST takes around 5 mins, and
-                       takes 4 (four) !! compressor toggles in those 5 mins away... so like 40 mins normal work */
+                       takes 4 (four) !! compressor toggles in those 7 mins away... so like 40 mins normal work */
                     /* if after 25 minutes fins stack is below -8 C - switch to DEFROST */
                     if ((SCac1mode>25*12) && (Tac1cnd<-8)) {
                         Cac1mode = 4;
@@ -1469,24 +1469,24 @@ SelectOpMode() {
                             wantC1on = 1;
                             wantF1on = 0;
                             break;
-                        case 36 ... 51: /* ALL OFF; prep to switch back to heating */
+                        case 36 ... 47: /* ALL OFF; prep to switch back to heating */
                             wantV1on = 0;
                             wantC1on = 0;
                             wantF1on = 0;
                             break;
-                        case 52 ... 58: /* VALVE back ON */
+                        case 48 ... 94: /* VALVE back ON */
                             wantV1on = 1;
                             wantC1on = 0;
                             wantF1on = 0;
                             break;
-                        case 59: /* make AC work in HEATING, COMP COOLING mode */
+                        case 95: /* make AC work in HEATING, COMP COOLING mode */
                             wantV1on = 1;
                             wantC1on = 1;
                             wantF1on = 0;
                             break;
                     }
                     /* when DEFROST cycle is complete - switch back to some working mode */
-                    if (SCac1mode>=60) {
+                    if (SCac1mode>=96) {
                         /* if compressor is hot - go to COMP COOLING mode */
                         if (Tac1cmp>56) {
                             Cac1mode = 2;
@@ -1548,7 +1548,7 @@ SelectOpMode() {
                         SCac2mode = 0;
                     }
                     /* DEFROST mode activations - keep in mind that DEFROST takes around 5 mins, and
-                       takes 4 (four) !! compressor toggles in those 5 mins away... so like 40 mins normal work */
+                       takes 4 (four) !! compressor toggles in those 7 mins away... so like 40 mins normal work */
                     /* if after 25 minutes fins stack is below -8 C - switch to DEFROST */
                     if ((SCac2mode>25*12) && (Tac2cnd<-8)) {
                         Cac2mode = 4;
@@ -1582,24 +1582,24 @@ SelectOpMode() {
                             wantC2on = 1;
                             wantF2on = 0;
                             break;
-                        case 36 ... 51: /* ALL OFF; prep to switch back to heating */
+                        case 36 ... 47: /* ALL OFF; prep to switch back to heating */
                             wantV2on = 0;
                             wantC2on = 0;
                             wantF2on = 0;
                             break;
-                        case 52 ... 58: /* VALVE back ON */
+                        case 48 ... 94: /* VALVE back ON */
                             wantV2on = 1;
                             wantC2on = 0;
                             wantF2on = 0;
                             break;
-                        case 59: /* make AC work in HEATING, COMP COOLING mode */
+                        case 95: /* make AC work in HEATING, COMP COOLING mode */
                             wantV2on = 1;
                             wantC2on = 1;
                             wantF2on = 0;
                             break;
                     }
                     /* when DEFROST cycle is complete - switch back to some working mode */
-                    if (SCac2mode>=60) {
+                    if (SCac2mode>=96) {
                         /* if compressor is hot - go to COMP COOLING mode */
                         if (Tac2cmp>56) {
                             Cac2mode = 2;
