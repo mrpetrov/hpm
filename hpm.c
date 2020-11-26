@@ -63,6 +63,9 @@
 /* Number of all sensors to be used by the system */
 #define TOTALSENSORS         11
 
+/* The temp at which a compressor is considered overheating */
+#define COMP_MAX_TEMP        62
+
 /* Array of char* holding the paths to temperature DS18B20 sensors */
 char* sensor_paths[TOTALSENSORS+1];
 
@@ -1206,7 +1209,7 @@ GetCurrentTime() {
          in the last 30 seconds 
     5 - for DEFROST - allow quick toggling */
 unsigned short CanTurnC1On() {
-    if (!cfg.use_ac1 || (Tac1cmp>63)) return 0;
+    if (!cfg.use_ac1 || (Tac1cmp>COMP_MAX_TEMP)) return 0;
     if (!Cac1cmp && (Cac1mode==4)) return 1;
     if (!Cac1cmp && (SCac1cmp > 12*12) &&
         ((Cac2cmp && (SCac2cmp > 6))||(!Cac2cmp))) return 1;
@@ -1254,7 +1257,7 @@ unsigned short CanTurnV1Off() {
          in the last 30 seconds 
     5 - for DEFROST - allow quick toggling */
 unsigned short CanTurnC2On() {
-    if (!cfg.use_ac2 || (Tac2cmp>63)) return 0;
+    if (!cfg.use_ac2 || (Tac2cmp>COMP_MAX_TEMP)) return 0;
     if (!Cac2cmp && (Cac2mode==4)) return 1;
     if (!Cac2cmp && (SCac2cmp > 12*12) &&
         ((Cac1cmp && (SCac1cmp > 6))||(!Cac1cmp))) return 1;
@@ -1648,14 +1651,14 @@ SelectOpMode() {
     }
 
     /* compressors overheating protection: if running and hotter than 63 C */
-    if (Cac1cmp && (Tac1cmp>63)) {
+    if (Cac1cmp && (Tac1cmp>COMP_MAX_TEMP)) {
         /* switch mode to OHP, turn compressor and fan OFF */
         Cac1mode = 5;
         SCac1mode = 0;
         wantC1on = 0;
         wantF1on = 0;
     }
-    if (Cac2cmp && (Tac2cmp>63)) {
+    if (Cac2cmp && (Tac2cmp>COMP_MAX_TEMP)) {
         /* switch mode to OHP, turn compressor and fan OFF */
         Cac2mode = 5;
         SCac2mode = 0;
