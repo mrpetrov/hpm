@@ -1439,18 +1439,23 @@ SelectOpMode() {
                     }
                     /* DEFROST mode activations - keep in mind that DEFROST takes around 5 mins, and
                        takes 4 (four) !! compressor toggles in those 7 mins away... so like 40 mins normal work */
-                    /* if after 25 minutes fins stack is below -8 C - switch to DEFROST */
-                    if ((SCac1mode>25*12) && (Tac1cnd<-8)) {
+                    /* if after 20 minutes fins stack is below -10 C - switch to DEFROST */
+                    if ((SCac1mode>20*12) && (Tac1cnd<-10)) {
                         Cac1mode = 4;
                         SCac1mode = 0;
                     }
-                    /* if after 40 minutes fins stack is below -3 C - switch to DEFROST */
-                    if ((SCac1mode>40*12) && (Tac1cnd<-3)) {
+                    /* if after 30 minutes fins stack is below -8 C - switch to DEFROST */
+                    if ((SCac1mode>30*12) && (Tac1cnd<-8)) {
                         Cac1mode = 4;
                         SCac1mode = 0;
                     }
                     /* if after 40 minutes work the diff at the heat exchanger is less than 10 C - switch to DEFROST */
                     if ((SCac1mode>40*12) && ((The1i-The1o)<10)) {
+                        Cac1mode = 4;
+                        SCac1mode = 0;
+                    }
+                    /* if after 50 minutes fins stack is below -3 C - switch to DEFROST */
+                    if ((SCac1mode>50*12) && (Tac1cnd<-3)) {
                         Cac1mode = 4;
                         SCac1mode = 0;
                     }
@@ -1546,18 +1551,23 @@ SelectOpMode() {
                     }
                     /* DEFROST mode activations - keep in mind that DEFROST takes around 5 mins, and
                        takes 4 (four) !! compressor toggles in those 7 mins away... so like 40 mins normal work */
-                    /* if after 25 minutes fins stack is below -8 C - switch to DEFROST */
-                    if ((SCac2mode>25*12) && (Tac2cnd<-8)) {
+                    /* if after 20 minutes fins stack is below -10 C - switch to DEFROST */
+                    if ((SCac2mode>20*12) && (Tac2cnd<-10)) {
                         Cac2mode = 4;
                         SCac2mode = 0;
                     }
-                    /* if after 40 minutes fins stack is below -3 C - switch to DEFROST */
-                    if ((SCac2mode>40*12) && (Tac2cnd<-3)) {
+                    /* if after 30 minutes fins stack is below -8 C - switch to DEFROST */
+                    if ((SCac2mode>30*12) && (Tac2cnd<-8)) {
                         Cac2mode = 4;
                         SCac2mode = 0;
                     }
                     /* if after 40 minutes work the diff at the heat exchanger is less than 10 C - switch to DEFROST */
                     if ((SCac2mode>40*12) && ((The2i-The2o)<10)) {
+                        Cac2mode = 4;
+                        SCac2mode = 0;
+                    }
+                    /* if after 50 minutes fins stack is below -3 C - switch to DEFROST */
+                    if ((SCac2mode>50*12) && (Tac2cnd<-3)) {
                         Cac2mode = 4;
                         SCac2mode = 0;
                     }
