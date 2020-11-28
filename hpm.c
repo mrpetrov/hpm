@@ -1437,8 +1437,8 @@ SelectOpMode() {
                         Cac1mode = 2;
                         SCac1mode = 0;
                     }
-                    /* DEFROST mode activations - keep in mind that DEFROST takes around 5 mins, and
-                       takes 4 (four) !! compressor toggles in those 7 mins away... so like 40 mins normal work */
+                    /* DEFROST mode activations - keep in mind that DEFROST takes around 6 mins, and
+                       takes 4 (four) !! compressor toggles in those 6 mins away... so like 40 mins normal work */
                     /* if after 20 minutes fins stack is below -10 C - switch to DEFROST */
                     if ((SCac1mode>20*12) && (Tac1cnd<-10)) {
                         Cac1mode = 4;
@@ -1472,34 +1472,34 @@ SelectOpMode() {
                             wantC1on = 0;
                             wantF1on = 0;
                             break;
-                        case 12 ... 35: /* COMPRESSOR ON WITH VALVE OFF */
+                        case 12 ... 33: /* COMPRESSOR ON WITH VALVE OFF */
                             wantV1on = 0;
                             wantC1on = 1;
                             wantF1on = 0;
                             break;
-                        case 36 ... 47: /* ALL OFF; prep to switch back to heating */
+                        case 34 ... 49: /* ALL OFF; prep to switch back to heating */
                             wantV1on = 0;
                             wantC1on = 0;
                             wantF1on = 0;
                             break;
-                        case 48 ... 92: /* VALVE back ON */
+                        case 50 ... 68: /* VALVE back ON */
                             wantV1on = 1;
                             wantC1on = 0;
                             wantF1on = 0;
                             break;
-                        case 93 ... 94: /* VALVE back ON + FAN */
+                        case 69 ... 70: /* VALVE back ON + FAN */
                             wantV1on = 1;
                             wantC1on = 0;
                             wantF1on = 1;
                             break;
-                        case 95: /* make AC work in HEATING, COMP COOLING mode */
+                        case 71: /* make AC work in HEATING, COMP COOLING mode */
                             wantV1on = 1;
                             wantC1on = 1;
                             wantF1on = 0;
                             break;
                     }
                     /* when DEFROST cycle is complete - switch back to COMP COOLING mode */
-                    if (SCac1mode>=96) {
+                    if (SCac1mode>=72) {
                         /* go to COMP COOLING mode */
                         Cac1mode = 2;
                         SCac1mode = 0;
@@ -1554,8 +1554,8 @@ SelectOpMode() {
                         Cac2mode = 2;
                         SCac2mode = 0;
                     }
-                    /* DEFROST mode activations - keep in mind that DEFROST takes around 5 mins, and
-                       takes 4 (four) !! compressor toggles in those 7 mins away... so like 40 mins normal work */
+                    /* DEFROST mode activations - keep in mind that DEFROST takes around 6 mins, and
+                       takes 4 (four) !! compressor toggles in those 6 mins away... so like 40 mins normal work */
                     /* if after 20 minutes fins stack is below -10 C - switch to DEFROST */
                     if ((SCac2mode>20*12) && (Tac2cnd<-10)) {
                         Cac2mode = 4;
@@ -1589,34 +1589,34 @@ SelectOpMode() {
                             wantC2on = 0;
                             wantF2on = 0;
                             break;
-                        case 12 ... 35: /* COMPRESSOR ON WITH VALVE OFF */
+                        case 12 ... 33: /* COMPRESSOR ON WITH VALVE OFF */
                             wantV2on = 0;
                             wantC2on = 1;
                             wantF2on = 0;
                             break;
-                        case 36 ... 47: /* ALL OFF; prep to switch back to heating */
+                        case 34 ... 49: /* ALL OFF; prep to switch back to heating */
                             wantV2on = 0;
                             wantC2on = 0;
                             wantF2on = 0;
                             break;
-                        case 48 ... 92: /* VALVE back ON */
+                        case 50 ... 68: /* VALVE back ON */
                             wantV2on = 1;
                             wantC2on = 0;
                             wantF2on = 0;
                             break;
-                        case 93 ... 94: /* VALVE back ON + FAN */
+                        case 69 ... 70: /* VALVE back ON + FAN */
                             wantV2on = 1;
                             wantC2on = 0;
                             wantF2on = 1;
                             break;
-                        case 95: /* make AC work in HEATING, COMP COOLING mode */
+                        case 71: /* make AC work in HEATING, COMP COOLING mode */
                             wantV2on = 1;
                             wantC2on = 1;
                             wantF2on = 0;
                             break;
                     }
                     /* when DEFROST cycle is complete - switch back to COMP COOLING mode */
-                    if (SCac2mode>=96) {
+                    if (SCac2mode>=72) {
                         /* go to COMP COOLING mode */
                         Cac2mode = 2;
                         SCac2mode = 0;
