@@ -1482,12 +1482,12 @@ SelectOpMode() {
                             wantC1on = 0;
                             wantF1on = 0;
                             break;
-                        case 48 ... 90: /* VALVE back ON */
+                        case 48 ... 92: /* VALVE back ON */
                             wantV1on = 1;
                             wantC1on = 0;
                             wantF1on = 0;
                             break;
-                        case 91 ... 94: /* VALVE back ON + FAN */
+                        case 93 ... 94: /* VALVE back ON + FAN */
                             wantV1on = 1;
                             wantC1on = 0;
                             wantF1on = 1;
@@ -1599,12 +1599,12 @@ SelectOpMode() {
                             wantC2on = 0;
                             wantF2on = 0;
                             break;
-                        case 48 ... 90: /* VALVE back ON */
+                        case 48 ... 92: /* VALVE back ON */
                             wantV2on = 1;
                             wantC2on = 0;
                             wantF2on = 0;
                             break;
-                        case 91 ... 94: /* VALVE back ON + FAN */
+                        case 93 ... 94: /* VALVE back ON + FAN */
                             wantV2on = 1;
                             wantC2on = 0;
                             wantF2on = 1;
