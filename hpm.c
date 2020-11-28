@@ -1488,17 +1488,11 @@ SelectOpMode() {
                             wantF1on = 0;
                             break;
                     }
-                    /* when DEFROST cycle is complete - switch back to some working mode */
+                    /* when DEFROST cycle is complete - switch back to COMP COOLING mode */
                     if (SCac1mode>=96) {
-                        /* if compressor is hot - go to COMP COOLING mode */
-                        if (Tac1cmp>56) {
-                            Cac1mode = 2;
-                            SCac1mode = 0;
-                        /* if compressor is NOT hot - go to FIN STACK HEATING mode */
-                        } else {
-                            Cac1mode = 3;
-                            SCac1mode = 0;
-                        }
+                        /* go to COMP COOLING mode */
+                        Cac1mode = 2;
+                        SCac1mode = 0;
                     }
                 break;
         }
@@ -1601,17 +1595,11 @@ SelectOpMode() {
                             wantF2on = 0;
                             break;
                     }
-                    /* when DEFROST cycle is complete - switch back to some working mode */
+                    /* when DEFROST cycle is complete - switch back to COMP COOLING mode */
                     if (SCac2mode>=96) {
-                        /* if compressor is hot - go to COMP COOLING mode */
-                        if (Tac2cmp>56) {
-                            Cac2mode = 2;
-                            SCac2mode = 0;
-                        /* if compressor is NOT hot - go to FIN STACK HEATING mode */
-                        } else {
-                            Cac2mode = 3;
-                            SCac2mode = 0;
-                        }
+                        /* go to COMP COOLING mode */
+                        Cac2mode = 2;
+                        SCac2mode = 0;
                     }
                 break;
         }
