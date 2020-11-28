@@ -1203,7 +1203,7 @@ GetCurrentTime() {
 
 /* Turn ON compressor limitations:
     1 - it must be off
-    2 - it must have been off for 12 minutes = 12*12 5 sec cycles
+    2 - it must have been off for 10 minutes = 10*12 5 sec cycles
     3 - it must not be too hot 
     4 - the other compressor must not have been switched ON
          in the last 30 seconds 
@@ -1211,18 +1211,18 @@ GetCurrentTime() {
 unsigned short CanTurnC1On() {
     if (!cfg.use_ac1 || (Tac1cmp>COMP_MAX_TEMP)) return 0;
     if (!Cac1cmp && (Cac1mode==4)) return 1;
-    if (!Cac1cmp && (SCac1cmp > 12*12) &&
+    if (!Cac1cmp && (SCac1cmp > 10*12) &&
         ((Cac2cmp && (SCac2cmp > 6))||(!Cac2cmp))) return 1;
     else return 0;
 }
 
 /* Turn OFF compressor 1 limitations:
     1 - it must be ON
-    2 - it must have been ON for at least 8 minutes = 8*12 5 sec cycles
+    2 - it must have been ON for at least 10 minutes = 10*12 5 sec cycles
     3 - during DEFROST cycle or power failure - can be turned off quicker */
 unsigned short CanTurnC1Off() {
     if (Cac1cmp && ((Cac1mode>=4)||(COMMS==3))) return 1;
-    if (Cac1cmp && (SCac1cmp > 12*8)) return 1;
+    if (Cac1cmp && (SCac1cmp > 10*12)) return 1;
     else return 0;
 }
 
@@ -1251,7 +1251,7 @@ unsigned short CanTurnV1Off() {
 
 /* Turn ON compressor limitations:
     1 - it must be off
-    2 - it must have been off for 12 minutes = 12*12 5 sec cycles
+    2 - it must have been off for 10 minutes = 10*12 5 sec cycles
     3 - it must not be too hot 
     4 - the other compressor must not have been switched ON
          in the last 30 seconds 
@@ -1259,18 +1259,18 @@ unsigned short CanTurnV1Off() {
 unsigned short CanTurnC2On() {
     if (!cfg.use_ac2 || (Tac2cmp>COMP_MAX_TEMP)) return 0;
     if (!Cac2cmp && (Cac2mode==4)) return 1;
-    if (!Cac2cmp && (SCac2cmp > 12*12) &&
+    if (!Cac2cmp && (SCac2cmp > 10*12) &&
         ((Cac1cmp && (SCac1cmp > 6))||(!Cac1cmp))) return 1;
     else return 0;
 }
 
 /* Turn OFF compressor 2 limitations:
     1 - it must be ON
-    2 - it must have been ON for at least 8 minutes = 8*12 5 sec cycles
+    2 - it must have been ON for at least 10 minutes = 10*12 5 sec cycles
     3 - during DEFROST cycle or power failure - can be turned off quicker */
 unsigned short CanTurnC2Off() {
     if (Cac2cmp && ((Cac2mode>=4)||(COMMS==3))) return 1;
-    if (Cac2cmp && (SCac2cmp > 12*8)) return 1;
+    if (Cac2cmp && (SCac2cmp > 10*12)) return 1;
     else return 0;
 }
 
