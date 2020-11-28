@@ -1423,8 +1423,8 @@ SelectOpMode() {
                     }
                 break;
             case 2: /* AC 1 is in COMP COOLING mode: */
-                    /* when the compressor temp falls below 56 - switch mode to FIN STACK HEATING */
-                    if ((Tac1cmp<56) && (SCac1mode>10)) {
+                    /* when the compressor temp falls below 56 and fins are colder than environment - do FIN STACK HEATING */
+                    if ((Tac1cmp<56) && (SCac1mode>10) && (Tac1cnd<Tenv)) {
                         Cac1mode = 3;
                         SCac1mode = 0;
                     }
@@ -1540,8 +1540,8 @@ SelectOpMode() {
                     }
                 break;
             case 2: /* AC 2 is in COMP COOLING mode: */
-                    /* when the compressor temp falls below 56 - switch mode to FIN STACK HEATING */
-                    if ((Tac2cmp<56) && (SCac2mode>10)) {
+                    /* when the compressor temp falls below 56 and fins are colder than environment - do FIN STACK HEATING */
+                    if ((Tac2cmp<56) && (SCac2mode>10) && (Tac2cnd<Tenv)) {
                         Cac2mode = 3;
                         SCac2mode = 0;
                     }
