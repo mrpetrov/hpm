@@ -82,6 +82,8 @@ float sensors[TOTALSENSORS+1] = { 0, -200, -200, -200, -200, -200, -200, -200, -
 /* previous sensors temperatures - e.g. values from previous to last read */
 float sensors_prv[TOTALSENSORS+1] = { 0, -200, -200, -200, -200, -200, -200, -200, -200, -200, -200, -200 };
 
+const char *sensor_names[TOTALSENSORS+1] = { "zero", "AC1 compressor", "AC1 fin stack", "HE1 in", "HE1 out",
+              "AC2 compressor", "AC2 fin stack", "HE2 in", "HE2 out", "water in", "water out", "environment" };
 /* and sensor name mappings */
 #define   Tac1cmp            sensors[1]
 #define   Tac1cnd             sensors[2]
@@ -1009,12 +1011,12 @@ ReadSensors() {
             if (sensor_read_errors[i]) sensor_read_errors[i]--;
             if (just_started) { sensors_prv[i] = new_val; sensors[i] = new_val; }
             if (new_val < (sensors_prv[i]-MAX_TEMP_DIFF)) {
-                sprintf( msg, "WARNING: Correcting LOW %6.3f for sensor %d with %6.3f.", new_val, i, sensors_prv[i]-MAX_TEMP_DIFF );
+                sprintf( msg, "WARNING: Correcting LOW %6.3f for sensor '%s' with %6.3f.", new_val, sensor_names[i], sensors_prv[i]-MAX_TEMP_DIFF );
                 log_message(LOG_FILE, msg);
                 new_val = sensors_prv[i]-MAX_TEMP_DIFF;
             }
             if (new_val > (sensors_prv[i]+MAX_TEMP_DIFF)) {
-                sprintf( msg, "WARNING: Correcting HIGH %6.3f for sensor %d with %6.3f.", new_val, i, sensors_prv[i]+MAX_TEMP_DIFF );
+                sprintf( msg, "WARNING: Correcting HIGH %6.3f for sensor '%s' with %6.3f.", new_val, sensor_names[i], sensors_prv[i]+MAX_TEMP_DIFF );
                 log_message(LOG_FILE, msg);
                 new_val = sensors_prv[i]+MAX_TEMP_DIFF;
             }
@@ -1023,7 +1025,7 @@ ReadSensors() {
         }
         else {
             sensor_read_errors[i]++;
-            sprintf( msg, "WARNING: Sensor %d ReadSensors() errors++. Counter at %d.", i, sensor_read_errors[i] );
+            sprintf( msg, "WARNING: Sensor '%s' ReadSensors() errors++. Counter at %d.", sensor_names[i], sensor_read_errors[i] );
             log_message(LOG_FILE, msg);
         }
     }
