@@ -109,6 +109,12 @@ const char *sensor_names[TOTALSENSORS+1] = { "zero", "AC1 compressor", "AC1 fin 
 #define   TwoPrev                   sensors_prv[10]
 #define   TenvPrev                  sensors_prv[11]
 
+/* HPmode var which uses inverse to hwwm values */
+#define HEAT 1
+#define COOL 0
+
+unsigned short HPmode = HEAT;
+
 /* current controls state - e.g. set on last decision making */
 short controls[9] = { -1, 0, 0, 0, 0, 0, 0, 0, 0 };
 
