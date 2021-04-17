@@ -109,6 +109,14 @@ const char *sensor_names[TOTALSENSORS+1] = { "zero", "AC1 compressor", "AC1 fin 
 #define   TwoPrev                   sensors_prv[10]
 #define   TenvPrev                  sensors_prv[11]
 
+/* TenvArr == Array of last minute or so environment temp readings, used
+to calculate an average, which gets used to decide to heat, cool or stay idle */
+float TenvArr[12] = { 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20 };
+/* TenvArr_lu holds the index of the last updated TenvArr element */
+unsigned short TenvArr_lu = 0;
+/* and the average environment temp var itself */
+float TenvAvrg = 20;
+
 /* HPmode var which uses inverse to hwwm values */
 #define HEAT 1
 #define COOL 0
@@ -1182,6 +1190,24 @@ LogData(short _ST_L) {
     log_msg_cln(JSON_FILE, data);
 }
 
+/* function to calculate average temp of environment based on last minute or so data */
+void 
+CalcTenvAverage() {
+    float na = 0;
+    /* do index moving first */
+    TenvArr_lu++;
+    if (TenvArr_lu > 11) { /* if index is beyond array end - move it to first element */
+        TenvArr_lu = 0;
+    }
+    /* then replace oldest value in array with last read one */
+    TenvArr[TenvArr_lu] = Tenv;
+    /* and finaly - calculate new average */
+    for (short k=0;k<12;k++) {
+        na = na + TenvArr[k];
+    }
+    TenvAvrg = na / 12.0;
+}
+
 /* Function to get current time and put the hour in current_timer_hour */
 void
 GetCurrentTime() {
@@ -1197,6 +1223,12 @@ GetCurrentTime() {
     
     strftime( buff, sizeof buff, "%m", t_struct );
     current_month = atoi( buff );
+    
+    if (TenvAvrg > 23) { 
+        HPmode = COOL;
+    } else { 
+        HPmode = HEAT;
+    }
 }
 
 /* Turn ON compressor limitations:
@@ -1858,6 +1890,8 @@ main(int argc, char *argv[])
         Twi += cfg.wicorr;
         Two += cfg.wocorr;
         Tenv += cfg.tenvcorr;
+        /* Calculate average environment temp */
+        CalcTenvAverage();
         /* if MODE is not 0==OFF, work away */
         if (cfg.mode) {
             /* process sensors data here, and decide what devices should do */
