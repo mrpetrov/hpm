@@ -1345,10 +1345,10 @@ SelectOpMode() {
     short StateDesired = 0;
     short wantC1on = 0;
     short wantF1on = 0;
-    short wantV1on = 1;
+    short wantV1on = HPmode;
     short wantC2on = 0;
     short wantF2on = 0;
-    short wantV2on = 1;
+    short wantV2on = HPmode;
     short nrACs_running = 0;
  //   static char data[280];
     short t = 0;
