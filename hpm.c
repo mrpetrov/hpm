@@ -1781,7 +1781,7 @@ ComputeSendBits() {
     if (CanTurnC1Off() && (Cac1mode!=4)) nrACs_stoppable++;
     if (CanTurnC2Off() && (Cac2mode!=4)) nrACs_stoppable++;
     
-    /* When cfg.mode is set to OFF -  allow all changes */
+    /* When cfg.mode is set to OFF -  do not allow changes */
     if (!cfg.mode) {
         sendBits = 0;
         return;
