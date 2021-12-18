@@ -1379,7 +1379,7 @@ SelectOpMode() {
                 }
                 break;
              case 1: /* exactly 1 AC is already running - find out which one it is, and keep it running */
-                if (Cac1cmp) { /* its AC1 */
+                if (Cac1cmp || (Cac1mode==4)) { /* its AC1 */
                     wantC1on = 1;
                 }
                 else { /* its AC2 */
