@@ -1353,8 +1353,8 @@ SelectOpMode() {
  //   static char data[280];
     short t = 0;
     
-    if (Cac1cmp) nrACs_running++;
-    if (Cac2cmp) nrACs_running++;
+    if (Cac1mode==4) { nrACs_running++; } else { if (Cac1cmp) { nrACs_running++; } }
+    if (Cac2mode==4) { nrACs_running++; } else { if (Cac2cmp) { nrACs_running++; } }
     if (HPL) { /* need to turn one AC on if possible */
         switch (nrACs_running) { /* check if we already have ACs running */
              case 0: /* both ACs are off - we need to decide which one we would want ON */
