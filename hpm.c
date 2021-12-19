@@ -167,14 +167,19 @@ unsigned short current_month = 0;
 /* a var to be non-zero if it is winter time - so furnace should not be allowed to go too cold */
 unsigned short now_is_winter = 0;
 
-/* Comms buffer */
-unsigned short COMMS = 0;
-
 /* If other than zero - low mode is enabled, i.e. one AC can be run */
 unsigned short HPL = 0;
 
 /* If other than zero - HIGH mode is enabled, i.e. both ACs can be run */
 unsigned short HPH = 0;
+
+/* Comms buffer - sent by hwwm over dedicate wire
+    States:
+    0 == ALL OFF
+    1 == 1 AC ON a.k.a. Heat Pump Low mode
+    2 == 2 ACs ON a.k.a. Heat Pump HIGH mode
+    3 == 3 all is OFF, because we are powered by BATTERY  */
+unsigned short COMMS = 0;
 
 /* The buffer Var that holds what needs to sent over to hwwm 
     States:
