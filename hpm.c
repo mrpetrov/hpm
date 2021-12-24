@@ -1533,6 +1533,10 @@ SelectOpMode() {
                             wantF1on = 0;
                             break;
                     }
+                    /* if the compressor overheated - stay at current state so that getting out of defrost works as expected */
+                    if (wantC1on && (Tac1cmp>COMP_MAX_TEMP)) {
+                        SCac1mode--;
+                    }
                     /* when DEFROST cycle is complete - switch back to COMP COOLING mode */
                     if (SCac1mode>=72) {
                         /* go to COMP COOLING mode */
@@ -1649,6 +1653,10 @@ SelectOpMode() {
                             wantC2on = 1;
                             wantF2on = 0;
                             break;
+                    }
+                    /* if the compressor overheated - stay at current state so that getting out of defrost works as expected */
+                    if (wantC2on && (Tac2cmp>COMP_MAX_TEMP)) {
+                        SCac2mode--;
                     }
                     /* when DEFROST cycle is complete - switch back to COMP COOLING mode */
                     if (SCac2mode>=72) {
