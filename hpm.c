@@ -1137,12 +1137,14 @@ LogData(short _ST_L) {
     if (Cac1mode==3) sprintf( data + strlen(data), "M1:fins heat");
     if (Cac1mode==4) sprintf( data + strlen(data), "M1:defrost  ");
     if (Cac1mode==5) sprintf( data + strlen(data), "M1:off (OHP)");
+    sprintf( data + strlen(data), "(%2d)", SCac1mode );
     if (Cac2mode==0) sprintf( data + strlen(data), " M2: off     ");
     if (Cac2mode==1) sprintf( data + strlen(data), " M2:starting ");
     if (Cac2mode==2) sprintf( data + strlen(data), " M2:c cooling");
     if (Cac2mode==3) sprintf( data + strlen(data), " M2:fins heat");
     if (Cac2mode==4) sprintf( data + strlen(data), " M2:defrost  ");
     if (Cac2mode==5) sprintf( data + strlen(data), " M2:off (OHP)");
+    sprintf( data + strlen(data), "(%2d)", SCac2mode );
     if (_ST_L) {
         sprintf( data + strlen(data), "  WANTED:");
         if (_ST_L&1) sprintf( data + strlen(data), " C1");
