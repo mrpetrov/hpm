@@ -1129,7 +1129,9 @@ LogData(short _ST_L) {
     if (Cac2fv) RS|=32;
     diff = (_ST_L ^ RS);
 
-    sprintf( data, "AC1: %4.1f,%4.1f,%4.1f,%4.1f;  AC2:%4.1f,%4.1f,%4.1f,%4.1f;  %6.3f,%6.3f,%6.3f ",
+    if (HPmode == COOL) sprintf( data, "C" );
+    else sprintf( data, "H" );
+    sprintf( data + strlen(data), " AC1: %4.1f,%4.1f,%4.1f,%4.1f;  AC2:%4.1f,%4.1f,%4.1f,%4.1f;  %6.3f,%6.3f,%6.3f ",
     Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv );
     if (Cac1mode==0) sprintf( data + strlen(data), "M1: off     ");
     if (Cac1mode==1) sprintf( data + strlen(data), "M1:starting ");
