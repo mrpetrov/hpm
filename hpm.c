@@ -1506,7 +1506,7 @@ SelectOpMode() {
                             wantC1on = 0;
                             wantF1on = 0;
                             break;
-                        case 6 ... 11: /* ALL OFF - this switches mode to cooling, so fins become heating */
+                        case 6 ... 11: /* ALL OFF - this switches mode to cooling, so fins become hot */
                             wantV1on = 0;
                             wantC1on = 0;
                             wantF1on = 0;
@@ -1515,6 +1515,10 @@ SelectOpMode() {
                             wantV1on = 0;
                             wantC1on = 1;
                             wantF1on = 0;
+                            /* while heating the condenser fins - if they reach 25+ C - end heating */
+                            if (Tac1cnd>25) {
+                                SCac1mode = 33;
+                            }
                             break;
                         case 34 ... 49: /* ALL OFF; prep to switch back to heating */
                             wantV1on = 0;
@@ -1627,7 +1631,7 @@ SelectOpMode() {
                             wantC2on = 0;
                             wantF2on = 0;
                             break;
-                        case 6 ... 11: /* ALL OFF - this switches mode to cooling, so fins become heating */
+                        case 6 ... 11: /* ALL OFF - this switches mode to cooling, so fins become hot */
                             wantV2on = 0;
                             wantC2on = 0;
                             wantF2on = 0;
@@ -1636,6 +1640,10 @@ SelectOpMode() {
                             wantV2on = 0;
                             wantC2on = 1;
                             wantF2on = 0;
+                            /* while heating the condenser fins - if they reach 25+ C - end heating */
+                            if (Tac2cnd>25) {
+                                SCac2mode = 33;
+                            }
                             break;
                         case 34 ... 49: /* ALL OFF; prep to switch back to heating */
                             wantV2on = 0;
