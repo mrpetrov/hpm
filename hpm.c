@@ -1233,7 +1233,7 @@ GetCurrentTime() {
     strftime( buff, sizeof buff, "%m", t_struct );
     current_month = atoi( buff );
     
-    if (TenvAvrg > 23) { 
+    if (TenvAvrg > 25.5) { 
         HPmode = COOL;
     } else { 
         HPmode = HEAT;
