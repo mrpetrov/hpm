@@ -1048,6 +1048,8 @@ ReadSensors() {
             sprintf( msg, "WARNING: Sensor '%s' ReadSensors() errors++. Counter at %d. just_started=1", sensor_names[i], sensor_read_errors[i] );
             log_message(LOG_FILE, msg);
         }
+        /* sleep a bit - 1 second is 1000000, so 50000 is 1/20th of a second */
+        usleep(50000);
     }
     /* Allow for maximum of 4 consecutive 5 seconds intervals of missing sensor data
     on any of the sensors before quitting screaming... */
