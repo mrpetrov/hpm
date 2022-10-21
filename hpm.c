@@ -1044,7 +1044,8 @@ ReadSensors() {
         }
         else {
             sensor_read_errors[i]++;
-            sprintf( msg, "WARNING: Sensor '%s' ReadSensors() errors++. Counter at %d.", sensor_names[i], sensor_read_errors[i] );
+            if (!just_started) { just_started=1; }
+            sprintf( msg, "WARNING: Sensor '%s' ReadSensors() errors++. Counter at %d. just_started=1", sensor_names[i], sensor_read_errors[i] );
             log_message(LOG_FILE, msg);
         }
     }
