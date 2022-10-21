@@ -87,10 +87,10 @@ const char *sensor_names[TOTALSENSORS+1] = { "zero", "AC1 compressor", "AC1 fin 
 /* and sensor name mappings */
 #define   Tac1cmp            sensors[1]
 #define   Tac1cnd             sensors[2]
-#define   The1i                 sensors[3]
-#define   The1o                sensors[4]
-#define   Tac2cmp            sensors[5]
-#define   Tac2cnd             sensors[6]
+#define   Tac2cmp            sensors[3]
+#define   Tac2cnd             sensors[4]
+#define   The1i                 sensors[5]
+#define   The1o                sensors[6]
 #define   The2i                 sensors[7]
 #define   The2o                sensors[8]
 #define   Twi                    sensors[9]
@@ -99,10 +99,10 @@ const char *sensor_names[TOTALSENSORS+1] = { "zero", "AC1 compressor", "AC1 fin 
 
 #define   Tac1cmpPrev            sensors_prv[1]
 #define   Tac1cndPrev             sensors_prv[2]
-#define   The1iPrev                 sensors_prv[3]
-#define   The1oPrev                sensors_prv[4]
-#define   Tac2cmpPrev            sensors_prv[5]
-#define   Tac2cndPrev             sensors_prv[6]
+#define   Tac2cmpPrev            sensors_prv[3]
+#define   Tac2cndPrev             sensors_prv[4]
+#define   The1iPrev                 sensors_prv[5]
+#define   The1oPrev                sensors_prv[6]
 #define   The2iPrev                 sensors_prv[7]
 #define   The2oPrev                sensors_prv[8]
 #define   TwiPrev                    sensors_prv[9]
@@ -355,10 +355,10 @@ SetDefaultCfg() {
     sensor_paths[0] = (char *) &cfg.ac1cmp_sensor;
     sensor_paths[1] = (char *) &cfg.ac1cmp_sensor;
     sensor_paths[2] = (char *) &cfg.ac1cnd_sensor;
-    sensor_paths[3] = (char *) &cfg.he1i_sensor;
-    sensor_paths[4] = (char *) &cfg.he1o_sensor;
-    sensor_paths[5] = (char *) &cfg.ac2cmp_sensor;
-    sensor_paths[6] = (char *) &cfg.ac2cnd_sensor;
+    sensor_paths[3] = (char *) &cfg.ac2cmp_sensor;
+    sensor_paths[4] = (char *) &cfg.ac2cnd_sensor;
+    sensor_paths[5] = (char *) &cfg.he1i_sensor;
+    sensor_paths[6] = (char *) &cfg.he1o_sensor;
     sensor_paths[7] = (char *) &cfg.he2i_sensor;
     sensor_paths[8] = (char *) &cfg.he2o_sensor;
     sensor_paths[9] = (char *) &cfg.wi_sensor;
