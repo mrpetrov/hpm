@@ -74,16 +74,16 @@ char* sensor_paths[TOTALSENSORS+1];
     initialised with borderline value to trigger immediately on errors during
     start-up; the program logic tolerates 1 minute of missing sensor data
 */
-unsigned short sensor_read_errors[TOTALSENSORS+1] = { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 };
+unsigned short sensor_read_errors[TOTALSENSORS+1] = { 0, 3, 3, 3, 3, 3, 3, 3 };
 
 /* current sensors temperatures - e.g. values from last read */
-float sensors[TOTALSENSORS+1] = { 0, -200, -200, -200, -200, -200, -200, -200, -200, -200, -200, -200 };
+float sensors[TOTALSENSORS+1] = { 0, -200, -200, -200, -200, -200, -200, -200 };
 
 /* previous sensors temperatures - e.g. values from previous to last read */
-float sensors_prv[TOTALSENSORS+1] = { 0, -200, -200, -200, -200, -200, -200, -200, -200, -200, -200, -200 };
+float sensors_prv[TOTALSENSORS+1] = { 0, -200, -200, -200, -200, -200, -200, -200 };
 
-const char *sensor_names[TOTALSENSORS+1] = { "zero", "AC1 compressor", "AC1 fin stack", "HE1 in", "HE1 out",
-              "AC2 compressor", "AC2 fin stack", "HE2 in", "HE2 out", "water in", "water out", "environment" };
+const char *sensor_names[TOTALSENSORS+1] = { "zero", "AC1 compressor", "AC1 fin stack", 
+              "AC2 compressor", "AC2 fin stack", "water in", "water out", "environment" };
 /* and sensor name mappings */
 #define   Tac1cmp            sensors[1]
 #define   Tac1cnd             sensors[2]
@@ -1097,7 +1097,7 @@ LogData(short _ST_L) {
     diff = (_ST_L ^ RS);
 
     sprintf( data, "AC1: %4.1f,%4.1f,%4.1f,%4.1f;  AC2:%4.1f,%4.1f,%4.1f,%4.1f;  %6.3f,%6.3f,%6.3f ",
-    Tac1cmp, Tac1cnd, 0, 0, Tac2cmp, Tac2cnd, 0, 0, Twi, Two, Tenv );
+    Tac1cmp, Tac1cnd, 0.0, 0.0, Tac2cmp, Tac2cnd, 0.0, 0.0, Twi, Two, Tenv );
     if (HPmode==COOL) sprintf( data + strlen(data), "C " );
     else sprintf( data + strlen(data), "H " );
     if (Cac1mode==0) sprintf( data + strlen(data), "M1: off     ");
@@ -1153,7 +1153,7 @@ LogData(short _ST_L) {
     "_,AC2COMP,%5.3f\n_,AC2CND,%5.3f\n_,HE2I,%5.3f\n_,HE2O,%5.3f\n"\
     "_,WaterIN,%5.3f\n_,WaterOUT,%5.3f\n_,Tenv,%5.3f\n"\
     "_,Comp1,%d\n_,Fan1,%d\n_,Valve1,%d\n_,Comp2,%d\n_,Fan2,%d\n_,Valve2,%d",\
-    Tac1cmp, Tac1cnd, 0, 0, Tac2cmp, Tac2cnd, 0, 0, Twi, Two, Tenv,\
+    Tac1cmp, Tac1cnd, 0.0, 0.0, Tac2cmp, Tac2cnd, 0.0, 0.0, Twi, Two, Tenv,\
     Cac1cmp, Cac1fan, Cac1fv, Cac2cmp, Cac2fan, Cac2fv);
     log_msg_ovr(TABLE_FILE, data);
 
@@ -1161,7 +1161,7 @@ LogData(short _ST_L) {
     "AC2COMP:%5.3f,AC2CND:%5.3f,HE2I:%5.3f,HE2O:%5.3f,"\
     "WaterIN:%5.3f,WaterOUT:%5.3f,Tenv:%5.3f,"\
     "Comp1:%d,Fan1:%d,Valve1:%d,Comp2:%d,Fan2:%d,Valve2:%d}",\
-    Tac1cmp, Tac1cnd, 0, 0, Tac2cmp, Tac2cnd, 0, 0, Twi, Two, Tenv,\
+    Tac1cmp, Tac1cnd, 0.0, 0.0, Tac2cmp, Tac2cnd, 0.0, 0.0, Twi, Two, Tenv,\
     Cac1cmp, Cac1fan, Cac1fv, Cac2cmp, Cac2fan, Cac2fv);
     log_msg_cln(JSON_FILE, data);
 }
