@@ -61,7 +61,7 @@
 #define MAX_TEMP_DIFF        11
 
 /* Number of all sensors to be used by the system */
-#define TOTALSENSORS         11
+#define TOTALSENSORS         7
 
 /* The temp at which a compressor is considered overheating */
 #define COMP_MAX_TEMP        63
@@ -89,25 +89,17 @@ const char *sensor_names[TOTALSENSORS+1] = { "zero", "AC1 compressor", "AC1 fin 
 #define   Tac1cnd             sensors[2]
 #define   Tac2cmp            sensors[3]
 #define   Tac2cnd             sensors[4]
-#define   The1i                 sensors[5]
-#define   The1o                sensors[6]
-#define   The2i                 sensors[7]
-#define   The2o                sensors[8]
-#define   Twi                    sensors[9]
-#define   Two                   sensors[10]
-#define   Tenv                  sensors[11]
+#define   Twi                    sensors[5]
+#define   Two                   sensors[6]
+#define   Tenv                  sensors[7]
 
 #define   Tac1cmpPrev            sensors_prv[1]
 #define   Tac1cndPrev             sensors_prv[2]
 #define   Tac2cmpPrev            sensors_prv[3]
 #define   Tac2cndPrev             sensors_prv[4]
-#define   The1iPrev                 sensors_prv[5]
-#define   The1oPrev                sensors_prv[6]
-#define   The2iPrev                 sensors_prv[7]
-#define   The2oPrev                sensors_prv[8]
-#define   TwiPrev                    sensors_prv[9]
-#define   TwoPrev                   sensors_prv[10]
-#define   TenvPrev                  sensors_prv[11]
+#define   TwiPrev                    sensors_prv[5]
+#define   TwoPrev                   sensors_prv[6]
+#define   TenvPrev                  sensors_prv[7]
 
 /* TenvArr == Array of last minute or so environment temp readings, used
 to calculate an average, which gets used to decide to heat, cool or stay idle */
@@ -193,12 +185,8 @@ struct cfg_struct
 {
     char    ac1cmp_sensor[MAXLEN];
     char    ac1cnd_sensor[MAXLEN];
-    char    he1i_sensor[MAXLEN];
-    char    he1o_sensor[MAXLEN];
     char    ac2cmp_sensor[MAXLEN];
     char    ac2cnd_sensor[MAXLEN];
-    char    he2i_sensor[MAXLEN];
-    char    he2o_sensor[MAXLEN];
     char    wi_sensor[MAXLEN];
     char    wo_sensor[MAXLEN];
     char    tenv_sensor[MAXLEN];
@@ -334,15 +322,11 @@ void
 SetDefaultCfg() {
     strcpy( cfg.ac1cmp_sensor, "/dev/zero/1");
     strcpy( cfg.ac1cnd_sensor, "/dev/zero/2");
-    strcpy( cfg.he1i_sensor, "/dev/zero/3");
-    strcpy( cfg.he1o_sensor, "/dev/zero/4");
-    strcpy( cfg.ac2cmp_sensor, "/dev/zero/5");
-    strcpy( cfg.ac2cnd_sensor, "/dev/zero/6");
-    strcpy( cfg.he2i_sensor, "/dev/zero/7");
-    strcpy( cfg.he2o_sensor, "/dev/zero/8");
-    strcpy( cfg.wi_sensor, "/dev/zero/9");
-    strcpy( cfg.wo_sensor, "/dev/zero/10");
-    strcpy( cfg.tenv_sensor, "/dev/zero/11");
+    strcpy( cfg.ac2cmp_sensor, "/dev/zero/3");
+    strcpy( cfg.ac2cnd_sensor, "/dev/zero/4");
+    strcpy( cfg.wi_sensor, "/dev/zero/5");
+    strcpy( cfg.wo_sensor, "/dev/zero/6");
+    strcpy( cfg.tenv_sensor, "/dev/zero/8");
     SetDefaultPINs();
     cfg.invert_output = 1;
     cfg.mode = 1;
@@ -357,13 +341,9 @@ SetDefaultCfg() {
     sensor_paths[2] = (char *) &cfg.ac1cnd_sensor;
     sensor_paths[3] = (char *) &cfg.ac2cmp_sensor;
     sensor_paths[4] = (char *) &cfg.ac2cnd_sensor;
-    sensor_paths[5] = (char *) &cfg.he1i_sensor;
-    sensor_paths[6] = (char *) &cfg.he1o_sensor;
-    sensor_paths[7] = (char *) &cfg.he2i_sensor;
-    sensor_paths[8] = (char *) &cfg.he2o_sensor;
-    sensor_paths[9] = (char *) &cfg.wi_sensor;
-    sensor_paths[10] = (char *) &cfg.wo_sensor;
-    sensor_paths[11] = (char *) &cfg.tenv_sensor;
+    sensor_paths[5] = (char *) &cfg.wi_sensor;
+    sensor_paths[6] = (char *) &cfg.wo_sensor;
+    sensor_paths[7] = (char *) &cfg.tenv_sensor;
 }
 
 short
@@ -472,18 +452,10 @@ parse_config()
             strncpy (cfg.ac1cmp_sensor, value, MAXLEN);
             else if (strcmp(name, "ac1cnd_sensor")==0)
             strncpy (cfg.ac1cnd_sensor, value, MAXLEN);
-            else if (strcmp(name, "he1i_sensor")==0)
-            strncpy (cfg.he1i_sensor, value, MAXLEN);
-            else if (strcmp(name, "he1o_sensor")==0)
-            strncpy (cfg.he1o_sensor, value, MAXLEN);
             else if (strcmp(name, "ac2cmp_sensor")==0)
             strncpy (cfg.ac2cmp_sensor, value, MAXLEN);
             else if (strcmp(name, "ac2cnd_sensor")==0)
             strncpy (cfg.ac2cnd_sensor, value, MAXLEN);
-            else if (strcmp(name, "he2i_sensor")==0)
-            strncpy (cfg.he2i_sensor, value, MAXLEN);
-            else if (strcmp(name, "he2o_sensor")==0)
-            strncpy (cfg.he2o_sensor, value, MAXLEN);
             else if (strcmp(name, "wi_sensor")==0)
             strncpy (cfg.wi_sensor, value, MAXLEN);
             else if (strcmp(name, "wo_sensor")==0)
@@ -607,17 +579,9 @@ parse_config()
     log_message(LOG_FILE, buff);
     sprintf( buff, "AC1 condenser temp sensor file: %s", cfg.ac1cnd_sensor );
     log_message(LOG_FILE, buff);
-    sprintf( buff, "Heat exchanger 1 IN temp sensor file: %s", cfg.he1i_sensor );
-    log_message(LOG_FILE, buff);
-    sprintf( buff, "Heat exchanger 1 OUT temp sensor file: %s", cfg.he1o_sensor );
-    log_message(LOG_FILE, buff);
     sprintf( buff, "AC2 compressor temp sensor file: %s", cfg.ac2cmp_sensor );
     log_message(LOG_FILE, buff);
     sprintf( buff, "AC2 condenser temp sensor file: %s", cfg.ac2cnd_sensor );
-    log_message(LOG_FILE, buff);
-    sprintf( buff, "Heat exchanger 2 IN temp sensor file: %s", cfg.he2i_sensor );
-    log_message(LOG_FILE, buff);
-    sprintf( buff, "Heat exchanger 2 OUT temp sensor file: %s", cfg.he2o_sensor );
     log_message(LOG_FILE, buff);
     sprintf( buff, "Water IN temp sensor file: %s", cfg.wi_sensor );
     log_message(LOG_FILE, buff);
@@ -1133,7 +1097,7 @@ LogData(short _ST_L) {
     diff = (_ST_L ^ RS);
 
     sprintf( data, "AC1: %4.1f,%4.1f,%4.1f,%4.1f;  AC2:%4.1f,%4.1f,%4.1f,%4.1f;  %6.3f,%6.3f,%6.3f ",
-    Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv );
+    Tac1cmp, Tac1cnd, 0, 0, Tac2cmp, Tac2cnd, 0, 0, Twi, Two, Tenv );
     if (HPmode==COOL) sprintf( data + strlen(data), "C " );
     else sprintf( data + strlen(data), "H " );
     if (Cac1mode==0) sprintf( data + strlen(data), "M1: off     ");
@@ -1189,7 +1153,7 @@ LogData(short _ST_L) {
     "_,AC2COMP,%5.3f\n_,AC2CND,%5.3f\n_,HE2I,%5.3f\n_,HE2O,%5.3f\n"\
     "_,WaterIN,%5.3f\n_,WaterOUT,%5.3f\n_,Tenv,%5.3f\n"\
     "_,Comp1,%d\n_,Fan1,%d\n_,Valve1,%d\n_,Comp2,%d\n_,Fan2,%d\n_,Valve2,%d",\
-    Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv,\
+    Tac1cmp, Tac1cnd, 0, 0, Tac2cmp, Tac2cnd, 0, 0, Twi, Two, Tenv,\
     Cac1cmp, Cac1fan, Cac1fv, Cac2cmp, Cac2fan, Cac2fv);
     log_msg_ovr(TABLE_FILE, data);
 
@@ -1197,7 +1161,7 @@ LogData(short _ST_L) {
     "AC2COMP:%5.3f,AC2CND:%5.3f,HE2I:%5.3f,HE2O:%5.3f,"\
     "WaterIN:%5.3f,WaterOUT:%5.3f,Tenv:%5.3f,"\
     "Comp1:%d,Fan1:%d,Valve1:%d,Comp2:%d,Fan2:%d,Valve2:%d}",\
-    Tac1cmp, Tac1cnd, The1i, The1o, Tac2cmp, Tac2cnd, The2i, The2o, Twi, Two, Tenv,\
+    Tac1cmp, Tac1cnd, 0, 0, Tac2cmp, Tac2cnd, 0, 0, Twi, Two, Tenv,\
     Cac1cmp, Cac1fan, Cac1fv, Cac2cmp, Cac2fan, Cac2fv);
     log_msg_cln(JSON_FILE, data);
 }
@@ -1491,11 +1455,6 @@ SelectOpMode() {
                         Cac1mode = 4;
                         SCac1mode = 0;
                     }
-                    /* if after 40 minutes work the diff at the heat exchanger is less than 10 C - switch to DEFROST */
-                    if ((SCac1mode>40*12) && ((The1i-The1o)<10)) {
-                        Cac1mode = 4;
-                        SCac1mode = 0;
-                    }
                     /* if after 50 minutes fins stack is below -3 C - switch to DEFROST */
                     if ((SCac1mode>50*12) && (Tac1cnd<-3)) {
                         Cac1mode = 4;
@@ -1613,11 +1572,6 @@ SelectOpMode() {
                     }
                     /* if after 30 minutes fins stack is below -8 C - switch to DEFROST */
                     if ((SCac2mode>30*12) && (Tac2cnd<-8)) {
-                        Cac2mode = 4;
-                        SCac2mode = 0;
-                    }
-                    /* if after 40 minutes work the diff at the heat exchanger is less than 10 C - switch to DEFROST */
-                    if ((SCac2mode>40*12) && ((The2i-The2o)<10)) {
                         Cac2mode = 4;
                         SCac2mode = 0;
                     }
