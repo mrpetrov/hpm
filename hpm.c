@@ -1008,8 +1008,13 @@ ReadSensors() {
         }
         else {
             sensor_read_errors[i]++;
-            if (!just_started) { just_started=1; }
-            sprintf( msg, "WARNING: Sensor '%s' ReadSensors() errors++. Counter at %d. just_started=1", sensor_names[i], sensor_read_errors[i] );
+            if ((sensor_read_errors[i]>2)&&(!just_started)) { 
+                just_started=1; 
+                sprintf( msg, "WARNING: Sensor '%s' ReadSensors() errors++. Counter at %d. just_started=1", sensor_names[i], sensor_read_errors[i] );
+            }
+            else {
+                sprintf( msg, "WARNING: Sensor '%s' ReadSensors() errors++. Counter at %d.", sensor_names[i], sensor_read_errors[i] );
+            }
             log_message(LOG_FILE, msg);
         }
         /* sleep a bit - 1 second is 1000000, so 50000 is 1/20th of a second */
