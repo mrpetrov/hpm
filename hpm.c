@@ -994,12 +994,12 @@ ReadSensors() {
             if (sensor_read_errors[i]) sensor_read_errors[i]--;
             if (just_started) { sensors_prv[i] = new_val; sensors[i] = new_val; }
             if (new_val < (sensors_prv[i]-MAX_TEMP_DIFF)) {
-                sprintf( msg, "WARNING: Correcting LOW %6.3f for sensor '%s' with %6.3f.", new_val, sensor_names[i], sensors_prv[i]-MAX_TEMP_DIFF );
+                sprintf( msg, "Correcting LOW %6.3f for sensor '%s' with %6.3f.", new_val, sensor_names[i], sensors_prv[i]-MAX_TEMP_DIFF );
                 log_message(LOG_FILE, msg);
                 new_val = sensors_prv[i]-MAX_TEMP_DIFF;
             }
             if (new_val > (sensors_prv[i]+MAX_TEMP_DIFF)) {
-                sprintf( msg, "WARNING: Correcting HIGH %6.3f for sensor '%s' with %6.3f.", new_val, sensor_names[i], sensors_prv[i]+MAX_TEMP_DIFF );
+                sprintf( msg, "Correcting HIGH %6.3f for sensor '%s' with %6.3f.", new_val, sensor_names[i], sensors_prv[i]+MAX_TEMP_DIFF );
                 log_message(LOG_FILE, msg);
                 new_val = sensors_prv[i]+MAX_TEMP_DIFF;
             }
