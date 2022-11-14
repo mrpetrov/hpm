@@ -1138,7 +1138,7 @@ LogData(short _ST_L) {
         if (Cac2fv) sprintf( data + strlen(data), " V2");
     }
     if (diff) {
-        sprintf( data + strlen(data), " MISSING:");
+        sprintf( data + strlen(data), " DIFF:");
         if (diff&1) sprintf( data + strlen(data), " C1");
         if (diff&2) sprintf( data + strlen(data), " F1");
         if (diff&4) sprintf( data + strlen(data), " V1");
