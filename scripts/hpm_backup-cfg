@@ -5,7 +5,7 @@ daemon_pid=/run/$daemon.pid
 log_file=/var/log/$daemon.log
 complevel=7
 start=`date +%s`
-backupfilename=$(daemon)-$(hostname -s)-$(date +%F--%H-%m).tar.bz2
+backupfilename=hpm-$(hostname -s)-$(date +%F--%H-%m).tar.bz2
 backupfolder="/root"
 
 if [ "$EUID" -ne 0 ]
