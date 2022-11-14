@@ -57,9 +57,6 @@
 #define LOW  0
 #define HIGH 1
 
-/* Maximum difference allowed for data received from sensors between reads, C */
-#define MAX_TEMP_DIFF        5
-
 /* Number of all sensors to be used by the system */
 #define TOTALSENSORS         7
 
@@ -81,6 +78,9 @@ float sensors[TOTALSENSORS+1] = { 0, -200, -200, -200, -200, -200, -200, -200 };
 
 /* previous sensors temperatures - e.g. values from previous to last read */
 float sensors_prv[TOTALSENSORS+1] = { 0, -200, -200, -200, -200, -200, -200, -200 };
+
+/* per sensor maximum allowed temp difference from last read */
+float mtd[TOTALSENSORS+1] = { 0, 2, 3, 2, 3, 0.25, 0.25, 0.25 };
 
 const char *sensor_names[TOTALSENSORS+1] = { "zero", "AC1 compressor", "AC1 fin stack", 
               "AC2 compressor", "AC2 fin stack", "water in", "water out", "environment" };
@@ -994,15 +994,15 @@ ReadSensors() {
             if (sensor_read_errors[i]) sensor_read_errors[i]--;
             if (just_started) { sensors_prv[i] = new_val; sensors[i] = new_val; }
             if (just_started > 2) { for (k=0;k<12;k++) { TenvArr[k]=new_val; } }
-            if (new_val < (sensors[i]-MAX_TEMP_DIFF)) {
-                sprintf( msg, "Correcting LOW %6.3f for sensor '%s' with %6.3f.", new_val, sensor_names[i], sensors[i]-MAX_TEMP_DIFF );
+            if (new_val < (sensors[i]-mtd[i])) {
+                sprintf( msg, "Correcting LOW %6.3f for sensor '%s' with %6.3f.", new_val, sensor_names[i], sensors[i]-mtd[i] );
                 log_message(LOG_FILE, msg);
-                new_val = sensors[i]-MAX_TEMP_DIFF;
+                new_val = sensors[i]-mtd[i];
             }
-            if (new_val > (sensors[i]+MAX_TEMP_DIFF)) {
-                sprintf( msg, "Correcting HIGH %6.3f for sensor '%s' with %6.3f.", new_val, sensor_names[i], sensors[i]+MAX_TEMP_DIFF );
+            if (new_val > (sensors[i]+mtd[i])) {
+                sprintf( msg, "Correcting HIGH %6.3f for sensor '%s' with %6.3f.", new_val, sensor_names[i], sensors[i]+mtd[i] );
                 log_message(LOG_FILE, msg);
-                new_val = sensors[i]+MAX_TEMP_DIFF;
+                new_val = sensors[i]+mtd[i];
             }
             sensors_prv[i] = sensors[i];
             sensors[i] = new_val;
@@ -1468,6 +1468,7 @@ SelectOpMode() {
                     }
                 break;
             case 4: /* AC1 is in DEFROST mode */
+                    mtd[2]=10;
                     switch (SCac1mode) {
                         case 0 ... 5: /* ONLY VALVE ON */
                             wantV1on = 1;
@@ -1518,6 +1519,7 @@ SelectOpMode() {
                         /* go to COMP COOLING mode */
                         Cac1mode = 2;
                         SCac1mode = 0;
+                        mtd[2]=3;
                     }
                 break;
         }
@@ -1588,6 +1590,7 @@ SelectOpMode() {
                     }
                 break;
             case 4: /* AC2 is in DEFROST mode */
+                    mtd[4]=10;
                     switch (SCac2mode) {
                         case 0 ... 5: /* ONLY VALVE ON */
                             wantV2on = 1;
@@ -1638,6 +1641,7 @@ SelectOpMode() {
                         /* go to COMP COOLING mode */
                         Cac2mode = 2;
                         SCac2mode = 0;
+                        mtd[4]=3;
                     }
                 break;
         }
