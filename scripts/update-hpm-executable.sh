@@ -1,6 +1,7 @@
 #!/bin/bash
 
 daemon=hpm
+daemon_backup=hpm_backup
 daemon_pid=/run/$daemon.pid
 log_file=/run/shm/$daemon.log
 
@@ -20,11 +21,11 @@ echo "Replacing $daemon-reload and $daemon-restart in /usr/sbin with ones from /
 cp /home/pi/$daemon/scripts/$daemon-reload /usr/sbin
 cp /home/pi/$daemon/scripts/$daemon-restart /usr/sbin
 cp /home/pi/$daemon/scripts/$daemon-stop /usr/sbin
-cp /home/pi/$daemon/scripts/$(daemon)_backup-cfg /usr/sbin
+cp /home/pi/$daemon/scripts/$daemon_backup-cfg /usr/sbin
 chmod +x /usr/sbin/$daemon-reload
 chmod +x /usr/sbin/$daemon-restart
 chmod +x /usr/sbin/$daemon-stop
-chmod +x /usr/sbin/$(daemon)_backup-cfg
+chmod +x /usr/sbin/$daemon_backup-cfg
 sleep 1
 echo "Starting $daemon again..."
 /usr/sbin/$daemon
