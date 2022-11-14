@@ -34,8 +34,8 @@ do
 done
 
 #dt=$(date '+%Y-%m-%d %H:%M:%S');
-logger $log_opts "WOW! This should never ever get in the logs..."
-logger $log_opts "WOW! If we somehow reach here - call the GURU MEDIATION experts!"
+logger $log_opts "This should never ever get in the logs..."
+logger $log_opts "If we somehow reach here - call the GURU MEDIATION experts!"
 exit 0
 
 #EOF

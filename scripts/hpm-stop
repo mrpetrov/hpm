@@ -2,14 +2,14 @@
 
 daemon=hpm
 daemon_pid=/run/$daemon.pid
-log_file=/run/shm/$daemon.log
+log_file=/var/log/$daemon.log
 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root or use sudo $0"
   exit 255
 fi
 
-echo "Trying to kill running '$daemon' to restart it..."
+echo "Trying to kill running '$daemon' to stop it..."
 if [ ! -e $daemon_pid ]
 then
     killall -e $daemon
@@ -17,11 +17,7 @@ else
     kill `cat $daemon_pid`
     rm -f $daemon_pid
 fi
-#sleep 5
-#echo "Replacing /usr/sbin/$daemon with the one from /home/pi/$daemon..."
-#cp /home/pi/$daemon/$daemon /usr/sbin
-sleep 5
-echo "Starting '$daemon' again..."
-/usr/sbin/$daemon
+sleep 1
+/etc/cron.hourly/move-hpm-log
 echo "Here is the log:"
 tail -n 30 $log_file

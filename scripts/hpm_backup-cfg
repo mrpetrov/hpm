@@ -1,0 +1,18 @@
+#!/bin/bash
+
+daemon=hpm
+daemon_pid=/run/$daemon.pid
+log_file=/var/log/$daemon.log
+complevel=7
+start=`date +%s`
+backupfilename=$(daemon)-$(hostname -s)-$(date +%F--%H-%m).tar.bz2
+backupfolder="/root"
+
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root or use sudo $0"
+  exit 255
+fi
+
+printf "$(tput setaf 3)Creating tar.bz2 archive of $daemon settings files.\nWorking using 1 thread (bzip2)...$(tput sgr0)"
+tar -I "bzip2 -$complevel" -cf $backupfolder/$backupfilename /etc/hpm.cfg /etc/rc.hpm_sender /etc/monit/conf-available/hpm /etc/monit/monitrc /var/log/hpm*  >$backupfolder/$backupfilename.warn 2>&1
+printf "$(tput setaf 2)Done.$(tput sgr0)\n"
