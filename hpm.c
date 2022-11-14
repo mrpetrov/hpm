@@ -1102,7 +1102,7 @@ LogData(short _ST_L) {
     diff = (_ST_L ^ RS);
 
     sprintf( data, "AC1: %4.1f,%4.1f,%4.1f,%4.1f;  AC2:%4.1f,%4.1f,%4.1f,%4.1f;  %6.3f,%6.3f,%6.3f ",
-    Tac1cmp, Tac1cnd, 0.0, 0.0, Tac2cmp, Tac2cnd, 0.0, 0.0, Twi, Two, Tenv );
+    Tac1cmp, Tac1cnd, 0.0, 0.0, Tac2cmp, Tac2cnd, 0.0, 0.0, Twi, Two, TenvAvrg );
     if (HPmode==COOL) sprintf( data + strlen(data), "C " );
     else sprintf( data + strlen(data), "H " );
     if (Cac1mode==0) sprintf( data + strlen(data), "M1: off     ");
@@ -1158,7 +1158,7 @@ LogData(short _ST_L) {
     "_,AC2COMP,%5.3f\n_,AC2CND,%5.3f\n_,HE2I,%5.3f\n_,HE2O,%5.3f\n"\
     "_,WaterIN,%5.3f\n_,WaterOUT,%5.3f\n_,Tenv,%5.3f\n"\
     "_,Comp1,%d\n_,Fan1,%d\n_,Valve1,%d\n_,Comp2,%d\n_,Fan2,%d\n_,Valve2,%d",\
-    Tac1cmp, Tac1cnd, 0.0, 0.0, Tac2cmp, Tac2cnd, 0.0, 0.0, Twi, Two, Tenv,\
+    Tac1cmp, Tac1cnd, 0.0, 0.0, Tac2cmp, Tac2cnd, 0.0, 0.0, Twi, Two, TenvAvrg,\
     Cac1cmp, Cac1fan, Cac1fv, Cac2cmp, Cac2fan, Cac2fv);
     log_msg_ovr(TABLE_FILE, data);
 
@@ -1166,7 +1166,7 @@ LogData(short _ST_L) {
     "AC2COMP:%5.3f,AC2CND:%5.3f,HE2I:%5.3f,HE2O:%5.3f,"\
     "WaterIN:%5.3f,WaterOUT:%5.3f,Tenv:%5.3f,"\
     "Comp1:%d,Fan1:%d,Valve1:%d,Comp2:%d,Fan2:%d,Valve2:%d}",\
-    Tac1cmp, Tac1cnd, 0.0, 0.0, Tac2cmp, Tac2cnd, 0.0, 0.0, Twi, Two, Tenv,\
+    Tac1cmp, Tac1cnd, 0.0, 0.0, Tac2cmp, Tac2cnd, 0.0, 0.0, Twi, Two, TenvAvrg,\
     Cac1cmp, Cac1fan, Cac1fv, Cac2cmp, Cac2fan, Cac2fv);
     log_msg_cln(JSON_FILE, data);
 }
@@ -1435,7 +1435,7 @@ SelectOpMode() {
                 break;
             case 2: /* AC 1 is in COMP COOLING mode: */
                     /* when the compressor temp falls below 56 and fins are colder than environment - do FIN STACK HEATING */
-                    if ((Tac1cmp<56) && (SCac1mode>10) && (Tac1cnd<Tenv)) {
+                    if ((Tac1cmp<56) && (SCac1mode>10) && (Tac1cnd<TenvAvrg)) {
                         Cac1mode = 3;
                         SCac1mode = 0;
                     }
@@ -1555,7 +1555,7 @@ SelectOpMode() {
                 break;
             case 2: /* AC 2 is in COMP COOLING mode: */
                     /* when the compressor temp falls below 56 and fins are colder than environment - do FIN STACK HEATING */
-                    if ((Tac2cmp<56) && (SCac2mode>10) && (Tac2cnd<Tenv)) {
+                    if ((Tac2cmp<56) && (SCac2mode>10) && (Tac2cnd<TenvAvrg)) {
                         Cac2mode = 3;
                         SCac2mode = 0;
                     }
