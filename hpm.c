@@ -82,6 +82,9 @@ float sensors_prv[TOTALSENSORS+1] = { 0, -200, -200, -200, -200, -200, -200, -20
 /* per sensor maximum allowed temp difference from last read */
 float mtd[TOTALSENSORS+1] = { 0, 2, 3, 2, 3, 0.25, 0.25, 0.25 };
 
+/* per sensor corrections to apply upon read */
+float scorr[TOTALSENSORS+1] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+
 const char *sensor_names[TOTALSENSORS+1] = { "zero", "AC1 compressor", "AC1 fin stack", 
               "AC2 compressor", "AC2 fin stack", "water in", "water out", "environment" };
 /* and sensor name mappings */
@@ -567,12 +570,15 @@ parse_config()
     strcpy( buff, cfg.wicorr_str );
     f = atof( buff );
     cfg.wicorr = f;
+    scorr[5] = f;
     strcpy( buff, cfg.wocorr_str );
     f = atof( buff );
     cfg.wocorr = f;
+    scorr[6] = f;
     strcpy( buff, cfg.tenvcorr_str );
     f = atof( buff );
     cfg.tenvcorr = f;
+    scorr[7] = f;
 
     /* Prepare log messages with sensor paths and write them to log file */
     sprintf( buff, "AC1 compressor temp sensor file: %s", cfg.ac1cmp_sensor );
@@ -992,6 +998,8 @@ ReadSensors() {
         new_val = sensorRead(sensor_paths[i]);
         if ( new_val != -200 ) {
             if (sensor_read_errors[i]) sensor_read_errors[i]--;
+            /* Apply sensors data corrections */
+            new_val += scorr[i];
             if (just_started) { sensors_prv[i] = new_val; sensors[i] = new_val; }
             if (just_started > 2) { for (k=0;k<12;k++) { TenvArr[k]=new_val; } }
             if (new_val < (sensors[i]-mtd[i])) {
@@ -1878,10 +1886,6 @@ main(int argc, char *argv[])
         iter++;
         ReadSensors();
         ReadCommsPins();
-        /* Apply sensors data corrections */
-        Twi += cfg.wicorr;
-        Two += cfg.wocorr;
-        Tenv += cfg.tenvcorr;
         /* Calculate average environment temp */
         CalcTenvAverage();
         /* if MODE is not 0==OFF, work away */
