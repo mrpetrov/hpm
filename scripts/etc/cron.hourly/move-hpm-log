@@ -6,4 +6,9 @@ rm /run/shm/hpm_data.log
 cat /var/log/hpm_data.log.new >> /var/log/hpm_data.log
 rm /var/log/hpm_data.log.new
 
+cp /run/shm/hpm.log /var/log/hpm.log.new
+rm /run/shm/hpm.log
+cat /var/log/hpm.log.new >> /var/log/hpm.log
+rm /var/log/hpm.log.new
+
 #EOF

@@ -38,7 +38,7 @@
 
 #define RUNNING_DIR     "/tmp"
 #define LOCK_FILE       "/run/hpm.pid"
-#define LOG_FILE        "/var/log/hpm.log"
+#define LOG_FILE        "/run/shm/hpm.log"
 #define DATA_FILE       "/run/shm/hpm_data.log"
 #define TABLE_FILE      "/run/shm/hpm_current"
 #define JSON_FILE	"/run/shm/hpm_current_json"
