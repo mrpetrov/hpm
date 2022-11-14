@@ -80,7 +80,7 @@ float sensors[TOTALSENSORS+1] = { 0, -200, -200, -200, -200, -200, -200, -200 };
 float sensors_prv[TOTALSENSORS+1] = { 0, -200, -200, -200, -200, -200, -200, -200 };
 
 /* per sensor maximum allowed temp difference from last read */
-float mtd[TOTALSENSORS+1] = { 0, 2, 3, 2, 3, 0.25, 0.25, 0.25 };
+float mtd[TOTALSENSORS+1] = { 0, 1, 2.5, 1, 2.5, 0.25, 0.25, 0.3 };
 
 /* per sensor corrections to apply upon read */
 float scorr[TOTALSENSORS+1] = { 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -1476,7 +1476,7 @@ SelectOpMode() {
                     }
                 break;
             case 4: /* AC1 is in DEFROST mode */
-                    mtd[2]=10;
+                    mtd[2]=6;
                     switch (SCac1mode) {
                         case 0 ... 5: /* ONLY VALVE ON */
                             wantV1on = 1;
@@ -1527,7 +1527,7 @@ SelectOpMode() {
                         /* go to COMP COOLING mode */
                         Cac1mode = 2;
                         SCac1mode = 0;
-                        mtd[2]=3;
+                        mtd[2]=2.5;
                     }
                 break;
         }
@@ -1598,7 +1598,7 @@ SelectOpMode() {
                     }
                 break;
             case 4: /* AC2 is in DEFROST mode */
-                    mtd[4]=10;
+                    mtd[4]=6;
                     switch (SCac2mode) {
                         case 0 ... 5: /* ONLY VALVE ON */
                             wantV2on = 1;
@@ -1649,7 +1649,7 @@ SelectOpMode() {
                         /* go to COMP COOLING mode */
                         Cac2mode = 2;
                         SCac2mode = 0;
-                        mtd[4]=3;
+                        mtd[4]=2.5;
                     }
                 break;
         }
